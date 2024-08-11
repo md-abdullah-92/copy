@@ -1,0 +1,110 @@
+/* CSS Styles */
+.classyButton {
+    background-color: #3498db; /* Blue background color */
+    color: #ffffff; /* White text color */
+    font-size: 18px; /* Adjust the font size */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Add some rounded corners */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for background and text color */
+  }
+  
+  /* Hover effect */
+  .classyButton:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+  }
+.classyHeader{
+    font-size: 15px;
+    font-weight: bold;
+    color: #3e5536;
+    text-align: center;
+}
+.classyRadio{
+    font-size: 15px;
+    font-weight: bold;
+    color: #3e5536;
+    text-align: center;
+
+}
+.classyRadio label {
+    margin-left: 10px;
+}
+.classyDropdown {
+    font-size: 15px;
+    font-weight: bold;
+    color: #3e5536;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+.classyTimer {
+    font-size: 15px;
+    font-weight: bold;
+    color: #3e5536;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: #3e5536;
+
+}
+.classyStartButton {
+   font-size: 20px;
+    font-weight: bold;
+    color: #3e5536;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: #3e5536;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+.classyStartButton:hover {
+    background-color: #3e5536;
+    color: #ffffff;
+}
+
+.classySelect {
+    font-size: 15px;
+    font-weight: bold;
+    color: #3e5536;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.scoreCard {
+    font-size: 15px;
+    font-weight: bold;
+    color: #3e5536;
+    text-align: center;
+    padding: 2px
+}
+.customBtn {
+    padding-top: 1rem; /* py-3 */
+    padding-bottom: 1rem; /* lg:py-4 */
+    padding-left: 3rem; /* px-12 */
+    padding-right: 4rem; /* lg:px-16 */
+    color: #ffffff; /* text-white-500 */
+    font-weight: 600; /* font-semibold */
+    border-radius: 0.5rem; /* rounded-lg */
+    background-color: #a7c957;
+    box-shadow: 0 4px 6px rgba(126, 25, 25, 0.1);
+    transition: all; /* transition-all */
+    outline: none; /* outline-none */
+}
+.customBtn:hover {
+    background-color: #6c584c/* custom-btn-bg-color:hover */;
+    box-shadow: 0 4px 6px rgba(126, 25, 25, 0.1); /* custom-btn-shadow */
+}
+
+.classyScore {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c332a;
+    text-align: center;
+    padding: 10px;
+
+}
