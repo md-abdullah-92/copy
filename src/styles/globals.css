@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap');
+@media print {
+  .print-only {
+    display: block;
+  }
+
+  .no-print,
+  .card-view {
+    display: none;
+  }
+
+  /* Additional styles for print */
+  .print-only .print-button {
+    display: none; /* Hide the "Print Payment Slip" button */
+  }
+
+  .print-only .payment-slip-container {
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+  }
+}
+
 .mircophone-container {
   display: flex;
   justify-content: center;

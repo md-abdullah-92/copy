@@ -5,22 +5,22 @@ import getScrollAnimation from '../utils/getScrollAnimation';
 import ScrollAnimationWrapper from './Layout/ScrollAnimationWrapper';
 import { useRouter } from 'next/router';
 
-const Hero = ({
+const Start = ({
   listUser = [
     {
       name: 'Registered Farmers',
       number: '10k+',
-      icon: '/assets/Icon/farmers.png',
+      icon: '/assets/farmars.jpeg',
     },
     {
       name: 'Product Listings',
       number: '100k+',
-      icon: '/assets/Icon/products.png',
+      icon: '/assets/products.jpg',
     },
     {
       name: 'Satisfied Customers',
       number: '5k+',
-      icon: '/assets/Icon/customers.png',
+      icon: '/assets/OIP.jpg',
     },
 
   ],
@@ -57,7 +57,7 @@ const Hero = ({
               whileHover={{ scale: 1.05, transition: { duration: 0.5 } }}
             >
               <img
-                src="/assets/agri_bazaar_hero.gif"
+                src="/assets/farmers.jpeg"
                 alt="Agri Bazaar Illustration"
                 className="w-full h-full object-cover rounded-lg shadow-lg"
               />
@@ -97,4 +97,4 @@ const Hero = ({
   );
 };
 
-export default Hero;
+export default Start;

@@ -13,7 +13,7 @@ const features = [
   'Quality Assessment of Products',
 ];
 
-const Feature = () => {
+const End = () => {
   const scrollAnimation = useMemo(() => getScrollAnimation(), []);
 
   return (
@@ -29,7 +29,7 @@ const Feature = () => {
             whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
           >
             <img
-              src="/assets/agri_bazaar_illustration.gif"
+              src="/assets/friuts.jpg"
               alt="Agri Bazaar Illustration"
               className="w-full h-full object-cover rounded-lg shadow-lg"
             />
@@ -72,4 +72,4 @@ const Feature = () => {
   );
 };
 
-export default Feature;
+export default End;

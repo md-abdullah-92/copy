@@ -10,6 +10,12 @@ import {
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
+interface User {
+  name: string;
+  role: string;
+  email: string;
+}
+
 export default function BuyerDashboard() {
   // State to manage the purchased products and orders
   const [purchasedProducts, setPurchasedProducts] = useState([
@@ -42,6 +48,13 @@ export default function BuyerDashboard() {
     },
   ]);
 
+  // Simulating a logged-in user
+  const loggedInUser: User = {
+    name: 'Jane Doe',
+    role: 'Buyer',
+    email: 'jane.doe@example.com',
+  };
+
   return (
     <Layout>
       <div className="min-h-screen bg-sky-200 py-8 pt-24">
@@ -52,9 +65,10 @@ export default function BuyerDashboard() {
               <div className="flex flex-col items-center">
                 <FaUserCircle className="text-7xl text-green-600" />
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
-                  Jane Doe
+                  {loggedInUser.name}
                 </h2>
-                <p className="text-sm text-gray-600">Buyer</p>
+                <p className="text-sm text-gray-600">{loggedInUser.role}</p>
+                <p className="text-xs text-gray-500">{loggedInUser.email}</p>
                 <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
                   Manage Account
                 </button>

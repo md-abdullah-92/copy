@@ -1,7 +1,6 @@
 import Head from 'next/head';
-import Feature from '../components/Feature';
-import Hero from '../components/Hero';
-
+import End from '../components/End';
+import Start from '../components/Start';
 import Layout from '../components/Layout/Layout';
 import { useEffect } from 'react';
 
@@ -12,19 +11,22 @@ export default function Home() {
       window.location.href = '/profiles';
     }
   }, []);
+
   return (
     <>
-   <Head>
-    <title>AgriBazaar</title>
-   </Head>
-    <div>
-      <Layout>
-        <div style={{ backgroundColor: '#ffffff' }}>
-        <Hero />
-          <Feature />
-        </div>
-      </Layout>
-    </div>
+      <Head>
+        <title>AgriBazaar</title>
+        {/* Update this line to use logo.png from assets */}
+        <link rel="icon" href="/assets/logo.png" />
+      </Head>
+      <div>
+        <Layout>
+          <div style={{ backgroundColor: '#ffffff' }}>
+            <Start />
+            <End />
+          </div>
+        </Layout>
+      </div>
     </>
   );
 }
