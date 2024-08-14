@@ -54,6 +54,7 @@
     "react-dom": "^18.3.1",
     "react-dom-confetti": "^0.2.0",
     "react-p5": "^1.4.1",
+    "react-router-dom": "^6.26.0",
     "react-scroll": "^1.9.0",
     "react-sketch-canvas": "^6.2.0",
     "react-slick": "^0.30.2",

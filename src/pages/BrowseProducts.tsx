@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import Header from '@/components/Layout/Header'; // Ensure the Header path is correct
-import Footer from '@/components/Layout/Footer'; // Ensure the Footer path is correct
-import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper'; // Ensure the ScrollAnimationWrapper path is correct
+import { useRouter } from 'next/router';
+import Header from '@/components/Layout/Header';
+import Footer from '@/components/Layout/Footer';
+import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
 
 interface Product {
   id: number;
@@ -57,49 +58,29 @@ const productsData: Product[] = [
     category: 'Dairy',
   },
   {
-    id: 1,
-    name: 'Organic Apples',
-    description: 'High-quality organic apples sourced from local farms.',
-    image: '/assets/products/apple.jpg',
-    rating: 4.5,
-    owner: 'John Doe',
-    price: 3.5,
-    category: 'Fruits',
-  },
-  {
-    id: 2,
-    name: 'Fresh Tomatoes',
-    description: 'Juicy and ripe tomatoes available in bulk.',
-    image: '/assets/products/tomato.jpg',
-    rating: 4.2,
-    owner: 'Jane Smith',
-    price: 2.0,
-    category: 'Vegetables',
-  },
-  {
-    id: 3,
-    name: 'Whole Grain Wheat',
-    description: 'Premium quality wheat harvested from sustainable farms.',
-    image: '/assets/products/wheat.jpg',
-    rating: 4.8,
-    owner: 'Alice Johnson',
-    price: 1.5,
-    category: 'Grains',
-  },
-  {
-    id: 4,
-    name: 'Fresh Milk',
-    description: 'Organic and fresh milk directly from local dairy farms.',
-    image: '/assets/products/milk.jpg',
-    rating: 4.7,
-    owner: 'Bob Brown',
-    price: 1.2,
+    id: 5,
+    name: 'Free-Range Eggs',
+    description: 'Farm-fresh eggs from free-range chickens.',
+    image: '/assets/products/eggs.jpg',
+    rating: 4.9,
+    owner: 'Emily Davis',
+    price: 2.5,
     category: 'Dairy',
   },
-  // Add more products as needed
+  {
+    id: 6,
+    name: 'Local Honey',
+    description: 'Natural honey harvested from local beekeepers.',
+    image: '/assets/products/honey.jpg',
+    rating: 4.6,
+    owner: 'Michael Lee',
+    price: 6.0,
+    category: 'Sweeteners',
+  },
 ];
 
 export default function BrowseProducts() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
@@ -109,6 +90,10 @@ export default function BrowseProducts() {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
+  };
+
+  const handleViewDetails = (id: number) => {
+    router.push(`/product-details?id=${id}`);
   };
 
   const filteredProducts = productsData.filter((product) => {
@@ -126,7 +111,7 @@ export default function BrowseProducts() {
 
   return (
     <div className="bg-sky-100 min-h-screen flex flex-col">
-      <Header /> {/* Include Header Component */}
+      <Header />
       <ScrollAnimationWrapper>
       {/* Search bar section */}
       <div className="max-w-7xl mx-auto mt-24 px-4 sm:px-6 lg:px-8">
@@ -143,6 +128,7 @@ export default function BrowseProducts() {
               <option value="Vegetables">Vegetables</option>
               <option value="Grains">Grains</option>
               <option value="Dairy">Dairy</option>
+              <option value="Sweeteners">Sweeteners</option>
               {/* Add more categories as needed */}
             </select>
             <input
@@ -197,7 +183,10 @@ export default function BrowseProducts() {
                 <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition-colors duration-300">
                   Add to Cart
                 </button>
-                <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">
+                <button
+                  className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
+                  onClick={() => handleViewDetails(product.id)}
+                >
                   View Details
                 </button>
                 <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">
@@ -208,8 +197,8 @@ export default function BrowseProducts() {
           ))}
         </div>
       </main>
-     </ScrollAnimationWrapper>
-      <Footer /> {/* Include Footer Component */}
+      </ScrollAnimationWrapper>
+      <Footer />
     </div>
   );
 }

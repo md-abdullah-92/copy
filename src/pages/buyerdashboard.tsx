@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
+// Define a User interface for typing the logged-in user details
 interface User {
   name: string;
   role: string;
@@ -17,7 +18,7 @@ interface User {
 }
 
 export default function BuyerDashboard() {
-  // State to manage the purchased products and orders
+  // State for storing purchased products
   const [purchasedProducts, setPurchasedProducts] = useState([
     {
       id: 1,
@@ -33,6 +34,7 @@ export default function BuyerDashboard() {
     },
   ]);
 
+  // State for storing orders
   const [orders, setOrders] = useState([
     {
       id: 1,
@@ -48,15 +50,25 @@ export default function BuyerDashboard() {
     },
   ]);
 
-  // Simulating a logged-in user
+  // Mock data for the logged-in user
   const loggedInUser: User = {
     name: 'Jane Doe',
     role: 'Buyer',
     email: 'jane.doe@example.com',
   };
 
+  // State to manage the visibility of the sign-out confirmation modal
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+
+  // Function to handle sign-out logic
+  const handleSignOut = () => {
+    localStorage.removeItem('token'); // Remove the token from local storage
+    window.location.href = '/'; // Redirect the user to the homepage
+  };
+
   return (
     <Layout>
+      {/* Dashboard Container */}
       <div className="min-h-screen bg-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -72,7 +84,10 @@ export default function BuyerDashboard() {
                 <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
                   Manage Account
                 </button>
-                <button className="mt-4 w-full py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300 flex items-center justify-center">
+                <button
+                  className="mt-4 w-full py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300 flex items-center justify-center"
+                  onClick={() => setShowSignOutConfirm(true)}
+                >
                   <FaSignOutAlt className="mr-2" />
                   Sign Out
                 </button>
@@ -159,35 +174,46 @@ export default function BuyerDashboard() {
                   ))}
                 </div>
               </section>
+{/* Browse Products Section */}
+<section
+  id="browse"
+  className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
+>
+  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+    Browse Products
+  </h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    {/* Example product cards */}
+    <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
+      <img
+        src="/path/to/sample-product.jpg"
+        alt="Sample Product"
+        className="w-full h-auto rounded-lg shadow-md"
+      />
+      <h3 className="text-lg font-semibold text-gray-700 mt-4">
+        Sample Product
+      </h3>
+      <p className="text-gray-600 mt-2">
+        Description of the sample product.
+      </p>
+      <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+  
+  {/* Centered 'See More' Button */}
+<div className="flex justify-center mt-6">
+  <a
+    href="/BrowseProducts"
+    className="py-2 px-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 text-center"
+  >
+    See More
+  </a>
+</div>
 
-              {/* Browse Products Section */}
-              <section
-                id="browse"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Browse Products
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Example product cards can be added here */}
-                  <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                    <img
-                      src="/path/to/sample-product.jpg"
-                      alt="Sample Product"
-                      className="w-full h-auto rounded-lg shadow-md"
-                    />
-                    <h3 className="text-lg font-semibold text-gray-700 mt-4">
-                      Sample Product
-                    </h3>
-                    <p className="text-gray-600 mt-2">
-                      Description of the sample product.
-                    </p>
-                    <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </section>
+</section>
+
 
               {/* Orders Section */}
               <section
@@ -221,10 +247,10 @@ export default function BuyerDashboard() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Favorites
                 </h2>
-                {/* List of favorite products can be added here */}
+                {/* Example of no favorites */}
                 <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
                   <p className="text-gray-600">
-                    You haven't added any products to your favorites yet.
+                    You have not added any products to your favorites yet.
                   </p>
                 </div>
               </section>
@@ -238,16 +264,40 @@ export default function BuyerDashboard() {
                   Payment Methods
                 </h2>
                 <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                  <p className="text-gray-600">No payment methods added yet.</p>
-                  <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
-                    Add Payment Method
-                  </button>
+                  <p className="text-gray-600">
+                    You have not added any payment methods yet.
+                  </p>
                 </div>
               </section>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Sign-Out Confirmation Modal */}
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Are you sure you want to sign out?
+            </h2>
+            <div className="flex justify-end space-x-4">
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                onClick={() => setShowSignOutConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }
