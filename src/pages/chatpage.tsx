@@ -50,12 +50,14 @@ export default function ChatPage() {
         {
           id: 1,
           sender: 'farmer',
+          receiber: 'buyer',
           text: 'Hi there! Are you looking for tomatoes?',
           time: '2:00 PM',
         },
         {
           id: 2,
           sender: 'buyer',
+          receiber: 'farmer',
           text: 'Yes, I need 50kg of organic tomatoes.',
           time: '2:10 PM',
         },

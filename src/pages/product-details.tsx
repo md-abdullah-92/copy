@@ -35,11 +35,26 @@ const productsData: Product[] = [
   // ... other products
 ];
 
+const initialComments: Comment[] = [
+  {
+    id: 1,
+    name: 'Alice Johnson',
+    text: 'These apples are amazing! They are so fresh and juicy. Definitely will buy again!',
+    date: '08/13/2024',
+  },
+  {
+    id: 2,
+    name: 'Mark Spencer',
+    text: 'The quality is top-notch, and the price is very reasonable. Highly recommend!',
+    date: '08/14/2024',
+  },
+];
+
 const ProductDetails: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
   const [product, setProduct] = useState<Product | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState<string>('');
   const [name, setName] = useState<string>('');
 
@@ -69,25 +84,28 @@ const ProductDetails: React.FC = () => {
   }
 
   return (
-    <div className="bg-sky-100 min-h-screen flex flex-col">
+    <div className="bg-sky-200 min-h-screen flex flex-col">
       <Header />
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 flex-grow space-y-10">
-        <div className="bg-light-green-300 rounded-lg shadow-lg overflow-hidden mt-10">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-64 object-cover"
-          />
-          <div className="p-6">
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-gray-700 mt-4">{product.description}</p>
-            <p className="text-gray-800 font-bold mt-6">${product.price.toFixed(2)}</p>
-            <div className="flex items-center mt-4">
-              <p className="text-yellow-500 mr-2">{product.rating} ⭐</p>
-              <span className="text-sm text-gray-500">({product.rating})</span>
+        {/* Space before product details card view */}
+        <div className="mt-20">
+          <div className="bg-green-100 rounded-lg shadow-lg overflow-hidden">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-64 object-cover"
+            />
+            <div className="p-6">
+              <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+              <p className="text-gray-700 mt-4">{product.description}</p>
+              <p className="text-gray-800 font-bold mt-6">${product.price.toFixed(2)}</p>
+              <div className="flex items-center mt-4">
+                <p className="text-yellow-500 mr-2">{product.rating} ⭐</p>
+                <span className="text-sm text-gray-500">({product.rating})</span>
+              </div>
+              <p className="text-gray-700 mt-4"><strong>Owner:</strong> {product.owner}</p>
+              <p className="text-gray-700"><strong>Category:</strong> {product.category}</p>
             </div>
-            <p className="text-gray-700 mt-4"><strong>Owner:</strong> {product.owner}</p>
-            <p className="text-gray-700"><strong>Category:</strong> {product.category}</p>
           </div>
         </div>
 
@@ -96,7 +114,7 @@ const ProductDetails: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Comments</h2>
           <div className="space-y-6">
             {comments.map((comment) => (
-              <div key={comment.id} className="bg-light-green-300 p-4 rounded-lg shadow-sm">
+              <div key={comment.id} className="bg-green-100 p-4 rounded-lg shadow-sm">
                 <div className="flex justify-between items-center">
                   <h4 className="text-lg font-semibold text-gray-900">{comment.name}</h4>
                   <span className="text-sm text-gray-500">{comment.date}</span>
@@ -107,7 +125,7 @@ const ProductDetails: React.FC = () => {
           </div>
 
           {/* Add Comment Form */}
-          <div className="mt-10 bg-light-green-300 p-6 rounded-lg shadow-md">
+          <div className="mt-10 bg-green-100 p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-4 text-gray-900">Leave a Comment</h3>
             <input
               type="text"

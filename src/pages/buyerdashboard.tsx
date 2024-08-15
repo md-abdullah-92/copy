@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   FaUserCircle,
   FaShoppingCart,
@@ -10,15 +11,48 @@ import {
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
-// Define a User interface for typing the logged-in user details
 interface User {
   name: string;
   role: string;
   email: string;
 }
 
+const productsData = [
+  {
+    id: 1,
+    name: 'Organic Apples',
+    description: 'High-quality organic apples sourced from local farms.',
+    image: '/assets/products/apple.jpg',
+    rating: 4.5,
+    owner: 'John Doe',
+    price: 3.5,
+    category: 'Fruits',
+  },
+  {
+    id: 5,
+    name: 'Free-Range Eggs',
+    description: 'Farm-fresh eggs from free-range chickens.',
+    image: '/assets/products/eggs.jpg',
+    rating: 4.9,
+    owner: 'Emily Davis',
+    price: 2.5,
+    category: 'Dairy',
+  },
+  {
+    id: 6,
+    name: 'Local Honey',
+    description: 'Natural honey harvested from local beekeepers.',
+    image: '/assets/products/honey.jpg',
+    rating: 4.6,
+    owner: 'Michael Lee',
+    price: 6.0,
+    category: 'Sweeteners',
+  },
+];
+
 export default function BuyerDashboard() {
-  // State for storing purchased products
+  const router = useRouter();
+
   const [purchasedProducts, setPurchasedProducts] = useState([
     {
       id: 1,
@@ -34,7 +68,6 @@ export default function BuyerDashboard() {
     },
   ]);
 
-  // State for storing orders
   const [orders, setOrders] = useState([
     {
       id: 1,
@@ -50,29 +83,46 @@ export default function BuyerDashboard() {
     },
   ]);
 
-  // Mock data for the logged-in user
+  const [cart, setCart] = useState<any[]>([]);
+
   const loggedInUser: User = {
     name: 'Jane Doe',
     role: 'Buyer',
     email: 'jane.doe@example.com',
   };
 
-  // State to manage the visibility of the sign-out confirmation modal
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
-  // Function to handle sign-out logic
+  const addToCart = (product: any) => {
+    setCart([...cart, product]);
+    alert(`${product.name} has been added to your cart.`);
+  };
+
+  const handleViewDetails = (id: number) => {
+    router.push(`/product-details?id=${id}`);
+  };
+
   const handleSignOut = () => {
-    localStorage.removeItem('token'); // Remove the token from local storage
-    window.location.href = '/'; // Redirect the user to the homepage
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
+
+  const handleSeeMore = () => {
+    router.push('/BrowseProducts'); // Navigate to the page showing all products
+  };
+
+  // Move removeFromCart inside the component
+  const removeFromCart = (index: number) => {
+    const updatedCart = cart.filter((_, i) => i !== index);
+    setCart(updatedCart);
+    alert('Item removed from cart.');
   };
 
   return (
     <Layout>
-      {/* Dashboard Container */}
       <div className="min-h-screen bg-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Sidebar */}
             <div className="bg-white rounded-xl shadow-lg p-6 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <div className="flex flex-col items-center">
                 <FaUserCircle className="text-7xl text-green-600" />
@@ -139,13 +189,20 @@ export default function BuyerDashboard() {
                       Payment Methods
                     </a>
                   </li>
+                  <li>
+                    <a
+                      href="#cart"
+                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                    >
+                      <FaShoppingCart className="mr-3" />
+                      Cart
+                    </a>
+                  </li>
                 </ul>
               </nav>
             </div>
 
-            {/* Main Content */}
             <div className="md:col-span-3 space-y-8">
-              {/* Purchased Products Section */}
               <section
                 id="purchased"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
@@ -174,53 +231,61 @@ export default function BuyerDashboard() {
                   ))}
                 </div>
               </section>
-{/* Browse Products Section */}
-<section
-  id="browse"
-  className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
->
-  <h2 className="text-2xl font-bold text-gray-900 mb-6">
-    Browse Products
-  </h2>
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-    {/* Example product cards */}
-    <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-      <img
-        src="/path/to/sample-product.jpg"
-        alt="Sample Product"
-        className="w-full h-auto rounded-lg shadow-md"
-      />
-      <h3 className="text-lg font-semibold text-gray-700 mt-4">
-        Sample Product
-      </h3>
-      <p className="text-gray-600 mt-2">
-        Description of the sample product.
-      </p>
-      <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
-        Add to Cart
-      </button>
-    </div>
-  </div>
-  
-  {/* Centered 'See More' Button */}
-<div className="flex justify-center mt-6">
-  <a
-    href="/BrowseProducts"
-    className="py-2 px-4 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 text-center"
-  >
-    See More
-  </a>
-</div>
 
-</section>
+              <section
+                id="browse"
+                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
+              >
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Browse Products
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {productsData.map((product) => (
+                    <div
+                      key={product.id}
+                      className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
+                    >
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-auto rounded-lg shadow-md"
+                      />
+                      <h3 className="text-lg font-semibold text-gray-700 mt-4">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-600 mt-2">
+                        {product.description}
+                      </p>
+                      <button
+                        className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+                        onClick={() => addToCart(product)}
+                      >
+                        Add to Cart
+                      </button>
+                      <button
+                        className="mt-4 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+                        onClick={() => handleViewDetails(product.id)}
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  className="mt-8 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+                  onClick={handleSeeMore}
+                >
+                  See More
+                </button>
+              </section>
 
-
-              {/* Orders Section */}
               <section
                 id="orders"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Orders</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Orders
+                </h2>
                 <div className="grid grid-cols-1 gap-6">
                   {orders.map((order) => (
                     <div
@@ -228,18 +293,15 @@ export default function BuyerDashboard() {
                       className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
                     >
                       <h3 className="text-lg font-semibold text-gray-700">
-                        Order #{order.id}
+                        {order.product}
                       </h3>
-                      <p className="text-gray-600 mt-2">
-                        {order.quantity}kg of {order.product} - Status:{' '}
-                        {order.status}
-                      </p>
+                      <p className="text-gray-600 mt-2">Quantity: {order.quantity}</p>
+                      <p className="text-gray-600 mt-2">Status: {order.status}</p>
                     </div>
                   ))}
                 </div>
               </section>
 
-              {/* Favorites Section */}
               <section
                 id="favorites"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
@@ -247,15 +309,9 @@ export default function BuyerDashboard() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Favorites
                 </h2>
-                {/* Example of no favorites */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                  <p className="text-gray-600">
-                    You have not added any products to your favorites yet.
-                  </p>
-                </div>
+                <div className="text-gray-600">No favorites added yet.</div>
               </section>
 
-              {/* Payment Methods Section */}
               <section
                 id="payments"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
@@ -263,41 +319,66 @@ export default function BuyerDashboard() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Payment Methods
                 </h2>
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                  <p className="text-gray-600">
-                    You have not added any payment methods yet.
-                  </p>
-                </div>
+                <div className="text-gray-600">No payment methods added yet.</div>
+              </section>
+
+              <section
+                id="cart"
+                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
+              >
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Cart</h2>
+                {cart.length > 0 ? (
+                  cart.map((product, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-4 bg-gray-100 rounded-lg mb-4"
+                    >
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-700">
+                          {product.name}
+                        </h3>
+                        <p className="text-gray-600">{product.description}</p>
+                      </div>
+                      <button
+                        onClick={() => removeFromCart(index)}
+                        className="text-red-600 hover:text-red-800 transition-colors duration-300"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-600">Your cart is empty.</p>
+                )}
               </section>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Sign-Out Confirmation Modal */}
-      {showSignOutConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Are you sure you want to sign out?
-            </h2>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                onClick={() => setShowSignOutConfirm(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </button>
+        {showSignOutConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg p-8 shadow-lg">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Are you sure you want to sign out?
+              </h3>
+              <div className="flex space-x-4">
+                <button
+                  onClick={handleSignOut}
+                  className="py-2 px-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300"
+                >
+                  Yes, Sign Out
+                </button>
+                <button
+                  onClick={() => setShowSignOutConfirm(false)}
+                  className="py-2 px-4 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-300"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </Layout>
   );
 }
