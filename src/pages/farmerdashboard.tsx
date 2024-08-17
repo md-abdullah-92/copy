@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   FaUserCircle,
   FaTractor,
@@ -13,7 +14,7 @@ import {
 import Layout from '@/components/Layout/Layout';
 
 export default function DashboardProfile() {
-  // State to manage the product list
+  const router = useRouter();
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -37,6 +38,8 @@ export default function DashboardProfile() {
     image: '',
   });
 
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+
   const handleEditClick = (id) => {
     setProducts(
       products.map((product) =>
@@ -51,7 +54,6 @@ export default function DashboardProfile() {
         product.id === id ? { ...product, isEditing: false } : product
       )
     );
-    // Update the product list with the new details
   };
 
   const handleInputChange = (e, id) => {
@@ -81,7 +83,12 @@ export default function DashboardProfile() {
       isEditing: false,
     };
     setProducts([...products, newProductWithId]);
-    setNewProduct({ name: '', description: '', image: '' }); // Reset form
+    setNewProduct({ name: '', description: '', image: '' });
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
   };
 
   return (
@@ -100,7 +107,10 @@ export default function DashboardProfile() {
                 <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
                   Edit Profile
                 </button>
-                <button className="mt-4 w-full py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300 flex items-center justify-center">
+                <button
+                  className="mt-4 w-full py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300 flex items-center justify-center"
+                  onClick={() => setShowSignOutConfirm(true)}
+                >
                   <FaSignOutAlt className="mr-2" />
                   Sign Out
                 </button>
@@ -228,20 +238,20 @@ export default function DashboardProfile() {
                         </>
                       ) : (
                         <>
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-gray-700 mt-2">
-                            {product.description}
-                          </p>
                           <img
                             src={product.image}
                             alt={product.name}
-                            className="mt-4 w-full h-40 object-cover rounded-lg"
+                            className="w-full h-40 object-cover rounded-lg mb-4"
                           />
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm text-gray-700">
+                            {product.description}
+                          </p>
                           <button
                             onClick={() => handleEditClick(product.id)}
-                            className="mt-4 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center"
+                            className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 flex items-center justify-center"
                           >
                             <FaEdit className="mr-2" />
                             Edit
@@ -252,11 +262,11 @@ export default function DashboardProfile() {
                   ))}
                 </div>
 
-                {/* Add New Product */}
-                <div className="mt-8 bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                {/* Add New Product Form */}
+                <div className="mt-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
                     Add New Product
-                  </h3>
+                  </h2>
                   <input
                     type="text"
                     name="name"
@@ -300,45 +310,36 @@ export default function DashboardProfile() {
                   </button>
                 </div>
               </section>
-              {/* Orders Section */}
-              <section
-                id="orders"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Orders</h2>
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                  <h3 className="text-lg font-semibold text-gray-700">
-                    Order #12345
-                  </h3>
-                  <p className="text-gray-600 mt-2">
-                    50kg of Organic Apples - Status: Shipped
-                  </p>
-                </div>
-                {/* Additional orders can be listed here */}
-              </section>
-
-              {/* Messages Section */}
-              <section
-                id="messages"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Messages
-                </h2>
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300">
-                  <h3 className="text-lg font-semibold text-gray-700">
-                    Message from Buyer
-                  </h3>
-                  <p className="text-gray-600 mt-2">
-                    Inquiry about the availability of fresh tomatoes.
-                  </p>
-                </div>
-                {/* Additional messages can be listed here */}
-              </section>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Sign Out Confirmation Modal */}
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg p-8 shadow-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">Confirm Sign Out</h2>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to sign out?
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={handleSignOut}
+                className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300"
+              >
+                Yes, Sign Out
+              </button>
+              <button
+                onClick={() => setShowSignOutConfirm(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition-colors duration-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

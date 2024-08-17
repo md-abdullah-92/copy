@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { useEffect } from 'react';
 import {
   FaUserCircle,
   FaShoppingCart,
@@ -13,82 +12,34 @@ import {
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
-interface User {
-  name: string;
-  role: string;
-  email: string;
-}
-
-const productsData = [
-  {
-    id: 1,
-    name: 'Organic Apples',
-    description: 'High-quality organic apples sourced from local farms.',
-    image: '/assets/products/apple.jpg',
-    rating: 4.5,
-    owner: 'John Doe',
-    price: 3.5,
-    category: 'Fruits',
-  },
-  {
-    id: 5,
-    name: 'Free-Range Eggs',
-    description: 'Farm-fresh eggs from free-range chickens.',
-    image: '/assets/products/eggs.jpg',
-    rating: 4.9,
-    owner: 'Emily Davis',
-    price: 2.5,
-    category: 'Dairy',
-  },
-  {
-    id: 6,
-    name: 'Local Honey',
-    description: 'Natural honey harvested from local beekeepers.',
-    image: '/assets/products/honey.jpg',
-    rating: 4.6,
-    owner: 'Michael Lee',
-    price: 6.0,
-    category: 'Sweeteners',
-  },
-];
-
 export default function BuyerDashboard() {
-  const [profile, setProfiles] = useState<any>(null);
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '' });
+  const [profile, setProfile] = useState<any>(null);
+  const [loggedInUser, setLoggedInUser] = useState<any>(null); // State to store logged-in user data
   const router = useRouter();
 
-  //const [profiles, setProfiles] = useState<{ name: string }[]>([]);
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-    } else {
-      const getData = async () => {
-        try {
-          const res = await axios.get('/api/getone', {
-            headers: {
-              Authorization: `${token}`,
-            },
-          });
-          const profiles = res.data;
-          console.log(profiles);
-          setProfiles(profiles);
-          setProfiles(res.data);
-          setLoggedInUser({
-            name: res.data.name,
-            role: res.data.role,
-            email: res.data.email,
-          });
-        } catch (err) {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-        }
-      };
-      getData();
-    }
-  }, []);
-  
+    const fetchBuyerProfile = async () => {
+      try {
+        const res = await axios.get('/api/profiles?role=buyer', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming token is stored in localStorage
+          },
+        });
+        setProfile(res.data);
+        setLoggedInUser({
+          name: res.data.name,
+          role: res.data.role,
+          email: res.data.email,
+        });
+      } catch (err) {
+        console.error('Error fetching buyer profile:', err);
+        router.push('/login'); // Redirect to login if user is not authenticated
+      }
+    };
 
+    fetchBuyerProfile();
+  }, [router]);
 
   const [purchasedProducts, setPurchasedProducts] = useState([
     {
@@ -119,11 +70,24 @@ export default function BuyerDashboard() {
       status: 'Shipped',
     },
   ]);
-
-  const [cart, setCart] = useState<any[]>([]);
-
+  const productsData = [
+    {
+      id: 1,
+      name: 'Product 1',
+      description: 'Description of Product 1',
+      image: '/path/to/image1.jpg',
+    },
+    {
+      id: 2,
+      name: 'Product 2',
+      description: 'Description of Product 2',
+      image: '/path/to/image2.jpg',
+    },
+    // Add more products as needed
+  ];
   
 
+  const [cart, setCart] = useState<any[]>([]);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
   const addToCart = (product: any) => {
@@ -144,7 +108,6 @@ export default function BuyerDashboard() {
     router.push('/BrowseProducts'); // Navigate to the page showing all products
   };
 
-  // Move removeFromCart inside the component
   const removeFromCart = (index: number) => {
     const updatedCart = cart.filter((_, i) => i !== index);
     setCart(updatedCart);
@@ -159,11 +122,15 @@ export default function BuyerDashboard() {
             <div className="bg-white rounded-xl shadow-lg p-6 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <div className="flex flex-col items-center">
                 <FaUserCircle className="text-7xl text-green-600" />
-                <h2 className="text-2xl font-bold text-gray-900 mt-4">
-                  {loggedInUser.name}
-                </h2>
-                <p className="text-sm text-gray-600">{loggedInUser.role}</p>
-                <p className="text-xs text-gray-500">{loggedInUser.email}</p>
+                {loggedInUser && (
+                  <>
+                    <h2 className="text-2xl font-bold text-gray-900 mt-4">
+                      {loggedInUser.name}
+                    </h2>
+                    <p className="text-sm text-gray-600">{loggedInUser.role}</p>
+                    <p className="text-xs text-gray-500">{loggedInUser.email}</p>
+                  </>
+                )}
                 <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
                   Manage Account
                 </button>
@@ -295,31 +262,25 @@ export default function BuyerDashboard() {
                       >
                         Add to Cart
                       </button>
-                      <button
-                        className="mt-4 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-                        onClick={() => handleViewDetails(product.id)}
-                      >
-                        View Details
-                      </button>
                     </div>
                   ))}
                 </div>
-                <button
-                  className="mt-8 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-                  onClick={handleSeeMore}
-                >
-                  See More
-                </button>
+                <div className="flex justify-center mt-6">
+                  <button
+                    className="py-2 px-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300"
+                    onClick={handleSeeMore}
+                  >
+                    See More
+                  </button>
+                </div>
               </section>
 
               <section
                 id="orders"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Orders
-                </h2>
-                <div className="grid grid-cols-1 gap-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Orders</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {orders.map((order) => (
                     <div
                       key={order.id}
@@ -330,29 +291,15 @@ export default function BuyerDashboard() {
                       </h3>
                       <p className="text-gray-600 mt-2">Quantity: {order.quantity}</p>
                       <p className="text-gray-600 mt-2">Status: {order.status}</p>
+                      <button
+                        className="mt-4 w-full py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300"
+                        onClick={() => handleViewDetails(order.id)}
+                      >
+                        View Details
+                      </button>
                     </div>
                   ))}
                 </div>
-              </section>
-
-              <section
-                id="favorites"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Favorites
-                </h2>
-                <div className="text-gray-600">No favorites added yet.</div>
-              </section>
-
-              <section
-                id="payments"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Payment Methods
-                </h2>
-                <div className="text-gray-600">No payment methods added yet.</div>
               </section>
 
               <section
@@ -360,58 +307,54 @@ export default function BuyerDashboard() {
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Cart</h2>
-                {cart.length > 0 ? (
-                  cart.map((product, index) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {cart.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 bg-gray-100 rounded-lg mb-4"
+                      className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
                     >
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-700">
-                          {product.name}
-                        </h3>
-                        <p className="text-gray-600">{product.description}</p>
-                      </div>
+                      <h3 className="text-lg font-semibold text-gray-700">
+                        {item.name}
+                      </h3>
+                      <p className="text-gray-600 mt-2">{item.description}</p>
                       <button
+                        className="mt-4 w-full py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-300"
                         onClick={() => removeFromCart(index)}
-                        className="text-red-600 hover:text-red-800 transition-colors duration-300"
                       >
-                        Remove
+                        Remove from Cart
                       </button>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-gray-600">Your cart is empty.</p>
-                )}
+                  ))}
+                </div>
               </section>
             </div>
           </div>
         </div>
+      </div>
 
-        {showSignOutConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Are you sure you want to sign out?
-              </h3>
-              <div className="flex space-x-4">
-                <button
-                  onClick={handleSignOut}
-                  className="py-2 px-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300"
-                >
-                  Yes, Sign Out
-                </button>
-                <button
-                  onClick={() => setShowSignOutConfirm(false)}
-                  className="py-2 px-4 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-300"
-                >
-                  Cancel
-                </button>
-              </div>
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p className="text-lg font-semibold text-gray-700 mb-4">
+              Are you sure you want to sign out?
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button
+                className="py-2 px-4 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-300"
+                onClick={handleSignOut}
+              >
+                Yes, Sign Out
+              </button>
+              <button
+                className="py-2 px-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-300"
+                onClick={() => setShowSignOutConfirm(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </Layout>
   );
 }

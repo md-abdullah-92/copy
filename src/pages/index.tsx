@@ -5,12 +5,29 @@ import Layout from '../components/Layout/Layout';
 import { useEffect } from 'react';
 
 export default function Home() {
+ 
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      window.location.href = '/profiles';
-    }
+    const func = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role'); // Get the role from localStorage
+        console.log({ token, role });
+        if (token) {
+          if (role === 'buyer') {
+            window.location.href = '/buyerdashboard';
+
+          } else if (role === 'farmer') {
+            window.location.href = '/farmerdashboard';
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    func();
   }, []);
+
 
   return (
     <>

@@ -22,19 +22,19 @@ export default function AuthenticationTitle() {
     },
   });
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const [email, password, role] = event.target as any;
-    const values = {
-      email: email.value,
-      password: password.value,
-      role: role.value, // include the selected role
-    };
+  const onSubmit = async (values: { email: string; password: string; role: string }) => {
     try {
       const res = await axios.post('/api/login', values);
       const { token } = res.data;
       localStorage.setItem('token', token);
-      window.location.href = '/profiles';
+      localStorage.setItem('role', values.role); // Store the role in localStorage
+
+      // Redirect based on the role
+      if (values.role === 'buyer') {
+        window.location.href = '/buyerdashboard';
+      } else if (values.role === 'farmer') {
+        window.location.href = '/farmerdashboard';
+      }
     } catch (err) {
       alert('Error');
       console.log(err);
@@ -45,8 +45,15 @@ export default function AuthenticationTitle() {
     const func = async () => {
       try {
         const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role'); // Get the role from localStorage
+        console.log({ token, role });
         if (token) {
-          window.location.href = '/profiles';
+          if (role === 'buyer') {
+            window.location.href = '/buyerdashboard';
+
+          } else if (role === 'farmer') {
+            window.location.href = '/farmerdashboard';
+          }
         }
       } catch (err) {
         console.log(err);
@@ -59,8 +66,7 @@ export default function AuthenticationTitle() {
     <>
       <Head>
         <title>Sign In | AgriBazaar</title>
-           {/* Update this line to use logo.png from assets */}
-           <link rel="icon" href="/assets/logo.png" />
+        <link rel="icon" href="/assets/logo.png" />
       </Head>
       <Layout>
         <div
@@ -94,7 +100,7 @@ export default function AuthenticationTitle() {
                   Create an account
                 </button>
               </p>
-              <form onSubmit={(values) => onSubmit(values)}>
+              <form onSubmit={form.onSubmit(onSubmit)}>
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-semibold text-green-900 mb-2">
@@ -102,6 +108,7 @@ export default function AuthenticationTitle() {
                     </label>
                     <input
                       type="email"
+                      {...form.getInputProps('email')}
                       className="block w-full border border-green-400 rounded-md px-4 py-2 text-green-900 focus:border-green-600 focus:ring-2 focus:ring-green-600"
                       placeholder="you@agribazaar.com"
                       required
@@ -113,6 +120,7 @@ export default function AuthenticationTitle() {
                     </label>
                     <input
                       type="password"
+                      {...form.getInputProps('password')}
                       className="block w-full border border-green-400 rounded-md px-4 py-2 text-green-900 focus:border-green-600 focus:ring-2 focus:ring-green-600"
                       placeholder="Your password"
                       required
@@ -123,8 +131,8 @@ export default function AuthenticationTitle() {
                       Role
                     </label>
                     <select
+                      {...form.getInputProps('role')}
                       className="block w-full border border-green-400 rounded-md px-4 py-2 text-green-900 focus:border-green-600 focus:ring-2 focus:ring-green-600"
-                      defaultValue="Select Role"
                       required
                     >
                       <option value="buyer">Buyer</option>
@@ -133,10 +141,7 @@ export default function AuthenticationTitle() {
                   </div>
                   <div className="mt-8">
                     <Center>
-                      <ButtonPrimary
-                        type="submit"
-                      
-                      >
+                      <ButtonPrimary type="submit">
                         Log in
                       </ButtonPrimary>
                     </Center>

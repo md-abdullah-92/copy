@@ -1,64 +1,81 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-
 import axios from 'axios';
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
   const method = req.method;
-  console.log({ method })
+  console.log({ method });
+
   switch (method) {
     case 'GET':
-      const resData = await axios.get(
-        process.env.USER_SERVICE_BASEURL + '/api/profile',
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: req.headers.authorization,
-          },
-        }
-      );
-      const profiles = resData.data;
-      res.status(200).json(profiles);
-      break;
-    case 'POST':
-      const { name, age, gender } = req.body;
-      const body = {
-        name: name,
-        age: age,
-        gender: gender,
-      };
-      const url = process.env.USER_SERVICE_BASEURL + '/api/profile';
-      try {
-        const axiosRes = await axios.post(url, body, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: req.headers.authorization,
-          },
-        });
-        const profiles = axiosRes.data;
-        res.status(201).json(profiles);
-      } catch (err) {
-        console.log(err);
-        res.status(500).end();
-      }
+      // Extract role from query parameters and ensure unique variable names
+      const queryRole = req.query.role as string | undefined;
+      const getUrl = `http://localhost:8080/api/profile${queryRole ? `?role=${queryRole}` : ''}`;
 
-      break;
-    case 'PUT':
-     console.log("Here profile");
-      const putUrl = process.env.USER_SERVICE_BASEURL + '/api/profile/update';
       try {
-        const axiosRes = await axios.put(putUrl, req.body, {
+        const resData = await axios.get(getUrl, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: req.headers.authorization,
           },
         });
-        const profiles = axiosRes.data;
+        const profiles = resData.data;
         res.status(200).json(profiles);
       } catch (err) {
-        console.log(err);
+        console.error(err);
+        res.status(500).end();
+      }
+      break;
+
+    case 'POST':
+      // Ensure unique variable names for POST request body
+      const { name: postName, email: postEmail, role: postRole } = req.body;
+      const postBody = {
+        name: postName,
+        email: postEmail,
+        role: postRole, // Include role in the request body
+      };
+      const postUrl = process.env.USER_SERVICE_BASEURL + '/api/profile';
+
+      try {
+        const axiosRes = await axios.post(postUrl, postBody, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: req.headers.authorization,
+          },
+        });
+        const profile = axiosRes.data;
+        res.status(201).json(profile);
+      } catch (err) {
+        console.error(err);
+        res.status(500).end();
+      }
+      break;
+
+    case 'PUT':
+      // Ensure unique variable names for PUT request body
+      const { id: putId, name: putName, email: putEmail, role: putRole } = req.body;
+      const putBody = {
+        id: putId,
+        name: putName,
+        email: putEmail,
+        role: putRole, // Include role in the request body
+      };
+      const putUrl = process.env.USER_SERVICE_BASEURL + '/api/profile/update';
+
+      try {
+        const axiosRes = await axios.put(putUrl, putBody, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: req.headers.authorization,
+          },
+        });
+        const profile = axiosRes.data;
+        res.status(200).json(profile);
+      } catch (err) {
+        console.error(err);
         res.status(500).end();
       }
       break;

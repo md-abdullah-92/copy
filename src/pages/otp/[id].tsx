@@ -1,13 +1,18 @@
 import Layout from '@/components/Layout/Layout';
 import ButtonPrimary from '@/components/misc/ButtonPrimary';
+import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
+import { motion } from 'framer-motion';
 import { Center } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import axios from 'axios';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
+import React from 'react';
+import getScrollAnimation from '@/utils/getScrollAnimation';
 
 export default function OTP() {
   const router = useRouter();
+  const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
+
   const form = useForm({
     initialValues: {
       i1: '',
@@ -16,103 +21,89 @@ export default function OTP() {
       i4: '',
     },
   });
-  const onSubmit = async (values: {
-    i1: string;
-    i2: string;
-    i3: string;
-    i4: string;
-  }) => {
+
+  const onSubmit = async (values: { i1: string; i2: string; i3: string; i4: string }) => {
     const otp = values.i1 + values.i2 + values.i3 + values.i4;
     const { id } = router.query;
     try {
-      const res = await axios.post('/api/verify', { code: otp, id });
+      await axios.post('/api/verify', { code: otp, id });
       window.location.href = '/login';
     } catch (err) {
       alert('Error');
       console.log(err);
     }
   };
+
   const resendCode = async () => {
     const { id } = router.query;
     try {
-      const res = await axios.post('/api/resend', { id });
+      await axios.post('/api/resend', { id });
       alert('Code sent');
     } catch (err) {
       alert('Error');
       console.log(err);
     }
   };
+
   return (
     <Layout>
       <div
         className="flex items-center justify-center"
         style={{
-          height: '89vh',
-          backgroundImage: 'url("/assets/otp.gif")', // Your background image URL
-          backgroundSize: 'auto 50%', // Auto width, full height
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'right 10px bottom',
+          height: '90vh',
+          backgroundImage: 'linear-gradient(to bottom, #e0f7fa, #b2dfdb)', // Light sky gradient
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          paddingTop: '7rem',
         }}
       >
-        <div
-          className="rounded-lg p-10 shadow-lg"
-          style={{ backgroundColor: '#FFF' }}
-        >
-          <p className="text-title mt-10 text-center">Email Verification</p>
-          <Center>
-            <div className="flex flex-row text-sm font-medium text-gray-400">
-              <p>We have sent a code to your email.</p>
-            </div>
-          </Center>
-
-          <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
-            <div className="mt-10 flex flex-col space-y-16">
-              <div className="mx-auto flex w-full flex-row items-center justify-between">
-                <div className="mx-5 h-16 w-16">
-                  <input
-                    required
-                    className="input-border-color bg-white flex h-full w-full flex-col items-center justify-center rounded-xl px-5 text-center text-lg outline-none"
-                    {...form.getInputProps('i1')}
-                  />
+        <ScrollAnimationWrapper>
+          <motion.div
+            className="mt-5 rounded-lg p-10 shadow-lg"
+            style={{
+              backgroundColor: '#f1faee', // Light green background color for the card view
+              maxWidth: '500px',
+              width: '100%',
+            }}
+            variants={scrollAnimation}
+          >
+            <h1 className="text-4xl font-bold text-green-900 text-center mb-6">
+              Email Verification
+            </h1>
+            <Center>
+              <p className="text-gray-600 mb-4">We have sent a code to your email.</p>
+            </Center>
+            <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
+              <div className="flex flex-col space-y-8">
+                <div className="flex w-full justify-between">
+                  {[...Array(4)].map((_, index) => (
+                    <input
+                      key={index}
+                      required
+                      className="input-border-color bg-white h-16 w-16 rounded-xl text-center text-lg outline-none"
+                      {...form.getInputProps(`i${index + 1}`)}
+                      style={{
+                        borderColor: '#a8dadc',
+                        backgroundColor: '#fff',
+                      }}
+                    />
+                  ))}
                 </div>
-                <div className="mx-5 h-16 w-16">
-                  <input
-                    required
-                    className="input-border-color bg-white flex h-full w-full flex-col items-center justify-center rounded-xl px-5 text-center text-lg outline-none"
-                    {...form.getInputProps('i2')}
-                  />
-                </div>
-                <div className="mx-5 h-16 w-16">
-                  <input
-                    required
-                    className="input-border-color bg-white flex h-full w-full flex-col items-center justify-center rounded-xl px-5 text-center text-lg outline-none"
-                    {...form.getInputProps('i3')}
-                  />
-                </div>
-                <div className="mx-5 h-16 w-16">
-                  <input
-                    required
-                    className="input-border-color bg-white flex h-full w-full flex-col items-center justify-center rounded-xl px-5 text-center text-lg outline-none"
-                    {...form.getInputProps('i4')}
-                  />
+                <div className="flex flex-col space-y-5">
+                  <Center>
+                    <ButtonPrimary type="submit">Verify Account</ButtonPrimary>
+                  </Center>
+                  <p className="text-dimmed text-sm text-center">
+                    Did not receive the code?{' '}
+                    <button className="text-orange-500" onClick={resendCode}>
+                      Resend code
+                    </button>
+                  </p>
                 </div>
               </div>
-
-              <div className="flex flex-col space-y-5">
-                <Center>
-                  <ButtonPrimary type="submit">Verify Account</ButtonPrimary>
-                </Center>
-
-                <p className="text-dimmed text-color mt-5 text-center text-sm">
-                  Did not receive the code?{' '}
-                  <button className="text-orange-500" onClick={resendCode}>
-                    Resend code
-                  </button>
-                </p>
-              </div>
-            </div>
-          </form>
-        </div>
+            </form>
+          </motion.div>
+        </ScrollAnimationWrapper>
       </div>
     </Layout>
   );

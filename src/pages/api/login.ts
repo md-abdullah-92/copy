@@ -10,12 +10,13 @@ export default async function handler(
     switch(method)
     {
         case 'POST':
-        const {email,password} = (req.body) ;
+        const {email,password,role} = (req.body) ;
         const body = {
             "email":email,
-            "password":password
+            "password":password,
+            "role":role
         }
-        const url = process.env.USER_SERVICE_BASEURL+"/api/user/login";
+        const url = "http://localhost:8080/api/user/login";
         try{
             const axiosRes = await axios.post(url,body,{
                 headers: {

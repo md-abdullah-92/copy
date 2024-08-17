@@ -15,7 +15,7 @@ export default async function handler(
             id:id,
             code:code
         }
-        const url = process.env.USER_SERVICE_BASEURL+"/api/user/verify";
+        const url ="http://localhost:8080/api/user/verify";
         try{
             const axiosRes = await axios.post(url,body,{
                 headers: {
