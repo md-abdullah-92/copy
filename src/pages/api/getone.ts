@@ -13,15 +13,23 @@ export default async function handler(
 
       try {
         const token = req.headers.authorization; // Get the Authorization header from the request
+        const role = req.query.role; // Get the role from query parameters
 
         if (!token) {
           return res.status(401).json({ message: "Authorization header is missing" });
+        }
+
+        if (!role) {
+          return res.status(400).json({ message: "Role parameter is missing" });
         }
 
         const axiosRes = await axios.get(url, {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token // Pass the token to the backend
+          },
+          params: {
+            role: role, // Pass the role to the backend
           }
         });
 
@@ -29,7 +37,7 @@ export default async function handler(
         res.status(200).json(user);
       } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Failed to fetch user data", error: err.message });
+        res.status(500).json({ message: "Failed to fetch user data" });
       }
       break;
     }

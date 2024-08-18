@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import Head from 'next/head';
 import { useEffect } from 'react';
 import {
   FaUserCircle,
@@ -60,7 +61,12 @@ export default function BuyerDashboard() {
   //const [profiles, setProfiles] = useState<{ name: string }[]>([]);
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // Assume role is stored in localStorage
+  
     if (!token) {
+      window.location.href = '/login';
+    } else if (!role) {
+      console.error('Role is missing');
       window.location.href = '/login';
     } else {
       const getData = async () => {
@@ -69,11 +75,13 @@ export default function BuyerDashboard() {
             headers: {
               Authorization: `${token}`,
             },
+            params: {
+              role: role, // Pass the role as a query parameter
+            },
           });
           const profiles = res.data;
           console.log(profiles);
           setProfiles(profiles);
-          setProfiles(res.data);
           setLoggedInUser({
             name: res.data.name,
             role: res.data.role,
@@ -81,12 +89,14 @@ export default function BuyerDashboard() {
           });
         } catch (err) {
           localStorage.removeItem('token');
+          localStorage.removeItem('role'); // Also remove the role if request fails
           window.location.href = '/login';
         }
       };
       getData();
     }
   }, []);
+  
   
 
 
@@ -152,6 +162,11 @@ export default function BuyerDashboard() {
   };
 
   return (
+    <>
+    <Head>
+    <title>Buyer-Profile | AgriBazaar</title>
+    <link rel="icon" href="/assets/logo.png" />
+   </Head>
     <Layout>
       <div className="min-h-screen bg-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -413,5 +428,6 @@ export default function BuyerDashboard() {
         )}
       </div>
     </Layout>
+    </>
   );
 }
