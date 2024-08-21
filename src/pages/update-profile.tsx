@@ -30,39 +30,49 @@ export default function UpdateProfile() {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const values = form.values; // Get values from useForm
-
+  
     try {
-      // Get token from local storage
+      // Get token and email from local storage
       const token = localStorage.getItem('token');
-      if (!token) {
+      const email = localStorage.getItem('email');
+  
+      if (!token || !email) {
         window.location.href = '/login';
         return;
       }
-
-      // Debugging: Log form values
+  
+      // Debugging: Log form values and email
       console.log('Form Values:', values);
-
+      console.log('Email:', email);
+  
       // Submit the form data
-      const res = await axios.put('/api/update', values, {
-        headers: {
-          Authorization: `${token}`,
-          'Content-Type': 'application/json', // Changed to JSON as no files are included in values
-        },
-      });
-
+      const res = await axios.put(
+        '/api/update', 
+        values,
+        {
+          headers: {
+           'Content-Type': 'application/json',
+            //Authorization: `Bearer ${token}`, // Include the token for authentication
+          },
+          params: {
+            email: email // Pass email as query parameter
+          }
+        }
+      );
+  
       if (res.status === 200) {
         const role = localStorage.getItem('role'); // Get the role from localStorage
-
+  
         // Debugging: Log token and role
         console.log({ token, role });
-
+  
         // Redirect based on role
         if (role === 'buyer') {
           window.location.href = '/buyerdashboard';
         } else if (role === 'farmer') {
           window.location.href = '/farmerdashboard';
         }
-
+  
       } else {
         const errorMessage = res.data.message || 'Failed to update profile';
         throw new Error(errorMessage);
@@ -73,7 +83,7 @@ export default function UpdateProfile() {
       alert('Failed to update profile: Please try again.');
     }
   };
-
+  
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
     if (file) {

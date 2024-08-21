@@ -10,36 +10,45 @@ export default async function handler(
   switch (method) {
     case 'PUT': {
       const {
-        name: putName,
-        password: putPassword,
-        gender: putGender,
-        phone: putPhone,
-        address: putAddress,
-        upazila: putUpazila,
-        zila: putZila,
-        organization: putOrganization,
+        name,
+        password,
+        gender,
+        phone,
+        address,
+        upazila,
+        zila,
+        organization,
       } = req.body;
 
-      const putBody = {
-        name: putName,
-        password: putPassword,
-        gender: putGender,
-        phone: putPhone,
-        address: putAddress,
-        upazila: putUpazila,
-        zila: putZila,
-        organization: putOrganization,
+      const updateRequestBody = {
+        name,
+        password,
+        gender,
+        phone,
+        address,
+        upazila,
+        zila,
+        organization,
       };
 
-      const putUrl = 'http://localhost:8080/api/user/update';
+      const { email } = req.query;
+      console.log('Email: in update', email);
+
+      const updateUrl = `http://localhost:8080/api/user/update`;
 
       try {
-        const axiosRes = await axios.put(putUrl, putBody, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: req.headers.authorization || '', // Include a default empty string for Authorization header
-          },
-        });
+        const axiosRes = await axios.put(
+          updateUrl, 
+          updateRequestBody, 
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {
+              email: email, // Pass email as a query parameter
+            },
+          }
+        );
 
         res.status(200).json(axiosRes.data);
       } catch (err: any) {

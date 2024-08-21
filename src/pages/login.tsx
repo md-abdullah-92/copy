@@ -27,7 +27,8 @@ export default function AuthenticationTitle() {
       const res = await axios.post('/api/login', values);
       const { token } = res.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('role', values.role); // Store the role in localStorage
+      localStorage.setItem('role', values.role);
+      localStorage.setItem('email', values.email);
 
       // Redirect based on the role
       if (values.role === 'buyer') {
