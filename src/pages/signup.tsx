@@ -12,10 +12,16 @@ export default function AuthenticationTitle() {
   const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
 
   const form = useForm({
-    initialValues: { password: '', email: '', username: '', role: 'buyer' }, // Default role is 'buyer'
+    initialValues: { 
+      password: '', 
+      email: '', 
+      name: '', 
+      role: 'buyer',
+
+    }, // Default role is 'buyer'
 
     validate: {
-      username: (value) =>
+      name: (value) =>
         value.length === 0 ? 'Please fill up the field' : null,
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
       password: (value) => (value.length < 6 ? 'Password not valid' : null),
@@ -24,9 +30,9 @@ export default function AuthenticationTitle() {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const [username, email, password, role] = event.target as any;
+    const [name, email, password, role] = event.target as any;
     const values = {
-      username: username.value,
+      name: name.value,
       email: email.value,
       password: password.value,
       role: role.value, // Include the selected role

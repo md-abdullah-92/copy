@@ -60,9 +60,10 @@ export default function BuyerDashboard() {
 
   //const [profiles, setProfiles] = useState<{ name: string }[]>([]);
   useEffect(() => {
+    
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role'); // Assume role is stored in localStorage
-  
+    
     if (!token) {
       window.location.href = '/login';
     } else if (!role) {
@@ -179,9 +180,12 @@ export default function BuyerDashboard() {
                 </h2>
                 <p className="text-sm text-gray-600">{loggedInUser.role}</p>
                 <p className="text-xs text-gray-500">{loggedInUser.email}</p>
-                <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
-                  Manage Account
-                </button>
+                <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+                 onClick={() => router.push('/update-profile')}
+                 >
+                 Manage Account
+                 </button>
+
                 <button
                   className="mt-4 w-full py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300 flex items-center justify-center"
                   onClick={() => setShowSignOutConfirm(true)}

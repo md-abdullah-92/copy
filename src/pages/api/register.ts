@@ -11,12 +11,19 @@ export default async function handler(
     switch(method)
     {
         case 'POST':
-        const {username,email,password,role} = (req.body) ;
+        const {name,email,password,role} = (req.body) ;
         const user = {
-            name:username,
+            name:name,
             email:email,
             password:password,
-            role:role
+            role:role,
+            gender:"",
+            phone:" ",
+            address:"",
+            upazile:"",
+            zila:"",
+            organization:"",
+            avatar:""
         }
         const url = "http://localhost:8080/api/user";
         try{

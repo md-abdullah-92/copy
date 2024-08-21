@@ -11,52 +11,66 @@ import getScrollAnimation from '@/utils/getScrollAnimation';
 export default function UpdateProfile() {
   const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  
+
+  // Form state management with initial values
   const form = useForm({
     initialValues: {
       name: '',
-      email: '',
       password: '',
-      role: 'buyer',
-      avatar: null,  // Updated to hold file object
       gender: '',
       phone: '',
       address: '',
-      city: '',
-      state: '',
-      country: '',
+      upazila: '', // Corrected key
+      zila: '', // Corrected key
       organization: '',
-      bio: '',
-    },
-
-    validate: {
-      name: (value) => (value.length === 0 ? 'Please fill up the field' : null),
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length < 6 ? 'Password not valid' : null),
-      phone: (value) =>
-        /^\d+$/.test(value) ? null : 'Phone number must contain only digits',
+    
     },
   });
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const values = form.values;
-
-    const formData = new FormData();
-    for (const key in values) {
-      formData.append(key, values[key]);
-    }
+    const values = form.values; // Get values from useForm
 
     try {
-      const res = await axios.post('/api/updateProfile', formData, {
+      // Get token from local storage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Debugging: Log form values
+      console.log('Form Values:', values);
+
+      // Submit the form data
+      const res = await axios.put('/api/update', values, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          Authorization: `${token}`,
+          'Content-Type': 'application/json', // Changed to JSON as no files are included in values
         },
       });
-      alert('Profile updated successfully!');
+
+      if (res.status === 200) {
+        const role = localStorage.getItem('role'); // Get the role from localStorage
+
+        // Debugging: Log token and role
+        console.log({ token, role });
+
+        // Redirect based on role
+        if (role === 'buyer') {
+          window.location.href = '/buyerdashboard';
+        } else if (role === 'farmer') {
+          window.location.href = '/farmerdashboard';
+        }
+
+      } else {
+        const errorMessage = res.data.message || 'Failed to update profile';
+        throw new Error(errorMessage);
+      }
     } catch (err) {
-      alert('Error');
-      console.log(err);
+      // Error handling
+      console.error('Error updating profile:', err);
+      alert('Failed to update profile: Please try again.');
     }
   };
 
@@ -91,20 +105,19 @@ export default function UpdateProfile() {
           }}
         >
           <div
-             className="rounded-lg p-10 shadow-lg transition-transform transform hover:scale-105"
-             style={{
-               backgroundColor: '#e6f7e6',  // Light green color
-               maxWidth: '500px',
-               width: '100%',
-               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-               borderRadius: '12px',
-             }}
-           >
-
+            className="rounded-lg p-10 shadow-lg transition-transform transform hover:scale-105"
+            style={{
+              backgroundColor: '#e6f7e6',  // Light green color
+              maxWidth: '500px',
+              width: '100%',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+              borderRadius: '12px',
+            }}
+          >
             <h1 className="text-4xl font-bold text-green-900 text-center mb-6">
               Update Profile
             </h1>
-            <form onSubmit={onSubmit}>
+             <form onSubmit={onSubmit}>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
@@ -130,7 +143,6 @@ export default function UpdateProfile() {
                     {...form.getInputProps('password')}
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Avatar
@@ -147,7 +159,6 @@ export default function UpdateProfile() {
                     </div>
                   )}
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Gender
@@ -162,7 +173,6 @@ export default function UpdateProfile() {
                     <option value="Other">Other</option>
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Phone
@@ -174,7 +184,6 @@ export default function UpdateProfile() {
                     {...form.getInputProps('phone')}
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Address
@@ -186,7 +195,6 @@ export default function UpdateProfile() {
                     {...form.getInputProps('address')}
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Upazila
@@ -194,11 +202,10 @@ export default function UpdateProfile() {
                   <input
                     type="text"
                     className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-300 transition"
-                    placeholder="Your city"
-                    {...form.getInputProps('city')}
+                    placeholder="Your Upazila"
+                    {...form.getInputProps('upazila')}
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Zila
@@ -206,11 +213,10 @@ export default function UpdateProfile() {
                   <input
                     type="text"
                     className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-300 transition"
-                    placeholder="Your state"
-                    {...form.getInputProps('state')}
+                    placeholder="Your Zila"
+                    {...form.getInputProps('zila')}
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Organization
@@ -222,9 +228,8 @@ export default function UpdateProfile() {
                     {...form.getInputProps('organization')}
                   />
                 </div>
-
                 <div className="mt-8 text-center">
-                  <ButtonPrimary  type="submit">
+                  <ButtonPrimary type="submit">
                     Update
                   </ButtonPrimary>
                 </div>

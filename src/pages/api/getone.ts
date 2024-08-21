@@ -42,6 +42,42 @@ export default async function handler(
       break;
     }
 
+    case 'POST': {
+      const { name, password, avatar, gender, phone, address, upazila, zila, organization } = req.body;
+    
+      const postUrl = 'http://localhost:8080/api/user/update';
+    
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('password', password);
+      if (avatar) {
+        formData.append('avatar', avatar);
+      }
+      formData.append('gender', gender);
+      formData.append('phone', phone);
+      formData.append('address', address);
+      formData.append('Upazila', upazila);
+      formData.append('Zila', zila);
+      formData.append('organization', organization);
+    
+      try {
+        const axiosRes = await axios.put(postUrl, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: req.headers.authorization,
+          },
+        });
+        const profile = axiosRes.data;
+        res.status(200).json(profile);
+      } catch (err) {
+        console.error(err);
+        res.status(500).end();
+      }
+      break;
+    }
+    
+
+
     default:
       res.status(405).json({ message: "Method not allowed" });
       break;

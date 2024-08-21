@@ -12,7 +12,7 @@
     "@emotion/react": "^11.11.4",
     "@heroicons/react": "^2.1.5",
     "@mantine/core": "^7.11.2",
-    "@mantine/form": "^7.11.2",
+    "@mantine/form": "^7.12.1",
     "@mantine/hooks": "^7.11.2",
     "@mantine/notifications": "^7.11.2",
     "@mdi/js": "^7.4.47",
@@ -33,6 +33,7 @@
     "firebase": "^10.12.3",
     "flowbite": "^2.4.1",
     "flowbite-react": "^0.10.1",
+    "formidable": "^3.5.1",
     "framer-motion": "^11.3.24",
     "html-to-text": "^9.0.5",
     "html2canvas": "^1.4.1",
@@ -64,6 +65,7 @@
     "use-react-screenshot": "^4.0.0"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
