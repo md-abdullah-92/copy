@@ -7,83 +7,96 @@ import axios from 'axios';
 import Head from 'next/head';
 import React, { useState } from 'react';
 import getScrollAnimation from '@/utils/getScrollAnimation';
+import Image from 'next/image';  // Import the Image component
 
 export default function UpdateProfile() {
   const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-  // Form state management with initial values
-  const form = useForm({
+  type FormValues = {
+    email: string;
+    name: string;
+    password: string;
+    gender: string;
+    phone: string;
+    address: string;
+    upazila: string;
+    zila: string;
+    organization: string;
+    avatar?: File | null; // Optional avatar field, can be a File or null
+  };
+  
+  const form = useForm<FormValues>({
     initialValues: {
+      email: '',
       name: '',
       password: '',
       gender: '',
       phone: '',
       address: '',
-      upazila: '', // Corrected key
-      zila: '', // Corrected key
+      upazila: '',
+      zila: '',
       organization: '',
-    
+      avatar: null, // Initialize with null
     },
   });
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const values = form.values; // Get values from useForm
-  
+    const values = form.values;
+
+    const formData = new FormData();
+    if (values.name) formData.append('name', values.name);
+    if (values.password) formData.append('password', values.password);
+    if (values.gender) formData.append('gender', values.gender);
+    if (values.phone) formData.append('phone', values.phone);
+    if (values.address) formData.append('address', values.address);
+    if (values.upazila) formData.append('upazila', values.upazila);
+    if (values.zila) formData.append('zila', values.zila);
+    if (values.organization) formData.append('organization', values.organization);
+    if (values.avatar) {
+      formData.append('avatar', values.avatar);
+    }
+
     try {
-      // Get token and email from local storage
-      const token = localStorage.getItem('token');
       const email = localStorage.getItem('email');
-  
-      if (!token || !email) {
+      console.log('email', email);
+      formData.append('email', email || '');
+      if (!email) {
         window.location.href = '/login';
         return;
       }
-  
-      // Debugging: Log form values and email
-      console.log('Form Values:', values);
-      console.log('Email:', email);
-  
-      // Submit the form data
+
       const res = await axios.put(
         '/api/update', 
-        values,
+        formData,
         {
           headers: {
-           'Content-Type': 'application/json',
-            //Authorization: `Bearer ${token}`, // Include the token for authentication
+            'Content-Type': 'multipart/form-data',
           },
           params: {
-            email: email // Pass email as query parameter
+            email: email
           }
         }
       );
-  
+
       if (res.status === 200) {
-        const role = localStorage.getItem('role'); // Get the role from localStorage
-  
-        // Debugging: Log token and role
-        console.log({ token, role });
-  
-        // Redirect based on role
+        const role = localStorage.getItem('role');
         if (role === 'buyer') {
           window.location.href = '/buyerdashboard';
         } else if (role === 'farmer') {
           window.location.href = '/farmerdashboard';
         }
-  
       } else {
         const errorMessage = res.data.message || 'Failed to update profile';
         throw new Error(errorMessage);
       }
     } catch (err) {
-      // Error handling
       console.error('Error updating profile:', err);
       alert('Failed to update profile: Please try again.');
     }
   };
-  
+
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
     if (file) {
@@ -165,7 +178,14 @@ export default function UpdateProfile() {
                   />
                   {avatarPreview && (
                     <div className="mt-4">
-                      <img src={avatarPreview} alt="Avatar Preview" className="rounded-full h-20 w-20 object-cover" />
+                      <Image 
+                        src={avatarPreview} 
+                        alt="Avatar Preview" 
+                        className="rounded-full" 
+                        height={80} 
+                        width={80} 
+                        objectFit="cover"
+                      />
                     </div>
                   )}
                 </div>
@@ -238,10 +258,8 @@ export default function UpdateProfile() {
                     {...form.getInputProps('organization')}
                   />
                 </div>
-                <div className="mt-8 text-center">
-                  <ButtonPrimary type="submit">
-                    Update
-                  </ButtonPrimary>
+                <div className="pt-4 text-center">
+                  <ButtonPrimary type="submit">Update Profile</ButtonPrimary>
                 </div>
               </div>
             </form>
