@@ -1,20 +1,19 @@
 import Layout from '@/components/Layout/Layout';
 import ButtonPrimary from '@/components/misc/ButtonPrimary';
-import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
-import { motion } from 'framer-motion';
 import { useForm } from '@mantine/form';
 import axios from 'axios';
 import Head from 'next/head';
-import React, { useState } from 'react';
-import getScrollAnimation from '@/utils/getScrollAnimation';
-import Image from 'next/image';  // Import the Image component
+import React, { useState, ChangeEvent } from 'react';
+import Image from 'next/image';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from './firebaseConfig';  // Ensure this path is correct
 
 export default function UpdateProfile() {
-  const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
 
   type FormValues = {
-    email: string;
+  //  email: string;
     name: string;
     password: string;
     gender: string;
@@ -23,12 +22,12 @@ export default function UpdateProfile() {
     upazila: string;
     zila: string;
     organization: string;
-    avatar?: File | null; // Optional avatar field, can be a File or null
+    avatar: string ; // Avatar is now a string (URL)
   };
-  
+
   const form = useForm<FormValues>({
     initialValues: {
-      email: '',
+   //   email: '',
       name: '',
       password: '',
       gender: '',
@@ -37,49 +36,58 @@ export default function UpdateProfile() {
       upazila: '',
       zila: '',
       organization: '',
-      avatar: null, // Initialize with null
+      avatar: '', // Initialize with null
     },
   });
+
+  const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    if (file) {
+      setUploading(true);
+      const storageRef = ref(storage, `images/${file.name}`);
+      try {
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        form.setFieldValue('avatar', url);  // Set the uploaded URL in the form
+        setAvatarPreview(url);  // Set preview to the uploaded URL
+      } catch (error) {
+        console.error('Error uploading the file', error);
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const values = form.values;
-
-    const formData = new FormData();
-    if (values.name) formData.append('name', values.name);
-    if (values.password) formData.append('password', values.password);
-    if (values.gender) formData.append('gender', values.gender);
-    if (values.phone) formData.append('phone', values.phone);
-    if (values.address) formData.append('address', values.address);
-    if (values.upazila) formData.append('upazila', values.upazila);
-    if (values.zila) formData.append('zila', values.zila);
-    if (values.organization) formData.append('organization', values.organization);
-    if (values.avatar) {
-      formData.append('avatar', values.avatar);
-    }
-
+  
+    const updateRequestBody = {
+      name: values.name,
+      password: values.password,
+      gender: values.gender,
+      phone: values.phone,
+      address: values.address,
+      upazila: values.upazila,
+      zila: values.zila,
+      organization: values.organization,
+      avatar: values.avatar,
+    };
+  
     try {
       const email = localStorage.getItem('email');
-      console.log('email', email);
-      formData.append('email', email || '');
       if (!email) {
         window.location.href = '/login';
         return;
       }
-
-      const res = await axios.put(
-        '/api/update', 
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          params: {
-            email: email
-          }
-        }
-      );
-
+  
+      const res = await axios.put('/api/update', updateRequestBody, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        params: { email }
+      });
+  
       if (res.status === 200) {
         const role = localStorage.getItem('role');
         if (role === 'buyer') {
@@ -88,26 +96,14 @@ export default function UpdateProfile() {
           window.location.href = '/farmerdashboard';
         }
       } else {
-        const errorMessage = res.data.message || 'Failed to update profile';
-        throw new Error(errorMessage);
+        throw new Error(res.data.message || 'Failed to update profile');
       }
     } catch (err) {
       console.error('Error updating profile:', err);
       alert('Failed to update profile: Please try again.');
     }
   };
-
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.currentTarget.files?.[0];
-    if (file) {
-      form.setFieldValue('avatar', file);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  
 
   return (
     <>
@@ -130,7 +126,7 @@ export default function UpdateProfile() {
           <div
             className="rounded-lg p-10 shadow-lg transition-transform transform hover:scale-105"
             style={{
-              backgroundColor: '#e6f7e6',  // Light green color
+              backgroundColor: '#e6f7e6',
               maxWidth: '500px',
               width: '100%',
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
@@ -140,7 +136,7 @@ export default function UpdateProfile() {
             <h1 className="text-4xl font-bold text-green-900 text-center mb-6">
               Update Profile
             </h1>
-             <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
@@ -176,14 +172,15 @@ export default function UpdateProfile() {
                     className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-300 transition"
                     onChange={handleAvatarChange}
                   />
+                  {uploading && <p>Uploading...</p>}
                   {avatarPreview && (
                     <div className="mt-4">
-                      <Image 
-                        src={avatarPreview} 
-                        alt="Avatar Preview" 
-                        className="rounded-full" 
-                        height={80} 
-                        width={80} 
+                      <Image
+                        src={avatarPreview}
+                        alt="Avatar Preview"
+                        className="rounded-full"
+                        height={80}
+                        width={80}
                         objectFit="cover"
                       />
                     </div>
@@ -254,7 +251,7 @@ export default function UpdateProfile() {
                   <input
                     type="text"
                     className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-300 transition"
-                    placeholder="Your organization"
+                    placeholder="Your Organization"
                     {...form.getInputProps('organization')}
                   />
                 </div>
