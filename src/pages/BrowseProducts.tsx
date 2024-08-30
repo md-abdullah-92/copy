@@ -1,83 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { FaSearch, FaHeart, FaShoppingCart, FaUser } from 'react-icons/fa';
+import axios from 'axios';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
 
 interface Product {
   id: number;
-  name: string;
+  productname: string;
   description: string;
   image: string;
   rating: number;
-  owner: string;
+  ownername: string;
   price: number;
   category: string;
 }
-
-const productsData: Product[] = [
-  {
-    id: 1,
-    name: 'Organic Apples',
-    description: 'High-quality organic apples sourced from local farms.',
-    image: '/assets/products/apple.jpg',
-    rating: 4.5,
-    owner: 'John Doe',
-    price: 3.5,
-    category: 'Fruits',
-  },
-  {
-    id: 2,
-    name: 'Fresh Tomatoes',
-    description: 'Juicy and ripe tomatoes available in bulk.',
-    image: '/assets/products/tomato.jpg',
-    rating: 4.2,
-    owner: 'Jane Smith',
-    price: 2.0,
-    category: 'Vegetables',
-  },
-  {
-    id: 3,
-    name: 'Whole Grain Wheat',
-    description: 'Premium quality wheat harvested from sustainable farms.',
-    image: '/assets/products/wheat.jpg',
-    rating: 4.8,
-    owner: 'Alice Johnson',
-    price: 1.5,
-    category: 'Grains',
-  },
-  {
-    id: 4,
-    name: 'Fresh Milk',
-    description: 'Organic and fresh milk directly from local dairy farms.',
-    image: '/assets/products/milk.jpg',
-    rating: 4.7,
-    owner: 'Bob Brown',
-    price: 1.2,
-    category: 'Dairy',
-  },
-  {
-    id: 5,
-    name: 'Free-Range Eggs',
-    description: 'Farm-fresh eggs from free-range chickens.',
-    image: '/assets/products/eggs.jpg',
-    rating: 4.9,
-    owner: 'Emily Davis',
-    price: 2.5,
-    category: 'Dairy',
-  },
-  {
-    id: 6,
-    name: 'Local Honey',
-    description: 'Natural honey harvested from local beekeepers.',
-    image: '/assets/products/honey.jpg',
-    rating: 4.6,
-    owner: 'Michael Lee',
-    price: 6.0,
-    category: 'Sweeteners',
-  },
-];
 
 export default function BrowseProducts() {
   const router = useRouter();
@@ -85,6 +23,28 @@ export default function BrowseProducts() {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [wishlistCount, setWishlistCount] = useState<number>(2); // Replace with your actual logic to get the count
   const [cartCount, setCartCount] = useState<number>(3); // Replace with your actual logic to get the count
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchOwnerProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/getallproduct');
+        setProducts(response.data);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOwnerProducts();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -98,12 +58,12 @@ export default function BrowseProducts() {
     router.push(`/product-details?id=${id}`);
   };
 
-  const filteredProducts = productsData.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesCategory = selectedCategory
       ? product.category === selectedCategory
       : true;
     const matchesSearchTerm =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.productname.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearchTerm;
   });
@@ -206,18 +166,18 @@ export default function BrowseProducts() {
               >
                 <img
                   src={product.image}
-                  alt={product.name}
+                  alt={product.productname}
                   className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="p-4">
                   <h2 className="text-lg font-semibold text-gray-900">
-                    {product.name}
+                    {product.productname}
                   </h2>
                   <p className="text-gray-600 mt-2 line-clamp-2">
                     {product.description}
                   </p>
                   <p className="text-gray-800 font-bold mt-2">
-                    ${product.price.toFixed(2)}
+                    ${product.price}
                   </p>
                   <div className="flex items-center mt-2">
                     <p className="text-yellow-500 mr-2">
