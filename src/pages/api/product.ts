@@ -84,17 +84,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     case 'GET': {
-      const url = "http://localhost:8080/product/allproducts";
+      const url = "http://localhost:8080/product/getproduct";
 
       try {
-        
-
+        const id = req.query.id as string;
         const axiosRes = await axios.get(url, {
           headers: {
             "Content-Type": "application/json",
          
           },
+          params: {
+            id:id, // Pass the role to the backend
+          }
         });
+
         const user = axiosRes.data;
         res.status(200).json(user);
       } catch (err) {

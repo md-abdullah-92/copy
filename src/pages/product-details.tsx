@@ -5,13 +5,20 @@ import Footer from '@/components/Layout/Footer';
 
 interface Product {
   id: number;
-  name: string;
+  productname: string;
   description: string;
   image: string;
   rating: number;
-  owner: string;
+  ownername: string;
   price: number;
   category: string;
+  onweremail: string;
+  ownerorganization: string;
+  ownerupzila: string;
+  ownerzila: string;
+  ownerdivision: string;
+  ownerphone: string;
+  quantity: number;
 }
 
 interface Comment {
@@ -21,19 +28,7 @@ interface Comment {
   date: string;
 }
 
-const productsData: Product[] = [
-  {
-    id: 1,
-    name: 'Organic Apples',
-    description: 'Premium organic apples, sourced from trusted local farms. These apples are known for their crisp texture and delightful taste.',
-    image: '/assets/products/apple.jpg',
-    rating: 4.5,
-    owner: 'John Doe',
-    price: 3.5,
-    category: 'Fruits',
-  },
-  // ... other products
-];
+
 
 const initialComments: Comment[] = [
   {
@@ -51,6 +46,7 @@ const initialComments: Comment[] = [
 ];
 
 const ProductDetails: React.FC = () => {
+  
   const router = useRouter();
   const { id } = router.query;
   const [product, setProduct] = useState<Product | null>(null);
@@ -60,8 +56,19 @@ const ProductDetails: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      const foundProduct = productsData.find((p) => p.id === Number(id));
-      setProduct(foundProduct || null);
+      // Fetch the product details from the API
+      const fetchProduct = async () => {
+        try {
+          // Replace the URL with your actual API endpoint
+          const response = await fetch(`/api/getproduct?id=${id}`);
+          const data = await response.json();
+          setProduct(data);
+        } catch (err) {
+          console.error('Error fetching product:', err);
+        }
+      };
+
+      fetchProduct();
     }
   }, [id]);
 
@@ -96,14 +103,14 @@ const ProductDetails: React.FC = () => {
               className="w-full h-64 object-cover"
             />
             <div className="p-6">
-              <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{product.productname}</h1>
               <p className="text-gray-700 mt-4">{product.description}</p>
-              <p className="text-gray-800 font-bold mt-6">${product.price.toFixed(2)}</p>
+              <p className="text-gray-800 font-bold mt-6">${product.price}</p>
               <div className="flex items-center mt-4">
                 <p className="text-yellow-500 mr-2">{product.rating} ⭐</p>
                 <span className="text-sm text-gray-500">({product.rating})</span>
               </div>
-              <p className="text-gray-700 mt-4"><strong>Owner:</strong> {product.owner}</p>
+              <p className="text-gray-700 mt-4"><strong>Owner:</strong> {product.ownername}</p>
               <p className="text-gray-700"><strong>Category:</strong> {product.category}</p>
             </div>
           </div>
