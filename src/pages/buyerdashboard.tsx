@@ -18,6 +18,7 @@ interface User {
   name: string;
   role: string;
   email: string;
+  avatar: string;
 }
 
 const productsData = [
@@ -55,7 +56,7 @@ const productsData = [
 
 export default function BuyerDashboard() {
   const [profile, setProfiles] = useState<any>(null);
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '' });
+  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '',avatarurl:'' }); 
   const router = useRouter();
 
   //const [profiles, setProfiles] = useState<{ name: string }[]>([]);
@@ -87,6 +88,8 @@ export default function BuyerDashboard() {
             name: res.data.name,
             role: res.data.role,
             email: res.data.email,
+            avatarurl: res.data.avatar,
+
           });
         } catch (err) {
           localStorage.removeItem('token');
@@ -174,7 +177,15 @@ export default function BuyerDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-white rounded-xl shadow-lg p-6 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <div className="flex flex-col items-center">
-                <FaUserCircle className="text-7xl text-green-600" />
+              {loggedInUser.avatarurl ? (
+    <img
+      src={loggedInUser.avatarurl}
+      alt={`${loggedInUser.name}'s Avatar`}
+      className="w-28 h-28 rounded-full object-cover"
+    />
+  ) : (
+    <FaUserCircle className="text-7xl text-green-600" />
+  )}
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
                   {loggedInUser.name}
                 </h2>

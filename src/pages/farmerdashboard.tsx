@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import {
   FaUserCircle,
   FaTractor,
@@ -12,83 +13,165 @@ import {
   FaSave,
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from './firebaseConfig'; // Ensure this path is correct
+import { em } from '@mantine/core';
 
 export default function DashboardProfile() {
-  const router = useRouter();
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: 'Organic Apples',
-      description: 'High-quality organic apples sourced from local farms.',
-      image: '/path/to/image.jpg', // Placeholder image path
-      isEditing: false,
-    },
-    {
-      id: 2,
-      name: 'Fresh Carrots',
-      description: 'Crunchy and fresh carrots.',
-      image: '/path/to/image2.jpg', // Placeholder image path
-      isEditing: false,
-    },
-  ]);
+  // Profile and User State
+  const [profiles, setProfiles] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '', avatarurl: '' });
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const [productImagePreview, setProductImagePreview] = useState<string | null>(null);
+  
+
+  
+ 
 
   const [newProduct, setNewProduct] = useState({
-    name: '',
+    productname: '',
     description: '',
     image: '',
+    category: '',
+    price: '',
+    quantity: '',
+    ownername: '',
+    owneremail: '',
+    ownerorganization: '',
+    ownerupzila: '',
+    ownerzila: '',
+    ownerdivision: '',
+    ownerphone: '',
   });
 
-  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  // State for Image Upload
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
 
-  const handleEditClick = (id) => {
-    setProducts(
-      products.map((product) =>
-        product.id === id ? { ...product, isEditing: true } : product
-      )
-    );
-  };
+  const router = useRouter();
 
-  const handleSaveClick = (id) => {
-    setProducts(
-      products.map((product) =>
-        product.id === id ? { ...product, isEditing: false } : product
-      )
-    );
-  };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
 
-  const handleInputChange = (e, id) => {
-    const { name, value } = e.target;
-    setProducts(
-      products.map((product) =>
-        product.id === id ? { ...product, [name]: value } : product
-      )
-    );
-  };
+    if (!token || !role) {
+      router.push('/login');
+    } else {
+      const getData = async () => {
+        try {
+          const res = await axios.get('/api/getone', {
+            headers: {
+              Authorization: `${token}`,
+            },
+            params: { role },
+          });
+          const profiles = res.data;
+          setProfiles(profiles);
+          setLoggedInUser({
+            name: profiles.name,
+            role: profiles.role,
+            email: profiles.email,
+            avatarurl: profiles.avatar,
+          });
+        } catch (err) {
+          console.error('Error fetching profile data:', err);
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          router.push('/login');
+        }
+      };
+      getData();
+    }
+  }, [router]);
 
-  const handleImageUpload = (e, id) => {
-    if (e.target.files && e.target.files[0]) {
-      const imageUrl = URL.createObjectURL(e.target.files[0]);
-      setProducts(
-        products.map((product) =>
-          product.id === id ? { ...product, image: imageUrl } : product
-        )
-      );
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+   const email = localStorage.getItem('email');
+    const fetchOwnerProducts = async () => {
+      try {
+        setLoading(true);
+        // Replace with actual backend API endpoint and ensure it matches correctly
+        const response = await axios.get(`/api/product`, {
+          params: { owneremail: email },
+        });
+        setProducts(response.data);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (email) { // Ensure ownerEmail is provided before fetching
+      fetchOwnerProducts();
+    }
+  }, []); // Dependency on ownerEmail ensures data is fetched when it changes
+
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>{error}</p>;
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      const storageRef = ref(storage, `images/${file.name}`);
+      try {
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        setNewProduct({ ...newProduct, image: url }); // Assuming setNewProduct is correctly defined
+        setProductImagePreview(url); // Set the preview URL
+      } catch (error) {
+        console.error('Error uploading the file', error);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
-  const handleAddProduct = () => {
-    const newProductWithId = {
-      ...newProduct,
-      id: products.length + 1,
-      isEditing: false,
+  const handleAddProduct = async () => {
+    const ownerDetails = {
+      ownername: localStorage.getItem('name'),
+      owneremail: localStorage.getItem('email'),
+      ownerorganization: localStorage.getItem('organization'),
+      ownerupzila: localStorage.getItem('upazila'),
+      ownerzila: localStorage.getItem('zila'),
+      ownerdivision: localStorage.getItem('division'),
+      ownerphone: localStorage.getItem('phone'),
     };
-    setProducts([...products, newProductWithId]);
-    setNewProduct({ name: '', description: '', image: '' });
+  
+    const newProductWithId = { ...newProduct, ...ownerDetails, id: products.length + 1 };
+  
+    try {
+      const response = await axios.post('/api/product', newProductWithId, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.status === 200) {
+        setNewProduct({ productname: '', description: '', image: '', category: '', price: '', quantity: '' });
+        setProductImagePreview(null); // Clear the product image preview after adding the product
+      } else {
+        throw new Error(response.data.message || 'Failed to add product');
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+      alert('Failed to add product: Please try again.');
+    }
   };
+
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
-    window.location.href = '/';
+    localStorage.removeItem('role');
+    router.push('/');
+  };
+
+  const handleEditProfile = () => {
+    router.push('/profile'); // Adjust to your route for editing the profile
   };
 
   return (
@@ -99,12 +182,24 @@ export default function DashboardProfile() {
             {/* Sidebar */}
             <div className="bg-white rounded-xl shadow-lg p-6 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <div className="flex flex-col items-center">
-                <FaUserCircle className="text-7xl text-green-600" />
+                {/* Check if avatarurl is valid and render the image */}
+                {loggedInUser.avatarurl ? (
+                  <img
+                    src={loggedInUser.avatarurl}
+                    alt={`${loggedInUser.name}'s Avatar`}
+                    className="w-28 h-28 rounded-full object-cover"
+                    onError={(e) => { e.target.onerror = null; e.target.src = '/path/to/default-avatar.jpg'; }}
+                  />
+                ) : (
+                  <FaUserCircle className="text-7xl text-green-600" />
+                )}
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
-                  John Doe
+                  {loggedInUser.name || 'John Doe'}
                 </h2>
-                <p className="text-sm text-gray-600">Farmer</p>
-                <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">
+                <p className="text-sm text-gray-600">{loggedInUser.role || 'Farmer'}</p>
+                <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+                onClick={() => router.push('/update-profile')}
+                >
                   Edit Profile
                 </button>
                 <button
@@ -190,156 +285,176 @@ export default function DashboardProfile() {
               </section>
 
               {/* Manage Products Section */}
-              <section
-                id="products"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Manage Products
-                  </h2>
-                </div>
+              <section id="products" className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105">
+  <div className="flex justify-between items-center mb-6">
+    <h2 className="text-2xl font-bold text-gray-900">Manage Products</h2>
+  </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {products.map((product) => (
-                    <div
-                      key={product.id}
-                      className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      {product.isEditing ? (
-                        <>
-                          <input
-                            type="text"
-                            name="name"
-                            value={product.name}
-                            onChange={(e) => handleInputChange(e, product.id)}
-                            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                          />
-                          <textarea
-                            name="description"
-                            value={product.description}
-                            onChange={(e) => handleInputChange(e, product.id)}
-                            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                            rows={3}
-                          />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e, product.id)}
-                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-                          />
-                          <button
-                            onClick={() => handleSaveClick(product.id)}
-                            className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 flex items-center justify-center"
-                          >
-                            <FaSave className="mr-2" />
-                            Save
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-40 object-cover rounded-lg mb-4"
-                          />
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-gray-700">
-                            {product.description}
-                          </p>
-                          <button
-                            onClick={() => handleEditClick(product.id)}
-                            className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 flex items-center justify-center"
-                          >
-                            <FaEdit className="mr-2" />
-                            Edit
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Add New Product Form */}
-                <div className="mt-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                    Add New Product
-                  </h2>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Product Name"
-                    value={newProduct.name}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, name: e.target.value })
-                    }
-                    className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                  />
-                  <textarea
-                    name="description"
-                    placeholder="Product Description"
-                    value={newProduct.description}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        description: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                    rows={3}
-                  />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        const imageUrl = URL.createObjectURL(e.target.files[0]);
-                        setNewProduct({ ...newProduct, image: imageUrl });
-                      }
-                    }}
-                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
-                  />
-                  <button
-                    onClick={handleAddProduct}
-                    className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300 flex items-center justify-center"
-                  >
-                    <FaPlusCircle className="mr-2" />
-                    Add Product
-                  </button>
-                </div>
-              </section>
-            </div>
-          </div>
-        </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    {products.map((product) => (
+      <div key={product.id} className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
+        {product.isEditing ? (
+          <>
+            <input
+              type="text"
+              name="name"
+              value={product}
+              onChange={(e) => handleInputChange(e, product.id)}
+              className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+              placeholder="Enter product name"
+            />
+            <textarea
+              name="description"
+              value={product.description}
+              onChange={(e) => handleInputChange(e, product.id)}
+              className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+              placeholder="Enter product description"
+            />
+            <input
+              type="file"
+              onChange={(e) => handleImageUpload(e, product.id)}
+              className="w-full mb-2"
+            />
+            <button
+              onClick={() => handleSaveClick(product.id)}
+              className="w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+            >
+              <FaSave className="mr-2 inline" />
+              Save
+            </button>
+          </>
+        ) : (
+          <>
+             <h3 className="product-name text-2xl font-bold text-green-900 mb-2">{product.productname}</h3>
+  <img
+    src={product.image}
+    alt={product.name}
+    className="product-image w-full h-48 object-cover rounded-lg mb-4"
+  />
+  <p className="product-price-quantity text-gray-700 text-lg mb-4">
+    <b>Price:</b> {product.price} &nbsp; <b>Quantity:</b> {product.quantity}
+  </p>
+  <p className="product-owner text-gray-600 text-sm">Owner Name: {product.ownername}</p>
+            <button
+              onClick={() => handleEditClick(product.id)}
+              className="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+            >
+              <FaEdit className="mr-2 inline" />
+              Edit
+            </button>
+          </>
+        )}
       </div>
+    ))}
+  </div>
+  <div className="mt-6">
+    <h3 className="text-xl font-semibold text-gray-900 mb-2">Add New Product</h3>
+    <input
+      type="text"
+      name="name"
+      value={newProduct.productname}
+      onChange={(e) =>
+        setNewProduct({ ...newProduct, productname: e.target.value })
+      }
+      placeholder="Product Name"
+      className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+    />
+    <textarea
+      name="description"
+      value={newProduct.description}
+      onChange={(e) =>
+        setNewProduct({ ...newProduct, description: e.target.value })
+      }
+      placeholder="Product Description"
+      className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+    />
+    <input
+      type="text"
+      name="category"
+      value={newProduct.category}
+      onChange={(e) =>
+        setNewProduct({ ...newProduct, category: e.target.value })
+      }
+      placeholder="Product Category"
+      className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+    />
 
-      {/* Sign Out Confirmation Modal */}
-      {showSignOutConfirm && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg p-8 shadow-lg text-center">
-            <h2 className="text-2xl font-bold mb-4">Confirm Sign Out</h2>
-            <p className="text-gray-700 mb-6">
-              Are you sure you want to sign out?
-            </p>
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={handleSignOut}
-                className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300"
-              >
-                Yes, Sign Out
-              </button>
-              <button
-                onClick={() => setShowSignOutConfirm(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition-colors duration-300"
-              >
-                Cancel
-              </button>
+    <input
+      type="text"
+      name="price"
+      value={newProduct.price}
+      onChange={(e) =>
+        setNewProduct({ ...newProduct, price: e.target.value })
+      }
+      placeholder="Product Price"
+      className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+    />
+
+    <input
+      type="text"
+      name="quantity"
+      value={newProduct.quantity}
+      onChange={(e) =>
+        setNewProduct({ ...newProduct, quantity: e.target.value })
+      }
+      placeholder="Product Quantity"
+      className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+    />
+
+    <input
+      type="file"
+      onChange={handleImageChange}
+      className="w-full mb-2"
+    />
+    {uploading && <p className="text-gray-700">Your file is being uploaded. Please wait...</p>}
+    {productImagePreview && (
+      <img
+        src={productImagePreview}
+        alt="Product Preview"
+        className="w-full h-48 object-cover rounded-lg mb-4"
+      />
+    )}
+    
+    <button
+      onClick={handleAddProduct}
+      className="w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+    >
+      <FaPlusCircle className="mr-2 inline" />
+      Add Product
+    </button>
+  </div>
+</section>
+
             </div>
           </div>
         </div>
-      )}
+
+        {/* Sign Out Confirmation Modal */}
+        {showSignOutConfirm && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <h3 className="text-xl font-semibold mb-4">Confirm Sign Out</h3>
+              <p className="mb-6">
+                Are you sure you want to sign out of your account?
+              </p>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowSignOutConfirm(false)}
+                  className="px-4 py-2 bg-gray-300 rounded-full mr-4 hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </Layout>
   );
 }

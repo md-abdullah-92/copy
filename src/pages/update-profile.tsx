@@ -21,6 +21,7 @@ export default function UpdateProfile() {
     address: string;
     upazila: string;
     zila: string;
+    divtion: string;
     organization: string;
     avatar: string ; // Avatar is now a string (URL)
   };
@@ -35,6 +36,7 @@ export default function UpdateProfile() {
       address: '',
       upazila: '',
       zila: '',
+      divtion: '',
       organization: '',
       avatar: '', // Initialize with null
     },
@@ -244,6 +246,19 @@ export default function UpdateProfile() {
                     {...form.getInputProps('zila')}
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
+                    Zila
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-300 transition"
+                    placeholder="Your Zila"
+                    {...form.getInputProps('zila')}
+                  />
+                </div>
+                
+                
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
                     Organization
