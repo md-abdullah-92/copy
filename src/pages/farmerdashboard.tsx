@@ -410,29 +410,29 @@ export default function DashboardProfile() {
       className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
     />
 
-    <input
-      type="file"
-      onChange={handleImageChange}
-      className="w-full mb-2"
-    />
-    {uploading && <p className="text-gray-700">Your file is being uploaded. Please wait...</p>}
-    {productImagePreview && (
-      <img
-        src={productImagePreview}
-        alt="Product Preview"
-        className="w-full h-48 object-cover rounded-lg mb-4"
-      />
-    )}
+          <input
+            type="file"
+            onChange={handleImageChange}
+            className="w-full mb-2"
+            />
+           {uploading && <p className="text-gray-700">Your file is being uploaded. Please wait...</p>}
+             {productImagePreview && (
+                <img
+                  src={productImagePreview}
+                  alt="Product Preview"
+                  className="w-full h-48 object-cover rounded-lg mb-4"
+                />
+              )}
     
-    <button
-      onClick={handleAddProduct}
-      className="w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
-    >
-      <FaPlusCircle className="mr-2 inline" />
-      Add Product
-    </button>
-  </div>
-</section>
+              <button
+                onClick={handleAddProduct}
+                className="w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+                >
+                  <FaPlusCircle className="mr-2 inline" />
+                      Add Product
+                  </button>
+                 </div>
+              </section>
 
             </div>
           </div>
