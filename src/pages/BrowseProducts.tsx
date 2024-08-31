@@ -25,8 +25,9 @@ export default function BrowseProducts() {
   const [cartCount, setCartCount] = useState<number>(3); // Replace with your actual logic to get the count
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const role=localStorage.getItem('role');
   useEffect(() => {
+
     const fetchOwnerProducts = async () => {
       try {
         setLoading(true);
@@ -44,6 +45,9 @@ export default function BrowseProducts() {
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+  if(role==='farmer'){
+    router.push('/farmerdashboard');
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

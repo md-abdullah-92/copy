@@ -248,13 +248,13 @@ export default function UpdateProfile() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1" style={{ color: '#1d3557' }}>
-                    Zila
+                    Division
                   </label>
                   <input
                     type="text"
                     className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-300 transition"
-                    placeholder="Your Zila"
-                    {...form.getInputProps('zila')}
+                    placeholder="Your Division"
+                    {...form.getInputProps('divtion')}
                   />
                 </div>
                 

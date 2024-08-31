@@ -110,8 +110,16 @@ const ProductDetails: React.FC = () => {
                 <p className="text-yellow-500 mr-2">{product.rating} ⭐</p>
                 <span className="text-sm text-gray-500">({product.rating})</span>
               </div>
-              <p className="text-gray-700 mt-4"><strong>Owner:</strong> {product.ownername}</p>
+            
               <p className="text-gray-700"><strong>Category:</strong> {product.category}</p>
+              <p className="text-gray-700"><strong>Quantity:</strong> {product.quantity}</p>
+                
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Seller</h3>
+                <p className="text-gray-700"><strong>Name:</strong> {product.ownername}</p>
+                <p className="text-gray-700"><strong>Organization:</strong> {product.ownerorganization}</p>
+                <p className="text-gray-700"><strong>Phone:</strong> {product.ownerphone}</p>
+                <p className="text-gray-700"><strong>Email:</strong> {product.onweremail}</p>
+                <p className="text-gray-700"><strong>Address:</strong> {product.ownerupzila}, {product.ownerzila}, {product.ownerdivision}</p>
             </div>
           </div>
         </div>

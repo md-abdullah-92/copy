@@ -21,45 +21,19 @@ interface User {
   avatar: string;
 }
 
-const productsData = [
-  {
-    id: 1,
-    name: 'Organic Apples',
-    description: 'High-quality organic apples sourced from local farms.',
-    image: '/assets/products/apple.jpg',
-    rating: 4.5,
-    owner: 'John Doe',
-    price: 3.5,
-    category: 'Fruits',
-  },
-  {
-    id: 5,
-    name: 'Free-Range Eggs',
-    description: 'Farm-fresh eggs from free-range chickens.',
-    image: '/assets/products/eggs.jpg',
-    rating: 4.9,
-    owner: 'Emily Davis',
-    price: 2.5,
-    category: 'Dairy',
-  },
-  {
-    id: 6,
-    name: 'Local Honey',
-    description: 'Natural honey harvested from local beekeepers.',
-    image: '/assets/products/honey.jpg',
-    rating: 4.6,
-    owner: 'Michael Lee',
-    price: 6.0,
-    category: 'Sweeteners',
-  },
-];
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+}
 
 export default function BuyerDashboard() {
   const [profile, setProfiles] = useState<any>(null);
   const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '',avatarurl:'' }); 
   const router = useRouter();
 
-  //const [profiles, setProfiles] = useState<{ name: string }[]>([]);
+  
   useEffect(() => {
     
     const token = localStorage.getItem('token');
@@ -101,7 +75,26 @@ export default function BuyerDashboard() {
     }
   }, []);
   
-  
+  const [productsData, setproductsData] = useState<any[]>([2]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchOwnerProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/getallproduct');
+        setproductsData(response.data);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOwnerProducts();
+  }, []);
+
+ 
 
 
   const [purchasedProducts, setPurchasedProducts] = useState([
@@ -137,7 +130,6 @@ export default function BuyerDashboard() {
   const [cart, setCart] = useState<any[]>([]);
 
   
-
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
   const addToCart = (product: any) => {
@@ -296,51 +288,57 @@ export default function BuyerDashboard() {
               </section>
 
               <section
-                id="browse"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Browse Products
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {productsData.map((product) => (
-                    <div
-                      key={product.id}
-                      className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-auto rounded-lg shadow-md"
-                      />
-                      <h3 className="text-lg font-semibold text-gray-700 mt-4">
-                        {product.name}
-                      </h3>
-                      <p className="text-gray-600 mt-2">
-                        {product.description}
-                      </p>
-                      <button
-                        className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
-                        onClick={() => addToCart(product)}
-                      >
-                        Add to Cart
-                      </button>
-                      <button
-                        className="mt-4 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-                        onClick={() => handleViewDetails(product.id)}
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  className="mt-8 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-                  onClick={handleSeeMore}
-                >
-                  See More
-                </button>
-              </section>
+  id="browse"
+  className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
+>
+  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+    Browse Products
+  </h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {productsData.slice(0, 3).map((product) => (
+      <div
+        key={product.id}
+        className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
+      >
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-40 object-cover rounded-lg shadow-md"
+        />
+        <h3 className="text-lg font-semibold text-gray-700 mt-4">
+          {product.name}
+        </h3>
+        <p className="text-gray-600 mt-2">{product.category}</p>
+        <p className="text-gray-800 font-bold mt-2">${product.price}</p>
+        <div className="flex items-center mt-2">
+          <p className="text-yellow-500 mr-2">{product.rating} ⭐</p>
+          <span className="text-sm text-gray-500">({product.rating})</span>
+        </div>
+        <p className="text-gray-600 mt-2">Quantity: {product.quantity}</p>
+        <p className="text-gray-600 mt-2">Owner: {product.ownername}</p>
+        <button
+          className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+          onClick={() => addToCart(product)}
+        >
+          Add to Cart
+        </button>
+        <button
+          className="mt-4 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+          onClick={() => handleViewDetails(product.id)}
+        >
+          View Details
+        </button>
+      </div>
+    ))}
+  </div>
+  <button
+    className="mt-8 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+    onClick={handleSeeMore}
+  >
+    See More
+  </button>
+</section>
+
 
               <section
                 id="orders"

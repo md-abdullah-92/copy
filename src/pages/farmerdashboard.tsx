@@ -67,6 +67,15 @@ export default function DashboardProfile() {
           });
           const profiles = res.data;
           setProfiles(profiles);
+          localStorage.setItem('email', profiles.email);
+          localStorage.setItem('name', profiles.name);
+          localStorage.setItem('organization', profiles.organization);
+          localStorage.setItem('upazila', profiles.upazila);
+          localStorage.setItem('zila', profiles.zila);
+          localStorage.setItem('division', profiles.division);
+          localStorage.setItem('phone', profiles.phone);
+         
+          
           setLoggedInUser({
             name: profiles.name,
             role: profiles.role,
