@@ -56,9 +56,11 @@ export default function BrowseProducts() {
   }, []);
 
   // Redirect to farmer dashboard if the user role is 'farmer'
-  if (role === 'farmer') {
-    router.push('/farmerdashboard');
-  }
+ /* useEffect(() => {
+    if (role === 'farmer') {
+      router.push('/farmerdashboard');
+    }
+  }, [role]);*/
 
   // Handle the search term change event
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -41,12 +41,22 @@ const BuyProduct: React.FC = () => {
   };
 
   // Function to proceed with the purchase
+  
   const confirmPurchase = () => {
     setShowModal(false);
+    setShowModal(false);
     alert(`Purchasing ${buyquantity} unit(s) of ${name} for a total of $${totalPrice}`);
-    router.push('/confirmation'); // Redirect to a confirmation page
+    // Redirect to the confirmation page with query parameters
+    router.push({
+      pathname: '/payment', // Path to the confirmation page
+      query: { 
+        name, // Product name
+        quantity: buyquantity.toString(), // Convert quantity to string
+        totalPrice // Total price
+      }
+    });
   };
-
+  
   return (
     <>
       <Head>
