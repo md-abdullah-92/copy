@@ -13,6 +13,7 @@ interface Product {
   rating: number;
   ownername: string;
   price: number;
+  totalSold: number;
   category: string;
   onweremail: string;
   ownerorganization: string;
@@ -100,7 +101,22 @@ const ProductDetails: React.FC = () => {
 const handleBuyProduct = () => {
   router.push({
     pathname: '/buy',  // Redirect to the new Buy Product page
-    query: { id: product?.id, name: product?.productname, price: product?.price ,quantity:product?.quantity} // Pass product details as query parameters
+    query: { 
+      id: product?.id, 
+      name: product?.productname, 
+      price: product?.price ,
+      quantity:product?.quantity,
+      sellername:product?.ownername,
+      selleremail:product?.onweremail,
+      totalsold:product?.totalSold,
+      category:product?.category,
+      ownerorganization:product?.ownerorganization,
+      ownerupzila:product?.ownerupzila,
+      ownerzila:product?.ownerzila,
+      ownerdivision:product?.ownerdivision,
+      ownerphone:product?.ownerphone,
+      image:product?.image,
+    } // Pass product details as query parameters
   });
 };
 

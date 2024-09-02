@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
 
 interface CheckoutFormProps {
-  name: string | string[] | undefined;
-  quantity: string | string[] | undefined;
-  totalPrice: string | string[] | undefined;
+  id: string;
+  name: string ;
+  quantity: string;
+  totalPrice: string ;
+  category: string ;
+  selleremail: string ;
+  sellername: string ;
+  location: string ;
+  deliveryMethod: string ;
+  image: string ;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ name, quantity, totalPrice }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPrice, category, selleremail, sellername, location, deliveryMethod ,image}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-
+  console.log("id 1st",id);
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!stripe || !elements) {
@@ -36,14 +44,79 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ name, quantity, totalPrice 
 
     if (error) {
       setErrorMessage(error.message || 'An unexpected error occurred.');
-    } else {
-    //
+      setIsProcessing(false);
+      return;
+    }
+    try {
+      // Update the product quantity and total sales
+      const updateProductStatus = async () => {
+        try {
+          console.log("ID 2nd:", id); 
+          console.log("Quantity:", quantity);
+      
+          // Check for undefined or invalid values
+          if (!id) {
+            console.error("Error: Missing or invalid ID.");
+            return;
+          }
+          if (!quantity) {
+            console.error("Error: Missing or invalid quantity.");
+            return;
+          } 
+          
+          // Sending the PUT request to the Next.js API endpoint
+          const response = await axios.put('/api/product', {}, {
+            params: {
+              id, 
+              quantity,
+            },
+          });
+      
+          console.log('Product status updated:', response.data);
+          console.log("ID 3rd:", id);
+        } catch (err) {
+          console.error('Error updating product status:', err.response?.data || err.message);
+        }
+      };
+      
+      // Calling the update function
+      await updateProductStatus();
+      
+    
+    
+
+      // Post the order details to the database
+      const postOrder = async () => {
+        try {
+          const response = await axios.post('/api/soldproducts', {
+            id: id,
+            name: name,
+            category: category,
+            selleremail: selleremail,
+            sellername: sellername,
+            location: location,
+            deliveryMethod: deliveryMethod,
+            soldprice: totalPrice,
+            soldquantity: quantity,
+            soldtime: new Date().toISOString(),
+            image: image,
+          });
+          console.log('Order posted:', response.data);
+        } catch (err) {
+          console.error('Error posting order:', err);
+        }
+      };
+
+      await postOrder();
 
       setPaymentStatus('Payment was successful.');
+    } catch (err) {
+      console.error('Error during payment process:', err);
+      setErrorMessage('An unexpected error occurred while processing your payment.');
+    } finally {
+      setIsProcessing(false);
     }
-    setIsProcessing(false);
   };
-
   const elementOptions = {
     style: {
       base: {

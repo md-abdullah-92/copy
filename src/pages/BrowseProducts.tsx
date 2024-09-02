@@ -35,7 +35,7 @@ export default function BrowseProducts() {
   const [loading, setLoading] = useState<boolean>(false);
 
   // Fetch the role of the user from localStorage
-  const role = localStorage.getItem('role');
+  //const role = localStorage.getItem('role');
 
   // useEffect hook to fetch all products when the component mounts
   useEffect(() => {
@@ -78,15 +78,20 @@ export default function BrowseProducts() {
   };
 
   // Filter products based on search term and selected category
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory
-      ? product.category === selectedCategory
-      : true;
-    const matchesSearchTerm =
-      product.productname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearchTerm;
-  });
+ // Filter products based on search term and selected category
+const filteredProducts = products.filter((product) => {
+  const matchesCategory = selectedCategory
+    ? product.category === selectedCategory
+    : true;
+
+  // Ensure productname and description are not null or undefined
+  const matchesSearchTerm =
+    (product.productname && product.productname.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (product.description && product.description.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  return matchesCategory && matchesSearchTerm;
+});
+
 
   return (
     <>

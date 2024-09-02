@@ -9,7 +9,7 @@ export default async function handler(
   console.log({ method });
   switch (method) {
     case 'GET':
-      const url = "http://localhost:8080/soldproduct/addsoldproduct";
+      const url = "http://localhost:8080/soldproduct/getsoldproduct";
       try {
         const axiosRes = await axios.get(url, {
           headers: {
@@ -34,14 +34,13 @@ export default async function handler(
     case 'POST':
         const { 
             id,
-            productname,
+            name,
             image,
             price,
-            description,
             category,
-            owneremail,
-            ownername,
             buyeremail,
+            sellername,
+            selleremail,
             buyername, 
             soldprice,
             soldquantity,
@@ -61,13 +60,12 @@ export default async function handler(
         const postUrl = 'http://localhost:8080/soldproduct/addsoldproduct';
         const formData = new FormData();
         formData.append('id', id);
-        formData.append('productname', productname);
+        formData.append('name', name);
         formData.append('image', image);
         formData.append('price', price);
-        formData.append('description', description);
         formData.append('category', category);
-        formData.append('owneremail', owneremail);
-        formData.append('ownername', ownername);
+        formData.append('sellername', sellername);
+        formData.append('selleremail', selleremail);
         formData.append('buyeremail', buyeremail);
         formData.append('buyername', buyername);
         formData.append('soldprice', soldprice);

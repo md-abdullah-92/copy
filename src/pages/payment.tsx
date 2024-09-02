@@ -9,9 +9,11 @@ import Footer from '@/components/Layout/Footer';
 
 const stripePromise = loadStripe("pk_test_51PuEpHRuCZ3PE4bbTAbBVHAReTC8Os4tWM8GbvONptKDflTbTyySzoRvUt4Z0W1WbcmHGcXVvus0fSAqTle2BZDm00GLHtmB9Z");
 
+
+
 const Payment: React.FC = () => {
   const router = useRouter();
-  const { name, quantity, totalPrice } = router.query;
+  const { id, name, quantity, totalPrice,selleremail,sellername,location, deliveryMethod,category,image} = router.query;
 
   return (
     <>
@@ -38,7 +40,18 @@ const Payment: React.FC = () => {
             </div>
 
             <Elements stripe={stripePromise}>
-              <CheckoutForm name={name} quantity={quantity} totalPrice={totalPrice} />
+              <CheckoutForm 
+              id={id}
+              name={name} 
+              quantity={quantity} 
+              totalPrice={totalPrice} 
+              selleremail={selleremail} 
+              sellername={sellername}
+              location={location}
+              deliveryMethod={deliveryMethod}
+              category={category}
+              image={image}
+              />
             </Elements>
           </div>
         </main>

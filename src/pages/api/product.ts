@@ -106,6 +106,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       break;
     }
+    case 'PUT': {
+      try {
+        const url = "http://localhost:8080/product/updateproductquantity"; // Adjust if needed
+        const id = req.query.id;
+        const quantity = req.query.quantity;
+        
+        // Making a PUT request to the Java backend
+        const axiosRes = await axios.put(url, {}, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          params: {
+            id, 
+            quantity,
+          },
+        });
+        
+        res.status(200).json(axiosRes.data);
+      } catch (err) {
+        console.error('Error updating product quantity:', err);
+        res.status(500).json({
+          message: 'An error occurred while updating the product quantity.',
+        });
+      }
+      break;
+    }
+    
+
+
     default:
       res.setHeader('Allow', ['POST']);
       res.status(405).end(`Method ${method} Not Allowed`);
