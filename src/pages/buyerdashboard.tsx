@@ -13,13 +13,15 @@ import {
   FaShoppingBag,
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
+import PurchasedProducts from '@/components/PurchasedProducts';
 
 
 interface Product {
-  id: number;
-  name: string;
+  id:string;
+  productname: string;
   description: string;
   image: string;
+  price: string;
 }
 
 export default function BuyerDashboard() {
@@ -264,29 +266,10 @@ export default function BuyerDashboard() {
                 id="purchased"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Purchased Products
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {purchasedProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-auto rounded-lg shadow-md"
-                      />
-                      <h3 className="text-lg font-semibold text-gray-700 mt-4">
-                        {product.name}
-                      </h3>
-                      <p className="text-gray-600 mt-2">
-                        {product.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+               
+                <PurchasedProducts 
+                buyeremail={loggedInUser.email}
+                />
               </section>
 
               <section
@@ -296,42 +279,44 @@ export default function BuyerDashboard() {
   <h2 className="text-2xl font-bold text-gray-900 mb-6">
     Browse Products
   </h2>
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {productsData.slice(0, 3).map((product) => (
-      <div
-        key={product.id}
-        className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
-      >
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-40 object-cover rounded-lg shadow-md"
-        />
-        <h3 className="text-lg font-semibold text-gray-700 mt-4">
-          {product.name}
-        </h3>
-        <p className="text-gray-600 mt-2">{product.category}</p>
+  <div className="grid grid-cols-3 gap-6">
+  {productsData.slice(0, 3).map((product: Product) => (
+    <div
+      key={product.id}
+      className="bg-white rounded-lg shadow-md overflow-hidden relative group hover:shadow-xl transition-shadow duration-300"
+    >
+      {/* Product Image */}
+      <img
+        src={product.image}
+        alt={product.productname}
+        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
+      />
+
+      {/* Product Info */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900">{product.productname}</h3>
+        <p className="text-gray-600 mt-2 line-clamp-2">{product.description}</p>
         <p className="text-gray-800 font-bold mt-2">${product.price}</p>
-        <div className="flex items-center mt-2">
-          <p className="text-yellow-500 mr-2">{product.rating} ⭐</p>
-          <span className="text-sm text-gray-500">({product.rating})</span>
-        </div>
-        <p className="text-gray-600 mt-2">Quantity: {product.quantity}</p>
-        <p className="text-gray-600 mt-2">Owner: {product.ownername}</p>
-        <button
-          className="mt-4 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
-          onClick={() => addToCart(product)}
-        >
+       
+      </div>
+
+      {/* Hover Overlay with Buttons */}
+      <div className="absolute inset-0 bg-black bg-opacity-25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
+        <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition-colors duration-300">
           Add to Cart
         </button>
         <button
-          className="mt-4 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+          className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
           onClick={() => handleViewDetails(product.id)}
         >
           View Details
         </button>
+        <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">
+          Contact Farmer
+        </button>
       </div>
-    ))}
+    </div>
+  ))}
   </div>
   <button
     className="mt-8 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
