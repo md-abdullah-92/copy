@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from '@stripe/react-stripe-js';
-
+import { useRouter } from 'next/router';
 interface CheckoutFormProps {
-  id: string;
+  productid: string;
   name: string ;
   quantity: string;
+  price: string ;
   totalPrice: string ;
   category: string ;
   selleremail: string ;
@@ -13,15 +14,36 @@ interface CheckoutFormProps {
   location: string ;
   deliveryMethod: string ;
   image: string ;
+  sellerphone: string ;
+  sellerorganization: string ;
+  sellerlocation: string ;
+
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPrice, category, selleremail, sellername, location, deliveryMethod ,image}) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ productid, name, quantity, price,totalPrice, category, selleremail, sellername, location, deliveryMethod ,image,sellerlocation,sellerorganization,sellerphone}) => {
+  
+  console.log("ID 1st:", productid);
+  console.log("Name:", name);
+  console.log("Quantity:", quantity);
+  console.log("Price:", price);
+  console.log("Total Price:", totalPrice);
+  console.log("Category:", category);
+  console.log("Seller Email:", selleremail);
+  console.log("Seller Name:", sellername);
+  console.log("Location:", location);
+  console.log("Delivery Method:", deliveryMethod);
+  console.log("Image:", image);
+  console.log("Seller Phone:", sellerphone);
+  console.log("Seller Organization:", sellerorganization);
+  console.log("Seller Location:", sellerlocation);
+
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  console.log("id 1st",id);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [paymentStatus, setPaymentStatus] = useState<string >('');
+  console.log("id 1st", productid);
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!stripe || !elements) {
@@ -29,7 +51,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPr
     }
 
     setIsProcessing(true);
-    setErrorMessage(null);
+    setErrorMessage('');
 
     const cardElement = elements.getElement(CardNumberElement);
     if (!cardElement) {
@@ -51,11 +73,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPr
       // Update the product quantity and total sales
       const updateProductStatus = async () => {
         try {
-          console.log("ID 2nd:", id); 
+          console.log("ID 2nd:", productid); 
           console.log("Quantity:", quantity);
       
           // Check for undefined or invalid values
-          if (!id) {
+          if (!productid) {
             console.error("Error: Missing or invalid ID.");
             return;
           }
@@ -67,13 +89,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPr
           // Sending the PUT request to the Next.js API endpoint
           const response = await axios.put('/api/product', {}, {
             params: {
-              id, 
+              id: productid,
               quantity,
             },
           });
       
           console.log('Product status updated:', response.data);
-          console.log("ID 3rd:", id);
+          console.log("ID 3rd:", productid);
         } catch (err) {
           console.error('Error updating product status:', err.response?.data || err.message);
         }
@@ -83,24 +105,33 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPr
       await updateProductStatus();
       
     
-    
+      
+    const buyeremail = localStorage.getItem('buyeremail');  
+    const buyername = localStorage.getItem('buyername');
 
       // Post the order details to the database
       const postOrder = async () => {
         try {
           const response = await axios.post('/api/soldproducts', {
-            id: id,
+            productid: productid,
             name: name,
             category: category,
             selleremail: selleremail,
+            price: price,
             sellername: sellername,
-            location: location,
+            deliverytoaddress: location,
             deliveryMethod: deliveryMethod,
             soldprice: totalPrice,
             soldquantity: quantity,
             soldtime: new Date().toISOString(),
             image: image,
+            sellerphone: sellerphone,
+            sellerorganization: sellerorganization,
+            deliverybyaddress: sellerlocation,
+            buyeremail: buyeremail,
+            buyername: buyername,
           });
+          
           console.log('Order posted:', response.data);
         } catch (err) {
           console.error('Error posting order:', err);
@@ -108,8 +139,29 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ id, name, quantity, totalPr
       };
 
       await postOrder();
-
+      router.push({
+        pathname: '/confirmation', // Path to the confirmation page
+        query: { 
+          productid, // Product ID
+          name, // Product name
+          quantity, // Quantity
+          price, // Price per unit
+          totalPrice, // Total price
+          location, // Buyer location
+          deliveryMethod, // Delivery method
+          selleremail, // Seller email
+          sellername, // Seller name
+          category, // Product category
+          image, // Product image
+          sellerlocation, // Seller location
+          sellerphone, // Seller phone
+          sellerorganization, // Seller organization
+        }
+      });
+      
       setPaymentStatus('Payment was successful.');
+      //payment successful page
+     // router.push('/paymentsuccessful');
     } catch (err) {
       console.error('Error during payment process:', err);
       setErrorMessage('An unexpected error occurred while processing your payment.');

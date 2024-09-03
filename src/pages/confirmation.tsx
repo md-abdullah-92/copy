@@ -4,16 +4,50 @@ import Head from 'next/head';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 
+
 const Confirmation: React.FC = () => {
   const router = useRouter();
-  const { name, quantity, totalPrice } = router.query; // Retrieve purchase details from query parameters
+  const { 
+    productid,
+    name,
+    quantity,
+    price,
+    totalPrice,
+    location,
+    deliveryMethod,
+    selleremail,
+    sellerlocation,
+    sellername,
+    category,
+    image,
+    sellerphone,
+    sellerorganization,
+  } = router.query; // Retrieve purchase details from query parameters
 
   const goToProductList = () => {
     router.push('/BrowseProducts'); // Replace with your actual product list page path
   };
-
-  const goToOrderHistory = () => {
-    router.push('/orders'); // Replace with your actual order history page path
+  
+  const goTopaymentSlip = () => {
+    router.push({
+      pathname: '/paymentslip', // Path to the confirmation page
+      query: { 
+        productid, // Product ID
+        name, // Product name
+        quantity, // Quantity
+        price, // Price per unit
+        totalPrice, // Total price
+        location, // Buyer location
+        deliveryMethod, // Delivery method
+        selleremail, // Seller email
+        sellername, // Seller name
+        category, // Product category
+        image, // Product image
+        sellerlocation, // Seller location
+        sellerphone, // Seller phone
+        sellerorganization, // Seller organization
+      }
+    });
   };
 
   return (
@@ -47,10 +81,10 @@ const Confirmation: React.FC = () => {
                 Continue Shopping
               </button>
               <button
-                onClick={goToOrderHistory}
+                onClick={goTopaymentSlip}
                 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
               >
-                View Order History
+                Payment Slip
               </button>
             </div>
           </div>

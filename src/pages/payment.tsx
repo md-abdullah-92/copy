@@ -13,7 +13,23 @@ const stripePromise = loadStripe("pk_test_51PuEpHRuCZ3PE4bbTAbBVHAReTC8Os4tWM8Gb
 
 const Payment: React.FC = () => {
   const router = useRouter();
-  const { id, name, quantity, totalPrice,selleremail,sellername,location, deliveryMethod,category,image} = router.query;
+  const { 
+    productid, 
+    name,
+    quantity,
+    price, 
+    totalPrice,
+    selleremail,
+    sellername,
+    location, 
+    deliveryMethod,
+    category,
+    image,
+    sellerlocation,
+    sellerorganization,
+    sellerphone} = router.query;
+
+    console.log("router", router.query);
 
   return (
     <>
@@ -41,16 +57,21 @@ const Payment: React.FC = () => {
 
             <Elements stripe={stripePromise}>
               <CheckoutForm 
-              id={id}
-              name={name} 
-              quantity={quantity} 
-              totalPrice={totalPrice} 
-              selleremail={selleremail} 
-              sellername={sellername}
-              location={location}
-              deliveryMethod={deliveryMethod}
-              category={category}
-              image={image}
+              productid={productid as string}
+              name={name as string} 
+              quantity={quantity as string} 
+              price={price as string}
+              totalPrice={totalPrice as string} 
+              selleremail={selleremail as string} 
+              sellername={sellername as string}
+              location={location as string}
+              deliveryMethod={deliveryMethod as string}
+              category={category as string}
+              image={image as string}
+              sellerlocation={sellerlocation as string}
+              sellerorganization={sellerorganization as string} 
+              sellerphone={sellerphone as string}
+
               />
             </Elements>
           </div>

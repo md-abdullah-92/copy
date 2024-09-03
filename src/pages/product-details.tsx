@@ -55,7 +55,23 @@ const ProductDetails: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>(initialComments); // State for comments
   const [newComment, setNewComment] = useState<string>(''); // State for new comment text
   const [name, setName] = useState<string>(''); // State for the commenter's name
-  const [mail, setMail] = useState<string | null>(null); // State to store the owner's email
+  const [mail, setMail] = useState<string>(''); // State to store the owner's email
+  const [price, setPrice] = useState<string>(''); // State to store the product price
+  const [quantity, setQuantity] = useState<string>(''); // State to store the product quantity
+  const [category, setCategory] = useState<string >(''); // State to store the product category
+  const [sellername, setSellername] = useState<string >(''); // State to store the seller's name
+  const [selleremail, setSelleremail] = useState<string>(''); // State to store the seller's email
+  const [totalsold, setTotalsold] = useState<string>(''); // State to store the total sold
+  const [productname, setProductname] = useState<string >(''); // State to store the commenter's name
+  const [image, setImage] = useState<string >(''); // State to store the commenter's name
+  const [sellerphone, setSellerphone] = useState<string >(''); // State to store the commenter's name
+  const [ownerorganization, setOwnerorganization] = useState<string>(''); // State to store the commenter's name
+  const [ownerupzila, setOwnerupzila] = useState<string >(''); // State to store the commenter's name
+  const [ownerzila, setOwnerzila] = useState<string >(''); // State to store the commenter's name
+  const [ownerdivision, setOwnerdivision] = useState<string >(''); // State to store the commenter's name
+
+
+
 
   useEffect(() => {
     // Fetch email from local storage on component mount
@@ -70,8 +86,25 @@ const ProductDetails: React.FC = () => {
         try {
           const response = await fetch(`/api/getproduct?id=${id}`);
           const data = await response.json();
+          console.log('Product data:', data);
           setProduct(data); // Set the fetched product data to state
           if (data.owneremail) setMail(data.owneremail); // Update email state if available from fetched data
+          if (data.price) setPrice(data.price); // Update price state if available from fetched data
+          if (data.quantity) setQuantity(data.quantity); // Update quantity state if available from fetched data
+          if (data.category) setCategory(data.category); // Update category state if available from fetched data
+          if (data.ownername) setSellername(data.ownername); // Update seller name state if available from fetched data
+          if (data.owneremail) setSelleremail(data.owneremail); // Update seller email state if available from fetched data
+          if (data.totalSold) setTotalsold(data.totalSold); // Update total sold state if available from fetched data
+          if (data.productname) setProductname(data.productname); // Update product name state if available from fetched data
+          if (data.image) setImage(data.image); // Update product name state if available from fetched data
+          if (data.ownerphone) setSellerphone(data.ownerphone); // Update product name state if available from fetched data
+          if (data.ownerorganization) setOwnerorganization(data.ownerorganization); // Update product name state if available from fetched data
+          if (data.ownerupzila) setOwnerupzila(data.ownerupzila); // Update product name state if available from fetched data
+          if (data.ownerzila) setOwnerzila(data.ownerzila); // Update product name state if available from fetched data
+          if (data.ownerdivision) setOwnerdivision(data.ownerdivision); // Update product name state if available from fetched data
+
+
+
         } catch (err) {
           console.error('Error fetching product:', err);
         }
@@ -80,7 +113,18 @@ const ProductDetails: React.FC = () => {
       fetchProduct();
     }
   }, [id]); // Dependency array includes `id` so the effect runs when `id` changes
-
+   
+  console.log('Product:', product);
+  console.log('selleremail:', mail);
+  console.log('sellerphone:', sellerphone);
+  console.log('sellername:', sellername);
+  console.log('totalsold:', totalsold);
+  console.log('category:', category);
+  console.log('productname:', productname);
+  console.log('price:', price);
+  console.log('quantity:', quantity);
+  console.log('ownerorganization:', ownerorganization);
+  console.log('image:', image);
   // Function to handle adding a new comment
   const handleAddComment = () => {
     if (name && newComment) {
@@ -96,26 +140,32 @@ const ProductDetails: React.FC = () => {
     }
   };
 
+  console.log('Product:', product);
+ 
+  console.log('selleremail:', mail);
+   
+  const sellerlocation = ownerupzila + ", " + ownerzila + ", " + ownerdivision;
+  console.log('sellerlocation:', sellerlocation);
+ 
+
   // Function to handle the buy button click
  // Inside your ProductDetails component
 const handleBuyProduct = () => {
   router.push({
     pathname: '/buy',  // Redirect to the new Buy Product page
     query: { 
-      id: product?.id, 
-      name: product?.productname, 
-      price: product?.price ,
-      quantity:product?.quantity,
-      sellername:product?.ownername,
-      selleremail:product?.onweremail,
-      totalsold:product?.totalSold,
-      category:product?.category,
-      ownerorganization:product?.ownerorganization,
-      ownerupzila:product?.ownerupzila,
-      ownerzila:product?.ownerzila,
-      ownerdivision:product?.ownerdivision,
-      ownerphone:product?.ownerphone,
-      image:product?.image,
+      productid: product?.id, 
+      name: productname, 
+      price: price ,
+      quantity:quantity,
+      sellername:sellername,
+      selleremail:mail,
+      totalsold:totalsold,
+      category:category,
+      sellerlocation:sellerlocation,
+      sellerphone:sellerphone,
+      sellerorganization:ownerorganization,
+      image:image,
     } // Pass product details as query parameters
   });
 };

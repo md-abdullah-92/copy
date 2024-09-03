@@ -14,12 +14,6 @@ import {
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
-interface User {
-  name: string;
-  role: string;
-  email: string;
-  avatar: string;
-}
 
 interface Product {
   id: number;
@@ -55,6 +49,12 @@ export default function BuyerDashboard() {
               role: role, // Pass the role as a query parameter
             },
           });
+          
+          localStorage.setItem('buyername', res.data.name);
+          localStorage.setItem('buyeremail', res.data.email);
+
+          console.log(res.data);
+         
           const profiles = res.data;
           console.log(profiles);
           setProfiles(profiles);
@@ -74,6 +74,8 @@ export default function BuyerDashboard() {
       getData();
     }
   }, []);
+
+  
   
   const [productsData, setproductsData] = useState<any[]>([2]);
   const [loading, setLoading] = useState(false);

@@ -29,11 +29,14 @@ export default async function handler(
       }
       break;
       
+
+      
+  
     
     
     case 'POST':
         const { 
-            id,
+            productid,
             name,
             image,
             price,
@@ -47,6 +50,8 @@ export default async function handler(
             soldtime,
             deliverytime,
             deliverystatus,
+            deliveryMethod,
+            sellerphone,
             deliverytimeby,
             deliverytimeto,
             deliverybydate,
@@ -59,7 +64,7 @@ export default async function handler(
         } = req.body;
         const postUrl = 'http://localhost:8080/soldproduct/addsoldproduct';
         const formData = new FormData();
-        formData.append('id', id);
+        formData.append('productid', productid);
         formData.append('name', name);
         formData.append('image', image);
         formData.append('price', price);
@@ -71,6 +76,8 @@ export default async function handler(
         formData.append('soldprice', soldprice);
         formData.append('soldquantity', soldquantity);
         formData.append('soldtime', soldtime);
+        formData.append('sellerphone', sellerphone);
+        formData.append('deliveryMethod', deliveryMethod);
         formData.append('deliverytime', deliverytime);
         formData.append('deliverystatus', deliverystatus);
         formData.append('deliverytimeby', deliverytimeby);
@@ -81,9 +88,7 @@ export default async function handler(
         formData.append('deliverytoaddress', deliverytoaddress);
         formData.append('deliverybyupzilaname', deliverybyupzilaname);
         formData.append('deliverytoupzilaname', deliverytoupzilaname);
-        formData.append('deliverybyzilaname', deliverybyzilaname);
-
-        
+        formData.append('deliverybyzilaname', deliverybyzilaname); 
         try {
             const axiosRes = await axios.post(postUrl, formData, {
             headers: {

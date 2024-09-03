@@ -8,14 +8,27 @@ import Head from 'next/head';
 
 const BuyProduct: React.FC = () => {
   const router = useRouter();
-  const { id, name, price, quantity,selleremail,sellername,category,image } = router.query; // Retrieve product info from query parameters
+  const { 
+    productid, 
+    name, 
+    price, 
+    quantity,
+    selleremail,
+    sellername,
+    category,
+    image,
+    sellerlocation,
+    sellerphone,
+    sellerorganization
+   } = router.query; // Retrieve product info from query parameters
+   console.log("router.query",router.query);
   const [buyquantity, setBuyQuantity] = useState<number>(1); // State to manage user's input quantity
   const [totalPrice, setTotalPrice] = useState<string>('0.00'); // State to store total price
   const [showModal, setShowModal] = useState<boolean>(false); // State to handle modal visibility
   const [errorMessage, setErrorMessage] = useState<string>(''); // State to store error messages
   const [location, setLocation] = useState<string>(''); // State to store buyer's location
   const [deliveryMethod, setDeliveryMethod] = useState<string>('deliver'); // State to store delivery method
-
+  console.log("Selleremail Abdullah ",selleremail);
   useEffect(() => {
     const unitPrice = parseFloat(price as string) || 0; // Convert price to float or use 0 if undefined
     const subtotal = unitPrice * buyquantity; // Calculate subtotal without delivery fee
@@ -52,7 +65,7 @@ const BuyProduct: React.FC = () => {
   const handleDeliveryMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDeliveryMethod(e.target.value);
     if (e.target.value === 'pickup') {
-      setLocation('Farmer\'s House'); // Set a default location for pickup
+      setLocation(sellerlocation as string); // Set a default location for pickup
     } else {
       setLocation(''); // Clear location input for delivery option
     }
@@ -75,9 +88,10 @@ const BuyProduct: React.FC = () => {
     router.push({
       pathname: '/payment', // Path to the confirmation page
       query: { 
-        id, // Product ID
+        productid, // Product ID
         name, // Product name
         quantity: buyquantity.toString(), // Convert quantity to string
+        price, // Price per unit
         totalPrice, // Total price
         location, // Buyer location
         deliveryMethod, // Delivery method
@@ -85,6 +99,9 @@ const BuyProduct: React.FC = () => {
         sellername, // Seller name
         category, // Product category
         image, // Product image
+        sellerlocation, // Seller location
+        sellerphone, // Seller phone
+        sellerorganization, // Seller organization
       }
     });
   };

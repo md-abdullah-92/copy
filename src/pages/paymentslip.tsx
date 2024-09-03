@@ -1,8 +1,27 @@
 import React from 'react';
+import { useRouter } from 'next/router'; // Import useRouter to access query parameters
 import Header from '@/components/Layout/Header'; 
 import Footer from '@/components/Layout/Footer'; 
 
 const PaymentSlip = () => {
+  const router = useRouter();
+  const { 
+    productid,
+    name,
+    quantity,
+    price,
+    totalPrice,
+    location,
+    deliveryMethod,
+    selleremail,
+    sellerlocation,
+    sellername,
+    category,
+    image,
+    sellerphone,
+    sellerorganization,
+  } = router.query; // Retrieve the query parameters
+
   const handlePrint = () => {
     window.print();
   };
@@ -20,33 +39,34 @@ const PaymentSlip = () => {
           <div className="mb-8 p-6 bg-green-50 rounded-lg shadow-inner border border-green-200 print:shadow-none print:border-none">
             <h2 className="text-2xl font-semibold text-green-700 mb-4">Order Summary</h2>
 
+            {/* Use the retrieved query parameters to display dynamic data */}
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Farmer:</span>
-              <span>Farmer John</span>
+              <span>{sellername}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Item:</span>
-              <span>Organic Apples</span>
+              <span>{name}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Quantity:</span>
-              <span>3</span>
+              <span>{quantity}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Price per Item:</span>
-              <span>$3.50</span>
+              <span>${price}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Total:</span>
-              <span>$10.50</span>
+              <span>${totalPrice}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Delivery Location:</span>
-              <span>123 Green Lane, Springfield</span>
+              <span>{location}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
-              <span className="font-medium text-green-600">Payment Method:</span>
-              <span>Credit Card</span>
+              <span className="font-medium text-green-600">Delivery Method:</span>
+              <span>{deliveryMethod}</span>
             </div>
             <div className="flex justify-between text-green-800 mb-2">
               <span className="font-medium text-green-600">Order Date:</span>
