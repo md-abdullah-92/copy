@@ -46,14 +46,7 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
     fetchOwnerProducts();
   }, [buyeremail]); // Include selleremail in dependency array
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
+  
   return (
     <main className="flex-grow max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Purchased Products</h2>
