@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import ButtonOutline from '../misc/ButtonOutline';
 import { useRouter } from 'next/router';
-import { usePathname } from 'next/navigation';
 
-const Header = () => {
+import { FaBox, FaUser, FaTractor, FaShoppingCart,FaSearch } from 'react-icons/fa'; // Import FaShoppingCart for cart
+import ButtonOutline from '../misc/ButtonOutline'; // Import ButtonOutline if needed
+import { FactoryIcon } from 'lucide-react';
+
+const NewHeader = () => {
   const router = useRouter();
-  const pathname = usePathname();
+  const { pathname, query } = router;
+  //const pathname = router.pathname; // Get the current pathname
   const [scrollActive, setScrollActive] = useState(false);
-  const [logged, setLogged] = useState<string | null>();
-  
+  const [logged, setLogged] = useState<string | null>(null);
+
   useEffect(() => {
     const profile = localStorage.getItem('profile');
     if (profile) setLogged(profile);
-  }, [logged]);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,42 +27,370 @@ const Header = () => {
   }, []);
 
   return (
-    <>
-      <header
-        className={
-          'fixed top-0 z-30 w-full bg-green-200 border-b border-green-300 transition-all ' +
-          (scrollActive ? 'pt-0 shadow-md' : '')
-        }
-      >
-        <nav className="mx-auto grid max-w-screen-xl grid-flow-col px-6 py-3 sm:px-8 sm:py-4 lg:px-16">
-          <Link
-            className="col-start-1 col-end-2 flex items-center"
-            href={'/dashboard'}
-          >
-            <img src="/assets/logo.png" className="h-12 w-auto" />
-            <div
-              style={{ fontFamily: 'Caveat Brush, cursive', fontSize: '35px' }}
-            >
-              AgriBazaar
-            </div>
-          </Link>
+    <header
+      className={
+        'fixed top-0 z-30 w-full bg-green-200 border-b border-green-300 transition-all ' +
+        (scrollActive ? 'pt-0 shadow-md' : '')
+      }
+    >
+      <nav className="flex items-center justify-between max-w-screen-xl px-6 py-4 mx-auto lg:px-16">
+        {/* Logo and Site Name */}
+        <Link href={'/dashboard'} className="flex items-center">
+          <img src="/assets/logo.png" alt="Logo" className="h-10 w-auto mr-3" />
+          <span style={{ fontFamily: 'Caveat Brush, cursive', fontSize: '35px' }}>
+            AgriBazaar
+          </span>
+        </Link>
+
+        {/* Conditional Navigation Links */}
+        <div className="flex items-center space-x-4">
           {pathname === '/' && (
-            <div className="col-start-10 col-end-12 flex items-center justify-end font-medium">
+            <>
               <Link
                 href="/login"
-                className="mx-2 capitalize tracking-wide text-black-600 transition-all hover:text-green-500 sm:mx-4"
+                className="capitalize tracking-wide text-black-600 transition-all hover:text-green-500"
               >
-                  Sign In
+                Sign In
               </Link>
               <ButtonOutline onClick={() => router.push('/signup')}>
                 Sign Up
               </ButtonOutline>
+            </>
+          )}
+          {pathname === '/orders' && (
+            <>
+              <button
+                onClick={() => router.push('/farmerdashboard#products')}
+                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                aria-label="Manage Products"
+              >
+                <FaBox size={22} />
+                <span
+                  className="ml-2 text-sm font-semibold"
+                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+                >
+                  Manage Products
+                </span>
+              </button>
+              <button
+                onClick={() => router.push('/farmerdashboard')}
+                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                aria-label="Dashboard"
+              >
+                <FaUser size={22} />
+                <span
+                  className="ml-2 text-sm font-semibold"
+                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+                >
+                  Dashboard
+                </span>
+              </button>
+            </>
+          )}
+          {pathname === '/farmerdashboard' && (
+            <button
+              onClick={() => router.push('/orders')}
+              className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="Orders"
+            >
+              <FaTractor size={22} />
+              <span
+                className="ml-2 text-sm font-semibold"
+                style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+              >
+                Orders
+              </span>
+            </button>
+          )}
+          {pathname === '/BrowseProducts' && (
+            <div className="flex items-center space-x-4">
+              {/* Cart Button */}
+              <button
+                onClick={() => router.push('/buyerdashboard')}
+                 className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                aria-label="cart"
+              >
+                <FaShoppingCart size={22} />
+                {/* Add cart count badge if needed */}
+                <span
+                className="ml-2 text-sm font-semibold"
+                style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+              >
+                Cart
+              </span>
+              </button>
+              {/* Account Button */}
+              <button
+                onClick={() => router.push('/buyerdashboard')}
+                  className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                aria-label="dashboard"
+              >
+                <FaUser size={22} />
+                <span
+                className="ml-2 text-sm font-semibold"
+                style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+              >
+                Deshboard
+              </span>
+              </button>
             </div>
           )}
-        </nav>
-      </header>
-    </>
+          {/* Product Details Icon */}
+          {pathname === '/product-details' && query.id && (
+                       <div className="flex items-center space-x-4">
+                         <button
+              onClick={() => router.push('/BrowseProducts')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+             // aria-label="cart"
+            >
+              <FaSearch size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Browse Products
+            </span>
+            </button>
+                       {/* Cart Button */}
+                       <button
+                         onClick={() => router.push('/buyerdashboard')}
+                          className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                         aria-label="cart"
+                       >
+                      <FaShoppingCart size={22} />
+                         {/* Add cart count badge if needed */}
+                         <span
+                         className="ml-2 text-sm font-semibold"
+                         style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+                       >
+                         Cart
+                       </span>
+                       </button>
+                       {/* Account Button */}
+                       <button
+                         onClick={() => router.push('/buyerdashboard')}
+                           className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                         aria-label="dashboard"
+                       >
+                         <FaUser size={22} />
+                         <span
+                         className="ml-2 text-sm font-semibold"
+                         style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+                       >
+                         Deshboard
+                       </span>
+                       </button>
+                     </div>
+          )}
+          {/* Buy Icon for /buy Route */}
+          {pathname === '/buy' && query.productid && (
+                                <div className="flex items-center space-x-4">
+                                            <button
+              onClick={() => router.push('/BrowseProducts')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+             // aria-label="cart"
+            >
+               <FaSearch size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Browse Products
+            </span>
+            </button>
+                                {/* Cart Button */}
+                                <button
+                                  onClick={() => router.push('/buyerdashboard')}
+                                   className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                                  aria-label="cart"
+                                >
+                                  <FaShoppingCart size={22} />
+                                  {/* Add cart count badge if needed */}
+                                  <span
+                                  className="ml-2 text-sm font-semibold"
+                                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+                                >
+                                  Cart
+                                </span>
+                                </button>
+                                {/* Account Button */}
+                                <button
+                                  onClick={() => router.push('/buyerdashboard')}
+                                    className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+                                  aria-label="dashboard"
+                                >
+                                  <FaUser size={22} />
+                                  <span
+                                  className="ml-2 text-sm font-semibold"
+                                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+                                >
+                                  Deshboard
+                                </span>
+                                </button>
+                              </div>
+          )}
+           {/* Payment Icon for /payment Route */}
+           {pathname === '/payment' && query.productid && (
+            <div className="flex items-center space-x-4">
+            {/* Cart Button */}
+            <button
+              onClick={() => router.push('/BrowseProducts')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+             // aria-label="cart"
+            >
+               <FaSearch size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Browse Products
+            </span>
+            </button>
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="cart"
+            >
+              <FaShoppingCart size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Cart
+            </span>
+            </button>
+            {/* Account Button */}
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="dashboard"
+            >
+              <FaUser size={22} />
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Deshboard
+            </span>
+            </button>
+          </div>
+          )}
+             {pathname === '/confirmation' && query.productid && (
+            <div className="flex items-center space-x-4">
+            {/* Cart Button */}
+            <button
+              onClick={() => router.push('/BrowseProducts')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+             // aria-label="cart"
+            >
+               <FaSearch size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Browse Products
+            </span>
+            </button>
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="cart"
+            >
+              <FaShoppingCart size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Cart
+            </span>
+            </button>
+            {/* Account Button */}
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="dashboard"
+            >
+              <FaUser size={22} />
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Deshboard
+            </span>
+            </button>
+          </div>
+          )}
+
+{pathname === '/paymentslip' && query.productid && (
+            <div className="flex items-center space-x-4">
+            {/* Cart Button */}
+            <button
+              onClick={() => router.push('/BrowseProducts')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+             // aria-label="cart"
+            >
+               <FaSearch size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Browse Products
+            </span>
+            </button>
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="cart"
+            >
+              <FaShoppingCart size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Cart
+            </span>
+            </button>
+            {/* Account Button */}
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="dashboard"
+            >
+              <FaUser size={22} />
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Deshboard
+            </span>
+            </button>
+          </div>
+          )}
+
+          {logged && (
+            <button
+              onClick={() => {
+                localStorage.removeItem('profile');
+                setLogged(null);
+                router.push('/');
+              }}
+              className="ml-4 px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-full hover:bg-green-400 transition-colors duration-300"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      </nav>
+    </header>
   );
 };
 
-export default Header;
+export default NewHeader;

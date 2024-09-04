@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Layout from '@/components/Layout/Layout';
-import { FaSearch, FaEye, FaTrash } from 'react-icons/fa';
+import { FaSearch, FaEye, FaTrash, FaUser, FaBox } from 'react-icons/fa';
 
 interface Order {
   id: number;
@@ -79,7 +79,12 @@ export default function OrdersPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-2xl shadow-2xl p-10">
-            <h2 className="text-3xl font-bold text-indigo-900 mb-8">Order Management</h2>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-indigo-900">
+                Order Management
+              </h2>
+            
+            </div>
 
             {/* Search and Filter Controls */}
             <div className="flex mb-6 justify-between items-center">
@@ -91,9 +96,7 @@ export default function OrdersPage() {
                   onChange={handleSearchChange}
                   className="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
-                <button
-                  className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-5 py-3 rounded-full hover:shadow-lg transition-all duration-300 flex items-center"
-                >
+                <button className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-5 py-3 rounded-full hover:shadow-lg transition-all duration-300 flex items-center">
                   <FaSearch className="mr-2" />
                   Search
                 </button>
@@ -125,32 +128,50 @@ export default function OrdersPage() {
                     className="bg-gradient-to-br from-white to-indigo-50 rounded-lg shadow-md p-6 flex justify-between items-center transform transition duration-500 hover:scale-105"
                   >
                     <div className="flex space-x-4 items-center">
-                      <img src={order.image} alt={order.name} className="w-20 h-20 object-cover rounded-lg" />
+                      <img
+                        src={order.image}
+                        alt={order.name}
+                        className="w-20 h-20 object-cover rounded-lg"
+                      />
                       <div>
-                        <h3 className="text-xl font-semibold text-indigo-900">{order.name}</h3>
-                        {/* Sold Quantity and Price on one line */}
-    <p className="text-gray-700 mt-2">
-      <span className="font-bold">Sold Quantity:</span> <i>{order.soldquantity}</i>, 
-      <span className="font-bold ml-4">Total Price:</span> <i>${order.soldprice}</i>
-    </p>
-
-    {/* Buyer name and Delivery Address on one line */}
-    <p className="text-gray-700 mt-2">
-      <span className="font-bold">Buyer:</span> <i>{order.buyername}</i> 
-      (<a href={`mailto:${order.buyeremail}`} className="text-indigo-600 underline">{order.buyeremail}</a>), 
-      <span className="font-bold ml-4">Status:</span> 
-      <span className={`font-bold italic ${order.deliverystatus === 'Delivered' ? 'text-green-600' : 'text-red-600'}`}>
-        {order.deliverystatus}
-      </span>
-      
-    </p>
-
-    {/* Status and Sold Time on one line */}
-    <p className="text-gray-700 mt-2">
-      <span className="font-bold">Sold On:</span> <i>{order.soldtime}</i>, 
-      
-      <span className="font-bold ml-4">Delivery Address:</span> <i>{order.deliverybyaddress}</i>
-    </p>
+                        <h3 className="text-xl font-semibold text-indigo-900">
+                          {order.name}
+                        </h3>
+                        <p className="text-gray-700 mt-2">
+                          <span className="font-bold">Sold Quantity:</span>{' '}
+                          <i>{order.soldquantity}</i>,
+                          <span className="font-bold ml-4">Total Price:</span>{' '}
+                          <i>${order.soldprice}</i>
+                        </p>
+                        <p className="text-gray-700 mt-2">
+                          <span className="font-bold">Buyer:</span>{' '}
+                          <i>{order.buyername}</i>{' '}
+                          (<a
+                            href={`mailto:${order.buyeremail}`}
+                            className="text-indigo-600 underline"
+                          >
+                            {order.buyeremail}
+                          </a>
+                          ),{' '}
+                          <span className="font-bold ml-4">Status:</span>
+                          <span
+                            className={`font-bold italic ${
+                              order.deliverystatus === 'Delivered'
+                                ? 'text-green-600'
+                                : 'text-red-600'
+                            }`}
+                          >
+                            {order.deliverystatus}
+                          </span>
+                        </p>
+                        <p className="text-gray-700 mt-2">
+                          <span className="font-bold">Sold On:</span>{' '}
+                          <i>{order.soldtime}</i>,
+                          <span className="font-bold ml-4">
+                            Delivery Address:
+                          </span>{' '}
+                          <i>{order.deliverybyaddress}</i>
+                        </p>
                       </div>
                     </div>
                     <div className="flex space-x-3">
@@ -173,7 +194,9 @@ export default function OrdersPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-gray-700">No orders found matching your criteria.</p>
+              <p className="text-center text-gray-700">
+                No orders found matching your criteria.
+              </p>
             )}
           </div>
         </div>

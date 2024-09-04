@@ -241,7 +241,7 @@ export default function DashboardProfile() {
                   </li>
                   <li>
                     <a
-                      href="#orders"
+                      href="/orders"
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                     >
                       <FaTractor className="mr-3" />

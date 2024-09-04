@@ -101,20 +101,7 @@ export default function BuyerDashboard() {
  
 
 
-  const [purchasedProducts, setPurchasedProducts] = useState([
-    {
-      id: 1,
-      name: 'Organic Apples',
-      description: 'High-quality organic apples sourced from local farms.',
-      image: '/path/to/image.jpg',
-    },
-    {
-      id: 2,
-      name: 'Fresh Carrots',
-      description: 'Crunchy and fresh carrots.',
-      image: '/path/to/image2.jpg',
-    },
-  ]);
+ 
 
   const [orders, setOrders] = useState([
     {
