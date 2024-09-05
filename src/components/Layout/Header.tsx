@@ -6,7 +6,7 @@ import { FaBox, FaUser, FaTractor, FaShoppingCart,FaSearch } from 'react-icons/f
 import ButtonOutline from '../misc/ButtonOutline'; // Import ButtonOutline if needed
 import { FactoryIcon } from 'lucide-react';
 
-const NewHeader = () => {
+const Header = () => {
   const router = useRouter();
   const { pathname, query } = router;
   //const pathname = router.pathname; // Get the current pathname
@@ -57,7 +57,7 @@ const NewHeader = () => {
               </ButtonOutline>
             </>
           )}
-          {pathname === '/orders' && (
+          {pathname == '/orders' && (
             <>
               <button
                 onClick={() => router.push('/farmerdashboard#products')}
@@ -87,26 +87,12 @@ const NewHeader = () => {
               </button>
             </>
           )}
-          {pathname === '/farmerdashboard' && (
-            <button
-              onClick={() => router.push('/orders')}
-              className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
-              aria-label="Orders"
-            >
-              <FaTractor size={22} />
-              <span
-                className="ml-2 text-sm font-semibold"
-                style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
-              >
-                Orders
-              </span>
-            </button>
-          )}
+          
           {pathname === '/BrowseProducts' && (
             <div className="flex items-center space-x-4">
               {/* Cart Button */}
               <button
-                onClick={() => router.push('/buyerdashboard')}
+                onClick={() => router.push('/cartpage')}
                  className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
                 aria-label="cart"
               >
@@ -202,7 +188,7 @@ const NewHeader = () => {
             </button>
                                 {/* Cart Button */}
                                 <button
-                                  onClick={() => router.push('/buyerdashboard')}
+                                  onClick={() => router.push('/cartpage')}
                                    className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
                                   aria-label="cart"
                                 >
@@ -250,7 +236,7 @@ const NewHeader = () => {
             </span>
             </button>
             <button
-              onClick={() => router.push('/buyerdashboard')}
+              onClick={() => router.push('/cartpage')}
                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
               aria-label="cart"
             >
@@ -297,7 +283,7 @@ const NewHeader = () => {
             </span>
             </button>
             <button
-              onClick={() => router.push('/buyerdashboard')}
+              onClick={() => router.push('/cartpage')}
                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
               aria-label="cart"
             >
@@ -345,7 +331,7 @@ const NewHeader = () => {
             </span>
             </button>
             <button
-              onClick={() => router.push('/buyerdashboard')}
+              onClick={() => router.push('/cartpage')}
                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
               aria-label="cart"
             >
@@ -393,4 +379,4 @@ const NewHeader = () => {
   );
 };
 
-export default NewHeader;
+export default Header;

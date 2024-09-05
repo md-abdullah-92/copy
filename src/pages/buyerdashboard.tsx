@@ -210,11 +210,11 @@ export default function BuyerDashboard() {
                   </li>
                   <li>
                     <a
-                      href="#orders"
+                      href="cartpage"
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                     >
-                      <FaBoxOpen className="mr-3" />
-                      Orders
+                      <FaShoppingCart className="mr-3" />
+                      Cart
                     </a>
                   </li>
                   <li>
@@ -235,15 +235,7 @@ export default function BuyerDashboard() {
                       Payment Methods
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="#cart"
-                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
-                    >
-                      <FaShoppingCart className="mr-3" />
-                      Cart
-                    </a>
-                  </li>
+                  
                 </ul>
               </nav>
             </div>
@@ -314,78 +306,13 @@ export default function BuyerDashboard() {
 </section>
 
 
-              <section
-                id="orders"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Orders
-                </h2>
-                <div className="grid grid-cols-1 gap-6">
-                  {orders.map((order) => (
-                    <div
-                      key={order.id}
-                      className="bg-gray-50 p-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      <h3 className="text-lg font-semibold text-gray-700">
-                        {order.product}
-                      </h3>
-                      <p className="text-gray-600 mt-2">Quantity: {order.quantity}</p>
-                      <p className="text-gray-600 mt-2">Status: {order.status}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
 
-              <section
-                id="favorites"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Favorites
-                </h2>
-                <div className="text-gray-600">No favorites added yet.</div>
-              </section>
 
-              <section
-                id="payments"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Payment Methods
-                </h2>
-                <div className="text-gray-600">No payment methods added yet.</div>
-              </section>
+             
 
-              <section
-                id="cart"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Cart</h2>
-                {cart.length > 0 ? (
-                  cart.map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-gray-100 rounded-lg mb-4"
-                    >
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-700">
-                          {product.name}
-                        </h3>
-                        <p className="text-gray-600">{product.description}</p>
-                      </div>
-                      <button
-                        onClick={() => removeFromCart(index)}
-                        className="text-red-600 hover:text-red-800 transition-colors duration-300"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-600">Your cart is empty.</p>
-                )}
-              </section>
+            
+
+             
             </div>
           </div>
         </div>
