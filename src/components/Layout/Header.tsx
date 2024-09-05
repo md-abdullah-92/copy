@@ -361,6 +361,40 @@ const Header = () => {
           </div>
           )}
 
+{pathname === '/cartpage' && (
+            <div className="flex items-center space-x-4">
+            {/* Cart Button */}
+            <button
+              onClick={() => router.push('/BrowseProducts')}
+               className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+             // aria-label="cart"
+            >
+               <FaSearch size={22} />
+              {/* Add cart count badge if needed */}
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Browse Products
+            </span>
+            </button>
+            {/* Account Button */}
+            <button
+              onClick={() => router.push('/buyerdashboard')}
+                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
+              aria-label="dashboard"
+            >
+              <FaUser size={22} />
+              <span
+              className="ml-2 text-sm font-semibold"
+              style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
+            >
+              Deshboard
+            </span>
+            </button>
+          </div>
+          )}
+
           {logged && (
             <button
               onClick={() => {

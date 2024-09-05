@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import router from 'next/router';
 import axios from 'axios';
 
 interface Product {
@@ -46,7 +47,10 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
     fetchOwnerProducts();
   }, [buyeremail]); // Include selleremail in dependency array
 
-  
+  // Handle viewing the details of a specific product
+  const handleViewDetails = (id: string) => {
+    router.push(`/product-details?id=${id}`);
+  };
   return (
     <main className="flex-grow max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Purchased Products</h2>
@@ -73,7 +77,9 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
                 <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition-colors duration-300">
                   Add to Cart
                 </button>
-                <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">
+                <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
+                  onClick={() => handleViewDetails(product.productid)}
+                >
                   View Details
                 </button>
                 <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">

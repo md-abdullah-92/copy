@@ -40,13 +40,20 @@ const CartPage = () => {
   // Function to handle removing a product from the cart
   const handleRemoveProduct = async (productId: string) => {
     try {
-      await axios.delete(`/api/cart/${productId}`); // Assuming you have an API endpoint for removing items from the cart
-      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
+      const email = localStorage.getItem('email'); // Fetch email from local storage
+      console.log('Email:', email);
+      console.log('Product ID:', productId);
+      const response = await axios.post('/api/removecart', {
+        email, 
+        id: productId
+      });
+      alert('Product removed from cart');
+      console.log('Product removed:', response.data);
     } catch (err) {
-      console.error('Error removing product from cart:', err);
-      setError('Failed to remove item. Please try again.');
+      console.error('Error removing product:', err);
     }
   };
+  
   const handleViewDetails = (id: string) => {
     router.push(`/product-details?id=${id}`);
   };
@@ -58,7 +65,7 @@ const CartPage = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto p-10">
+      <div className="bg-sky-200 min-h-screen p-10"> {/* Added light sky background here */}
         <h1 className="text-3xl font-semibold text-gray-900 mb-8">Your Shopping Cart</h1>
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {products.length === 0 ? (
