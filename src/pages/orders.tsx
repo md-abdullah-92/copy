@@ -108,9 +108,11 @@ export default function OrdersPage() {
                   className="px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="All">All Orders</option>
-                  <option value="Pending">Pending</option>
+                  <option value="Packaging Done">Packaging Done</option>
+                  <option value="Waiting for Pickup">Waiting for Pickup</option>
                   <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
+                  <option value="On the Road">On the Road</option>
+                  <option value="Delivered">Delivered</option>
                 </select>
               </div>
             </div>
@@ -140,7 +142,7 @@ export default function OrdersPage() {
                         <p className="text-gray-700 mt-2">
                           <span className="font-bold">Sold Quantity:</span>{' '}
                           <i>{order.soldquantity}</i>,
-                          <span className="font-bold ml-4">Total Price:</span>{' '}
+                          <span className="font-bold ml-2">Total Price:</span>{' '}
                           <i>${order.soldprice}</i>
                         </p>
                         <p className="text-gray-700 mt-2">
@@ -168,28 +170,20 @@ export default function OrdersPage() {
                           <span className="font-bold">Sold On:</span>{' '}
                           <i>{order.soldtime}</i>,
                           <span className="font-bold ml-4">
-                            Delivery Address:
+                              Delivery Address:
                           </span>{' '}
                           <i>{order.deviverybyaddress}</i>
                         </p>
                       </div>
                     </div>
                     <div className="flex space-x-3">
-                      <button
-                        className="bg-gradient-to-r from-green-400 to-green-600 text-white px-5 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center"
-                        onClick={() => router.push(`/orders/${order.id}`)}
-                      >
-                        <FaEye className="mr-2" />
-                        View Details
-                      </button>
-                      <button
-                        className="bg-gradient-to-r from-red-400 to-red-600 text-white px-5 py-2 rounded-full hover:shadow-lg transition-all duration-300 flex items-center"
-                        onClick={() => handleDeleteOrder(order.id)}
-                      >
-                        <FaTrash className="mr-2" />
-                        Delete Order
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => router.push(`/update-order-status?orderId=${order.id}&status=${order.deliverystatus}`)}
+                      className="bg-transparent text-blue-500 px-5 py-3 border border-blue-500 rounded-md text-xs hover:bg-blue-500 hover:text-white transition-colors duration-300"
+                    >
+                      Update Status
+                    </button>
+                  </div>
                   </div>
                 ))}
               </div>
