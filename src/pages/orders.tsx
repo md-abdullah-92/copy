@@ -170,7 +170,7 @@ export default function OrdersPage() {
                           <span className="font-bold ml-4">
                             Delivery Address:
                           </span>{' '}
-                          <i>{order.deliverybyaddress}</i>
+                          <i>{order.deviverybyaddress}</i>
                         </p>
                       </div>
                     </div>

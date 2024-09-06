@@ -132,6 +132,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       break;
     }
+    case 'DELETE': {
+      try {
+        const url = "http://localhost:8080/product/deleteproduct"; // Adjust if needed
+        const id = req.query.id as string;
+        
+        // Making a DELETE request to the Java backend
+        const axiosRes = await axios.delete(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          params: {
+            id,
+          },
+        });
+        
+        res.status(200).json(axiosRes.data);
+      } catch (err) {
+        console.error('Error deleting product:', err);
+        res.status(500).json({
+          message: 'An error occurred while deleting the product.',
+        });
+      }
+      break;
+    }
     
 
 

@@ -48,6 +48,9 @@ const CartPage = () => {
         id: productId
       });
       alert('Product removed from cart');
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id !== productId)
+      );
       console.log('Product removed:', response.data);
     } catch (err) {
       console.error('Error removing product:', err);

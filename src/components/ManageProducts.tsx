@@ -1,11 +1,11 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
-import { FaEdit, FaSave } from 'react-icons/fa';
+import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../config/firebaseConfig'; // Ensure this path is correct
+import { storage } from '../config/firebaseConfig';
 
 interface Product {
-  id: number;
+  id: string;
   productname: string;
   description: string;
   image: string;
@@ -27,7 +27,6 @@ const ManageProduct: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
-  // Fetch products owned by the logged-in user
   useEffect(() => {
     const email = localStorage.getItem('email');
 
@@ -50,7 +49,7 @@ const ManageProduct: React.FC = () => {
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    productId: number
+    productId: string
   ) => {
     const { name, value } = e.target;
     setProducts((prevProducts) =>
@@ -62,7 +61,7 @@ const ManageProduct: React.FC = () => {
 
   const handleImageUpload = async (
     e: ChangeEvent<HTMLInputElement>,
-    productId: number
+    productId: string
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -71,6 +70,7 @@ const ManageProduct: React.FC = () => {
       try {
         await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
+        console.log('Image URL:', url);
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
             product.id === productId ? { ...product, image: url } : product
@@ -83,8 +83,8 @@ const ManageProduct: React.FC = () => {
       }
     }
   };
-
-  const handleEditClick = (productId: number) => {
+  // handleEditClick function to set the isEditing property to true
+  const handleEditClick = (productId: string) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === productId ? { ...product, isEditing: true } : product
@@ -92,21 +92,24 @@ const ManageProduct: React.FC = () => {
     );
   };
 
-  const handleSaveClick = async (productId: number) => {
+  const handleSaveClick = async (productId: string) => {
+    console.log("Save product id: ", productId);
+  
     const productToSave = products.find((product) => product.id === productId);
-
+  
+    console.log("Product to save: ", productToSave);
+  
     if (productToSave) {
       try {
-        const response = await axios.put(
-          `/api/product/${productId}`,
-          productToSave
-        );
+        const response = await axios.put(`/api/editproduct`, productToSave);
+  
         if (response.status === 200) {
           setProducts((prevProducts) =>
             prevProducts.map((product) =>
               product.id === productId ? { ...product, isEditing: false } : product
             )
           );
+          alert('Product updated successfully');
         } else {
           throw new Error('Failed to update product');
         }
@@ -114,9 +117,32 @@ const ManageProduct: React.FC = () => {
         console.error('Error updating product:', error);
         alert('Failed to update product');
       }
+    } else {
+      alert('Product not found');
     }
   };
-
+  
+  const handleDeleteClick = async (productId: string) => {
+    console.log("Delete product id: ", productId); 
+    
+    try {
+      const response = await axios.delete(`/api/product`, {
+        params: { id: productId },
+      });
+  
+      if (response.status === 200) {
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product.id !== productId)
+        );
+      } else {
+        throw new Error('Failed to delete product');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error); 
+      alert('Failed to delete product'); 
+    }
+  };
+  
   if (loading) return <p>Loading products...</p>;
 
   return (
@@ -127,7 +153,7 @@ const ManageProduct: React.FC = () => {
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300"
+            className="bg-light-blue-50 p-6 rounded-lg shadow-md hover:bg-light-blue-100 transition-colors duration-300"
           >
             {product.isEditing ? (
               <>
@@ -136,14 +162,14 @@ const ManageProduct: React.FC = () => {
                   name="productname"
                   value={product.productname}
                   onChange={(e) => handleInputChange(e, product.id)}
-                  className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+                  className="w-full px-4 py-2 mb-2 border border-blue-300 rounded-lg"
                   placeholder="Enter product name"
                 />
                 <textarea
                   name="description"
                   value={product.description}
                   onChange={(e) => handleInputChange(e, product.id)}
-                  className="w-full px-4 py-2 mb-2 border border-green-300 rounded-lg"
+                  className="w-full px-4 py-2 mb-2 border border-blue-300 rounded-lg"
                   placeholder="Enter product description"
                 />
                 <input
@@ -151,9 +177,43 @@ const ManageProduct: React.FC = () => {
                   onChange={(e) => handleImageUpload(e, product.id)}
                   className="w-full mb-2"
                 />
+                <input
+                    type="text"
+                    name="price"
+                    value={product.price}
+                    onChange={(e) => handleInputChange(e, product.id)}
+                    className="w-full px-4 py-2 mb-2 border border-blue-300 rounded-lg"
+                    placeholder="Enter product price"
+                    />
+                <input
+                    type="text"
+                    name="quantity"
+                    value={product.quantity}
+                    onChange={(e) => handleInputChange(e, product.id)}
+                    className="w-full px-4 py-2 mb-2 border border-blue-300 rounded-lg"
+                    placeholder="Enter product quantity"
+                    />
+                <input
+                    type="text"
+                    name="category"
+                    value={product.category}
+                    onChange={(e) => handleInputChange(e, product.id)}
+                    className="w-full px-4 py-2 mb-2 border border-blue-300 rounded-lg"
+                    placeholder="Enter product category"
+                    />
+                <input
+                    type="text"
+                    name="ownername"
+                    value={product.ownername}
+                    onChange={(e) => handleInputChange(e, product.id)}
+                    className="w-full px-4 py-2 mb-2 border border-blue-300 rounded-lg"
+                    placeholder="Enter owner name"
+                    />
+
+
                 <button
                   onClick={() => handleSaveClick(product.id)}
-                  className="w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+                  className="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-300 shadow-md"
                 >
                   <FaSave className="mr-2 inline" />
                   Save
@@ -161,7 +221,7 @@ const ManageProduct: React.FC = () => {
               </>
             ) : (
               <>
-                <h3 className="text-2xl font-bold text-green-900 mb-2">
+                <h3 className="text-2xl font-bold text-blue-900 mb-2">
                   {product.productname}
                 </h3>
                 <img
@@ -176,13 +236,22 @@ const ManageProduct: React.FC = () => {
                 <p className="text-sm text-gray-600">
                   Owner Name: {product.ownername}
                 </p>
-                <button
-                  onClick={() => handleEditClick(product.id)}
-                  className="w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-                >
-                  <FaEdit className="mr-2 inline" />
-                  Edit
-                </button>
+                <div className="flex space-x-2">
+                 
+                  <button
+                      className="bg-transparent text-blue-500 px-3 py-1.5 border border-blue-500 rounded-md text-xs hover:bg-blue-500 hover:text-white transition-colors duration-300"
+                      onClick={() => handleEditClick(product.id)}
+                    >
+                    Edit
+                    </button>
+                    <button
+                      className="bg-transparent text-red-500 px-3 py-1.5 border border-red-500 rounded-md text-xs hover:bg-red-500 hover:text-white transition-colors duration-300"
+                      onClick={() => handleDeleteClick(product.id)}
+                    >
+                      Remove
+                    </button>
+                 
+                </div>
               </>
             )}
           </div>
@@ -190,5 +259,6 @@ const ManageProduct: React.FC = () => {
       </div>
     </div>
   );
-}
+};
+
 export default ManageProduct;
