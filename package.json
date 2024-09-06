@@ -29,6 +29,7 @@
     "axios": "^1.7.2",
     "ccapture.js": "^1.1.0",
     "clsx": "^2.1.1",
+    "copy": "file:",
     "core-js": "^3.37.1",
     "dexie": "^4.0.8",
     "diff-match-patch-ts": "^0.6.0",

@@ -6,7 +6,7 @@ import Head from 'next/head';
 import React, { useState, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from './firebaseConfig';  // Ensure this path is correct
+import { storage } from '../config/firebaseConfig';  // Ensure this path is correct
 
 export default function UpdateProfile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);

@@ -150,14 +150,14 @@ export default function BuyerDashboard() {
             <div className="bg-white rounded-xl shadow-lg p-6 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <div className="flex flex-col items-center">
               {loggedInUser.avatarurl ? (
-    <img
-      src={loggedInUser.avatarurl}
-      alt={`${loggedInUser.name}'s Avatar`}
-      className="w-28 h-28 rounded-full object-cover"
-    />
-  ) : (
-    <FaUserCircle className="text-7xl text-green-600" />
-  )}
+                 <img
+                    src={loggedInUser.avatarurl}
+                    alt={`${loggedInUser.name}'s Avatar`}
+                    className="w-28 h-28 rounded-full object-cover"
+                  />
+            ) : (
+               <FaUserCircle className="text-7xl text-green-600" />
+             )}
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
                   {loggedInUser.name}
                 </h2>
