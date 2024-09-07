@@ -32,6 +32,36 @@ case 'GET': {
     break;
 
   }
+  case 'PUT': {
+    console.log("Order page");
+    console.log("orderpage" ,req.query);
+    try {
+      const url = "http://localhost:8080/soldproduct/updatestatus"; // Adjust if needed
+      const id = req.query.id as string;
+      const deliverystatus = req.query.deliverystatus as string;
+      console.log("Order page",{id});
+      console.log({deliverystatus});
+
+      // Making a PUT request to the Java backend
+      const axiosRes = await axios.put(url, {}, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: {
+          id,
+          deliverystatus,
+        },
+      });
+      
+      res.status(200).json(axiosRes.data);
+    } catch (err) {
+      console.error('Error updating product quantity:', err);
+      res.status(500).json({
+        message: 'An error occurred while updating the product quantity.',
+      });
+    }
+    break;
+  }
   
 
   default:

@@ -26,17 +26,18 @@ const UpdateOrderStatus: React.FC = () => {
     setNewStatus(selectedStatus);
 
     if (selectedStatus === 'Delivered') {
-      // Trigger OTP sending to buyer's email
       try {
         await axios.post(`/api/orders/${orderId}/send-otp`);
-        setOtpRequired(true); // Show OTP input when status is "Delivered"
+        setOtpRequired(true);
       } catch (err) {
         console.error('Error sending OTP:', err);
         setError('Failed to send OTP. Please try again.');
       }
     } else {
-      setOtpRequired(false); // Hide OTP input for other statuses
+      setOtpRequired(false);
     }
+    //For other status
+    
   };
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,16 +51,31 @@ const UpdateOrderStatus: React.FC = () => {
     }
 
     try {
-      // Verify OTP if status is "Delivered"
-      if (newStatus === 'Delivered') {
+     /* if (newStatus === 'Delivered') {
         await axios.post(`/api/orders/${orderId}/verify-otp`, { otp });
+      }*/
+     console.log(" new",orderId);
+      console.log(newStatus);
+
+
+     const id=orderId as string;
+     const deliverystatus=newStatus as string;
+     if(!id){
+        console.error("Error: Missing or invalid ID.");
+        return;
       }
-
-      // Update the order status
-      await axios.put(`/api/orders/${orderId}`, {
-        deliverystatus: newStatus,
+      if (!newStatus) {
+        console.error("Error: Missing or invalid quantity.");
+        return;
+      }
+  
+      const response = await axios.put('/api/orders', {}, {
+        params: {
+          id,
+          deliverystatus,
+        },
       });
-
+      alert('Order status updated successfully');
       router.push('/orders');
     } catch (err) {
       console.error('Error updating order status:', err);
@@ -69,7 +85,7 @@ const UpdateOrderStatus: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-light-sky-300 py-10 pt-24">
+      <div className="min-h-screen bg-light-sky-300 flex items-center justify-center py-10">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-2xl shadow-xl p-10 transition-transform transform hover:scale-105 duration-300">
             {loading ? (
@@ -97,7 +113,7 @@ const UpdateOrderStatus: React.FC = () => {
                     onChange={handleStatusChange}
                     className="w-full px-4 py-2 border border-green-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
-                    <option value="Pending">Pending</option>
+                    <option value="Order Received">Order Received</option>
                     <option value="Packaging Done">Packaging Done</option>
                     <option value="Waiting for Pickup">Waiting for Pickup</option>
                     <option value="On the Road">On the Road</option>
