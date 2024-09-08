@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useEffect } from 'react';
 import {
   FaUserCircle,
@@ -11,20 +12,11 @@ import {
   FaSignOutAlt,
   FaHeart,
   FaShoppingBag,
+  FaChartLine,
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 import PurchasedProducts from '@/components/PurchasedProducts';
 
-
-interface Product {
-  id:string;
-  productname: string;
-  description: string;
-  image: string;
-  price: string;
-  category: string;
-  quantity: string;
-}
 
 export default function BuyerDashboard() {
   const [profile, setProfiles] = useState<any>(null);
@@ -100,43 +92,16 @@ export default function BuyerDashboard() {
     fetchOwnerProducts();
   }, []);
 
- 
-
-
- 
-
-  
-
   const [cart, setCart] = useState<any[]>([]);
 
   
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
-  const addToCart = (product: any) => {
-    setCart([...cart, product]);
-    alert(`${product.name} has been added to your cart.`);
-  };
-
-  const handleViewDetails = (id: string) => {
-    router.push(`/product-details?id=${id}`);
-  };
-
+  
   const handleSignOut = () => {
     localStorage.removeItem('token');
     window.location.href = '/';
   };
-
-  const handleSeeMore = () => {
-    router.push('/BrowseProducts'); // Navigate to the page showing all products
-  };
-
-  // Move removeFromCart inside the component
-  const removeFromCart = (index: number) => {
-    const updatedCart = cart.filter((_, i) => i !== index);
-    setCart(updatedCart);
-    alert('Item removed from cart.');
-  };
-
   return (
     <>
     <Head>
@@ -179,6 +144,15 @@ export default function BuyerDashboard() {
               </div>
               <nav className="mt-12">
                 <ul className="space-y-6">
+                <li>
+                    <a
+                      href="#dashboard"
+                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                    >
+                      <FaChartLine className="mr-3" />
+                      Dashboard
+                    </a>
+                  </li>
                   <li>
                     <a
                       href="#purchased"
@@ -188,14 +162,12 @@ export default function BuyerDashboard() {
                       Purchased Products
                     </a>
                   </li>
+                  
                   <li>
-                    <a
-                      href="#browse"
-                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
-                    >
-                      <FaShoppingCart className="mr-3" />
-                      Browse Products
-                    </a>
+                  <Link href="/BrowseProducts" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                  <FaShoppingCart className="mr-3" />
+                  Browse Products
+                  </Link>
                   </li>
                   <li>
                     <a
@@ -230,6 +202,34 @@ export default function BuyerDashboard() {
             </div>
 
             <div className="md:col-span-3 space-y-8">
+            <section
+                id="dashboard"
+                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
+              >
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Dashboard Overview
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
+                    <h3 className="text-lg font-semibold text-green-900">
+                      Total Products
+                    </h3>
+                    <p className="text-3xl font-bold text-green-700 mt-3">150</p>
+                  </div>
+                  <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
+                    <h3 className="text-lg font-semibold text-green-900">
+                      Total Orders
+                    </h3>
+                    <p className="text-3xl font-bold text-green-700 mt-3">320</p>
+                  </div>
+                  <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
+                    <h3 className="text-lg font-semibold text-green-900">
+                      Messages
+                    </h3>
+                    <p className="text-3xl font-bold text-green-700 mt-3">12</p>
+                  </div>
+                </div>
+              </section>
               <section
                 id="purchased"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
@@ -238,91 +238,7 @@ export default function BuyerDashboard() {
                 <PurchasedProducts 
                 buyeremail={loggedInUser.email}
                 />
-              </section>
-
-              <section
-  id="browse"
-  className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
->
-  <h2 className="text-2xl font-bold text-gray-900 mb-6">
-    Browse Products
-  </h2>
-  <div className="grid grid-cols-3 gap-6">
-  {productsData.slice(0, 3).map((product: Product) => (
-    <div
-      key={product.id}
-      className="bg-white rounded-lg shadow-md overflow-hidden relative group hover:shadow-xl transition-shadow duration-300"
-    >
-      {/* Product Image */}
-      <img
-        src={product.image}
-        alt={product.productname}
-        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
-      />
-
-      {/* Product Info */}
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900">{product.productname}</h3>
-        <p className="text-gray-600 mt-2 line-clamp-2">{product.description}</p>
-        <p className="text-gray-800 font-bold mt-2">${product.price}</p>
-       
-      </div>
-
-      {/* Hover Overlay with Buttons */}
-      <div className="absolute inset-0 bg-black bg-opacity-25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
-        <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition-colors duration-300"
-         onClick={async () => {
-          // Add to cart functionality
-          try {
-            const response = await axios.post('/api/cart', {
-              id: product.id,
-              image: product.image,
-              productname: product.productname,
-              price: product.price,
-              description: product.description,
-              category: product.category,
-              quantity: product.quantity,
-              email: localStorage.getItem('email')
-            });
-            console.log('Product added to cart:', response.data);
-          
-            alert('Product added to cart!');
-          } catch (err) {
-            console.error('Error adding product to cart:', err);
-          }
-        }}
-        >
-          Add to Cart
-        </button>
-        <button
-          className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
-          onClick={() => handleViewDetails(product.id)}
-        >
-          View Details
-        </button>
-        <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">
-          Contact Farmer
-        </button>
-      </div>
-    </div>
-  ))}
-  </div>
-  <button
-    className="mt-8 w-full py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-    onClick={handleSeeMore}
-  >
-    See More
-  </button>
-</section>
-
-
-
-
-             
-
-            
-
-             
+              </section>      
             </div>
           </div>
         </div>

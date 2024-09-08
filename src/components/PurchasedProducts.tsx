@@ -50,6 +50,10 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
     router.push(`/product-details?id=${id}`);
   };
 
+  const handleRateProduct = (productid: string) => {
+    router.push(`/product-rating?productid=${productid}`);
+  }
+
   return (
     <main className="flex-grow max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Purchased Products</h2>
@@ -94,16 +98,20 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
 
                 <button
                   className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
-                  onClick={() => handleViewDetails(product.productid)}
+                  onClick={
+                    () => handleViewDetails(product.productid)
+                  }
                   aria-label="View Details"
                 >
                   View Details
                 </button>
                 <button
                   className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
-                  aria-label="Contact Farmer"
+                  aria-label="Rate Product"
+                  onClick={() => handleRateProduct(product.productid)}
+                
                 >
-                  Contact Farmer
+                  Rate Product
                 </button>
               </div>
             </div>

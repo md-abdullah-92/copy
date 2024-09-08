@@ -12,25 +12,22 @@ import {
   FaEdit,
   FaPlusCircle,
   FaSave,
+  FaPlus,
+  FaCartPlus,
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebaseConfig'; // Ensure this path is correct
 import { em } from '@mantine/core';
 import AddProduct from '@/components/Addproducts';
-import ManageProduct from '@/components/Manageproducts';
+import ManageProduct from '../components/ManageProducts';
 
 export default function DashboardProfile() {
   // Profile and User State
   const [profiles, setProfiles] = useState(null);
   const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '', avatarurl: '' });
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
-  const [productImagePreview, setProductImagePreview] = useState<string | null>(null);
-  
-
-  
  
-
   const [newProduct, setNewProduct] = useState({
     productname: '',
     description: '',
@@ -125,23 +122,7 @@ export default function DashboardProfile() {
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>{error}</p>;
 
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setUploading(true);
-      const storageRef = ref(storage, `images/${file.name}`);
-      try {
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        setNewProduct({ ...newProduct, image: url }); // Assuming setNewProduct is correctly defined
-        setProductImagePreview(url); // Set the preview URL
-      } catch (error) {
-        console.error('Error uploading the file', error);
-      } finally {
-        setUploading(false);
-      }
-    }
-  };
+ 
 
   
 
@@ -211,9 +192,20 @@ export default function DashboardProfile() {
                   </li>
                   <li>
                   <Link href="/orders" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
-      <FaTractor className="mr-3" />
-      Orders
-    </Link>
+                  <FaTractor className="mr-3" />
+                   Orders
+                  </Link>
+                  </li>
+                  <li>
+                    <a
+                      href="#addproduct"
+                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                    >
+                      <FaCartPlus className="mr-3" />
+
+
+                      Add Product
+                    </a>
                   </li>
                   <li>
                     <a
@@ -269,7 +261,15 @@ export default function DashboardProfile() {
                 
                 <ManageProduct />
                 </div>
+
+              </section>
+              <section
+                id="addproduct"
+                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
+              >
+                <div className="flex justify-between items-center mb-6">
                 <AddProduct />
+                </div>
                
               </section>
             </div>

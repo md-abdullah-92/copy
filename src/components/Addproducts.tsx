@@ -64,6 +64,7 @@ const AddProduct: React.FC = () => {
           price: '',
           quantity: '',
         });
+        
         setProductImagePreview(null); // Clear the product image preview after adding the product
       } else {
         throw new Error(response.data.message || 'Failed to add product');
