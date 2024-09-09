@@ -3,19 +3,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { Layout, Star } from 'lucide-react'; // Use only the 'Star' icon from 'lucide-react'
+import { Star } from 'lucide-react';
 import Head from 'next/head';
 import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 
 const ProductRating: React.FC = () => {
   const router = useRouter();
-  const { productid } = router.query; // Extracting the product ID from the query parameters
+  const { productid ,soldquantity } = router.query; // Extracting the product ID from the query parameters
 
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const soldproduct= soldquantity as string;
+  console.log('Sold Quantity:',soldproduct);
+  console.log('Product ID:',productid);
+  
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,13 +36,20 @@ const ProductRating: React.FC = () => {
       }
 
       // Sending rating data to the API
-      await axios.post('/api/rate-product', {
-        productid,
-        rating,
-      });
+      await axios.put('/api/rate-product',{} , {
+        params: { 
+          productid, 
+          rating, 
+          soldproduct 
+        },
+      }
+      );
 
       // Display success message
       setSuccess('Your rating has been submitted successfully.');
+      alert('Your rating has been submitted successfully.');
+      // Redirect to the buyer dashboard
+      router.push('/buyerdashboard');
     } catch (err) {
       console.error('An error occurred while submitting the rating:', err);
       setError('Failed to submit your rating. Please try again later.');
@@ -90,14 +101,14 @@ const ProductRating: React.FC = () => {
                   value={review}
                   onChange={(e) => setReview(e.target.value)}
                   rows={4}
-                  className="block w-full mt-1 px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full mt-1 px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500"
                   placeholder="Share your thoughts about the product..."
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 px-4 text-sm font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                className="w-full py-3 px-4 text-sm font-semibold rounded-md text-white bg-green-600 hover:bg-green-700 shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200"
               >
                 Submit Rating
               </button>
