@@ -3,6 +3,7 @@ import router from 'next/router';
 import axios from 'axios';
 
 interface Product {
+  id: string;
   productid: string;
   name: string;
   image: string;
@@ -47,7 +48,7 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
   }, [buyeremail]);
 
   const handleViewDetails = (id: string) => {
-    router.push(`/product-details?id=${id}`);
+    router.push(`/soldproduct-details?id=${id}`);
   };
 
   const handleRateProduct = (productid: string,soldquantity:string) => {
@@ -111,7 +112,7 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
                 <button
                   className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
                   onClick={
-                    () => handleViewDetails(product.productid)
+                    () => handleViewDetails(product.id)
                   }
                   aria-label="View Details"
                 >

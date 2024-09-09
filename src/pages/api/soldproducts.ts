@@ -9,7 +9,7 @@ export default async function handler(
   console.log({ method });
   switch (method) {
     case 'GET':
-      const url = "http://localhost:8080/soldproduct/getsoldproduct";
+      const url = "http://localhost:8080/soldproduct/getproduct";
       try {
         const axiosRes = await axios.get(url, {
           headers: {
