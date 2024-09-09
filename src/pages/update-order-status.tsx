@@ -9,7 +9,7 @@ const UpdateOrderStatus: React.FC = () => {
 
   const [order, setOrder] = useState<any>(null);
   const [newStatus, setNewStatus] = useState<string>(status as string);
-  const [otp, setOtp] = useState<string>('');
+  const [otp, setOtp] = useState<string[]>(['', '', '', '']);
   const [otpRequired, setOtpRequired] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,6 @@ const UpdateOrderStatus: React.FC = () => {
 
     if (selectedStatus === 'Delivered') {
       try {
-        await axios.post(`/api/orders/${orderId}/send-otp`);
         setOtpRequired(true);
       } catch (err) {
         console.error('Error sending OTP:', err);
@@ -36,45 +35,74 @@ const UpdateOrderStatus: React.FC = () => {
     } else {
       setOtpRequired(false);
     }
-    //For other status
-    
+    // For other status
   };
 
-  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOtp(e.target.value);
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newOtp = [...otp];
+    newOtp[index] = e.target.value;
+    setOtp(newOtp);
   };
 
   const handleSubmit = async () => {
-    if (newStatus === 'Delivered' && otpRequired && !otp) {
-      setError('Please enter the OTP sent to the buyer.');
+    const otpString = otp.join('');
+    
+    if (newStatus === 'Delivered' && otpRequired && otpString.length !== 4) {
+      setError('Please enter the 4-digit OTP sent to the buyer.');
       return;
     }
-
+    else if (newStatus === 'Delivered' && otpRequired && otpString.length === 4) {
+      // Send OTP to the backend for verification
+      try {
+        console.log('Verifying OTP:', otpString);
+        console.log('Order ID:', orderId);
+        const code = otpString as string;
+        const id = orderId as string;
+        const response = await axios.put('/api/verify', {}, {
+          params: {
+            code,
+            id,
+          },
+        });
+        if (response.status === 200) {
+          console.log('OTP verified successfully');
+        // set alert
+          alert('OTP verified successfully');
+          router.push('/orders');
+        } else {
+          alert('Invalid OTP. Please try again.');
+          return;
+        }
+      } catch (err) {
+        console.error('Error verifying OTP:', err);
+        setError('Failed to verify the OTP. Please try again.');
+        return;
+      }
+    }
+    else if (newStatus !== 'Delivered') 
     try {
-     /* if (newStatus === 'Delivered') {
-        await axios.post(`/api/orders/${orderId}/verify-otp`, { otp });
-      }*/
-     console.log(" new",orderId);
+      console.log("new", orderId);
       console.log(newStatus);
 
+      const id = orderId as string;
+      const deliverystatus = newStatus as string;
 
-     const id=orderId as string;
-     const deliverystatus=newStatus as string;
-     if(!id){
+      if (!id) {
         console.error("Error: Missing or invalid ID.");
         return;
       }
       if (!newStatus) {
-        console.error("Error: Missing or invalid quantity.");
+        console.error("Error: Missing or invalid status.");
         return;
       }
-  
+
       const response = await axios.put('/api/orders', {}, {
         params: {
           id,
           deliverystatus,
         },
       });
+
       alert('Order status updated successfully');
       router.push('/orders');
     } catch (err) {
@@ -124,15 +152,20 @@ const UpdateOrderStatus: React.FC = () => {
                 {otpRequired && (
                   <div className="mb-6">
                     <label className="block text-green-800 font-semibold mb-2" htmlFor="otp">
-                      Enter OTP
+                      Enter 4-digit OTP
                     </label>
-                    <input
-                      id="otp"
-                      type="text"
-                      value={otp}
-                      onChange={handleOtpChange}
-                      className="w-full px-4 py-2 border border-green-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
+                    <div className="flex space-x-2">
+                      {otp.map((digit, index) => (
+                        <input
+                          key={index}
+                          type="text"
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => handleOtpChange(e, index)}
+                          className="w-12 px-4 py-2 border border-green-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-center"
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
 

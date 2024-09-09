@@ -32,9 +32,42 @@ export default async function handler(
         }
         
             break;
+            case 'PUT': {
+                
+                try {
+                  const url = "http://localhost:8080/soldproduct/verifycode"; // Adjust if needed
+                  const id = req.query.id as string;
+                  const code = req.query.code as string;
+                  console.log("order id",id);
+                  console.log("code",code);
+            
+                  // Making a PUT request to the Java backend
+                  const axiosRes = await axios.put(url, {}, {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    params: {
+                      id,
+                      code,
+                    },
+                  });
+                  
+                  res.status(200).json(axiosRes.data);
+                } catch (err) {
+                  console.error('Error updating product quantity:', err);
+                  res.status(500).json({
+                    message: 'An error occurred while updating the product quantity.',
+                  });
+                }
+                break;
+              }
+
         
         default:
          res.status(405).end();
         break;
+
+
     }
+
 }
