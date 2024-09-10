@@ -1,57 +1,44 @@
-import React, { useState } from 'react';
+// components/Chat.tsx
 
-interface Message {
-  sender: string;
-  content: string;
-  timestamp: Date;
-}
+import { useState, FormEvent } from 'react';
+import axios from 'axios';
 
-export default function Chat({ buyerName, farmerName }: { buyerName: string; farmerName: string }) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>('');
+const Chat = () => {
+  const [message, setMessage] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() === '') return;
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-    const message: Message = {
-      sender: 'Buyer', // This could be dynamic depending on the logged-in user
-      content: newMessage,
-      timestamp: new Date(),
-    };
-
-    setMessages([...messages, message]);
-    setNewMessage('');
+    try {
+      const res = await axios.post('/api/chat', { message });
+      setResponse(res.data.choices?.[0]?.message.content || 'No response');
+    } catch (error) {
+      console.error('Error fetching response:', error);
+      setResponse('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-4 flex flex-col h-[70vh]">
-      <div className="flex-1 overflow-y-auto mb-4">
-        {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.sender === 'Buyer' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`p-2 rounded-lg ${msg.sender === 'Buyer' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-900'} max-w-xs`}>
-              <p className="text-sm">{msg.content}</p>
-              <span className="text-xs text-gray-400">
-                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex">
+    <div>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type your message..."
-          className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Ask ChatGPT something..."
         />
-        <button
-          onClick={handleSendMessage}
-          className="bg-green-600 text-white px-4 py-2 rounded-r-lg hover:bg-green-700 transition-colors"
-        >
-          Send
+        <button type="submit" disabled={loading}>
+          {loading ? 'Loading...' : 'Send'}
         </button>
-      </div>
+      </form>
+      {response && <p>Response: {response}</p>}
     </div>
   );
-}
+};
+
+export default Chat;
