@@ -45,20 +45,59 @@ const GetFarmingAdvice = () => {
     }
   };
 
+  // Helper function to render text with bold parts
+  const renderTextWithBold = (text: string) => {
+    const parts = text.split(/(\*\*[^*]+\*\*)/); // Split by **bold** markers
+    return parts.map((part, index) =>
+      part.startsWith('**') && part.endsWith('**') ? (
+        <strong key={index}>{part.slice(2, -2)}</strong>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     <>
       <Head>
         <title>Farming Business Ideas and Tips</title>
         <meta name="description" content="Get tailored advice for your farming business." />
+        <link rel="icon" href="/assets/logo.png" />
       </Head>
       <Layout>
-        <div style={{ backgroundColor: '#e0f7fa',paddingBottom :'150px',paddingTop:'150px' }}>
-          <div style={{ padding: '50px', maxWidth: '700px', margin: '0 auto', fontFamily: 'Verdana, sans-serif', color: '#333', backgroundColor: '#f5fff7', borderRadius: '12px', border: '1px solid #e0e0e0' }}>
-            <h1 style={{ textAlign: 'center', fontSize: '26px', fontWeight: 'bold', marginBottom: '30px', color: '#6a8f4a' }}>
+        <div style={{ backgroundColor: '#e0f7fa', paddingBottom: '150px', paddingTop: '150px' }}>
+          <div
+            style={{
+              padding: '50px',
+              maxWidth: '700px',
+              margin: '0 auto',
+              fontFamily: 'Verdana, sans-serif',
+              color: '#333',
+              backgroundColor: '#f5fff7',
+              borderRadius: '12px',
+              border: '1px solid #e0e0e0',
+            }}
+          >
+            <h1
+              style={{
+                textAlign: 'center',
+                fontSize: '26px',
+                fontWeight: 'bold',
+                marginBottom: '30px',
+                color: '#6a8f4a',
+              }}
+            >
               Farming Business Ideas and Tips
             </h1>
-            <p style={{ textAlign: 'center', marginBottom: '30px', fontSize: '16px', color: '#555' }}>
-              Enter your question or idea below to get tailored advice for your farming business.
+            <p
+              style={{
+                textAlign: 'center',
+                marginBottom: '30px',
+                fontSize: '16px',
+                color: '#555',
+              }}
+            >
+              Get advice for your farming business from our AI chatbot.
             </p>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <input
@@ -134,7 +173,7 @@ const GetFarmingAdvice = () => {
               </div>
             </form>
             {response && (
-              <p
+              <div
                 style={{
                   marginTop: '30px',
                   padding: '12px',
@@ -144,8 +183,15 @@ const GetFarmingAdvice = () => {
                   fontSize: '15px',
                 }}
               >
-                <strong>Response:</strong> {response}
-              </p>
+                <strong>Response:</strong>
+                <div>
+                  {response.split('\n').map((line, index) => (
+                    <p key={index} style={{ margin: '0' }}>
+                      {renderTextWithBold(line)}
+                    </p>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </div>

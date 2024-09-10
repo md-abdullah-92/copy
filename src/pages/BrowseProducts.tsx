@@ -144,10 +144,6 @@ const filteredProducts = products.filter((product) => {
                   <FaSearch />
                 </button>
               </div>
-
-            
-            
-             
             </div>
           </div>
         </ScrollAnimationWrapper>
@@ -187,31 +183,31 @@ const filteredProducts = products.filter((product) => {
                   </div>
                   {/* Overlay with action buttons on hover */}
                   <div className="absolute inset-0 bg-black bg-opacity-25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
-  <button
-    className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition-colors duration-300"
-    onClick={async () => {
-      // Add to cart functionality
-      try {
-        const response = await axios.post('/api/cart', {
-          id: product.id,
-          image: product.image,
-          productname: product.productname,
-          price: product.price,
-          description: product.description,
-          category: product.category,
-          quantity: product.quantity,
-          email: localStorage.getItem('email')
-        });
-        console.log('Product added to cart:', response.data);
-        setCartCount((count) => count + 1);
-        alert('Product added to cart!');
-      } catch (err) {
-        console.error('Error adding product to cart:', err);
-      }
-    }}
-  >
-    Add to Cart
-  </button>
+                    <button
+                      className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 transition-colors duration-300"
+                      onClick={async () => {
+                        // Add to cart functionality
+                        try {
+                          const response = await axios.post('/api/cart', {
+                            id: product.id,
+                            image: product.image,
+                            productname: product.productname,
+                            price: product.price,
+                            description: product.description,
+                            category: product.category,
+                            quantity: product.quantity,
+                            email: localStorage.getItem('email')
+                          });
+                          console.log('Product added to cart:', response.data);
+                          setCartCount((count) => count + 1);
+                          alert('Product added to cart!');
+                        } catch (err) {
+                          console.error('Error adding product to cart:', err);
+                        }
+                      }}
+                    >
+                      Add to Cart
+                    </button>
 
                     <button
                       className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"

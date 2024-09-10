@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 
 import { FaBox, FaUser, FaTractor, FaShoppingCart,FaSearch } from 'react-icons/fa'; // Import FaShoppingCart for cart
 import ButtonOutline from '../misc/ButtonOutline'; // Import ButtonOutline if needed
-import { FactoryIcon } from 'lucide-react';
 
 const Header = () => {
   const router = useRouter();

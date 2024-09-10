@@ -153,6 +153,7 @@ export default function DashboardProfile() {
                 ) : (
                   <FaUserCircle className="text-7xl text-green-600" />
                 )}
+
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
                   {loggedInUser.name || 'John Doe'}
                 </h2>
@@ -206,6 +207,18 @@ export default function DashboardProfile() {
 
                       Add Product
                     </a>
+                  </li>
+                  {/* Add a new part for Bot Advisor */}
+                  
+                 
+                  <li>
+                    <Link
+                      href="/chatbot-farmer"
+                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                    >
+                      <FaEdit className="mr-3" />
+                      Bot Advisor
+                    </Link>
                   </li>
                   <li>
                     <a

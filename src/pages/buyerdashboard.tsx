@@ -7,10 +7,8 @@ import { useEffect } from 'react';
 import {
   FaUserCircle,
   FaShoppingCart,
-  FaBoxOpen,
-  FaCreditCard,
+  FaEdit,
   FaSignOutAlt,
-  FaHeart,
   FaShoppingBag,
   FaChartLine,
 } from 'react-icons/fa';
@@ -178,25 +176,14 @@ export default function BuyerDashboard() {
                       Cart
                     </a>
                   </li>
+                  {/*Ai advisor for business help or product chosing help */}
+
                   <li>
-                    <a
-                      href="#favorites"
-                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
-                    >
-                      <FaHeart className="mr-3" />
-                      Favorites
-                    </a>
+                    <Link href="/chatbot-farmer" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                      <FaEdit className="mr-3" />
+                      Bot Advisor
+                    </Link>
                   </li>
-                  <li>
-                    <a
-                      href="#payments"
-                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
-                    >
-                      <FaCreditCard className="mr-3" />
-                      Payment Methods
-                    </a>
-                  </li>
-                  
                 </ul>
               </nav>
             </div>

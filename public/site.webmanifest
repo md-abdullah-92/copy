@@ -1,12 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "Team aviato",
-  "short_name": "Team aviato",
+  "name": "Team SUST_UNKNOWNS",
+  "short_name": "SUST_UNKNOWNS",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#F53838",
-  "description": "Team aviato Best VPN For Privacy, Country and Cheapest.",
+  "description": "Team SUST_UNKNOWNS",
   "icons": [
     {
       "src": "/favicon/android-icon-36x36.png",
