@@ -52,6 +52,8 @@ export default function BuyerDashboard() {
           const profiles = res.data;
           console.log(profiles);
           setProfiles(profiles);
+          localStorage.setItem('id', profiles.id);
+          console.log(profiles.id);
           setLoggedInUser({
             name: res.data.name,
             role: res.data.role,

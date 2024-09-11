@@ -20,6 +20,7 @@ interface Product {
   ownerdivision: string;
   ownerphone: string;
   isEditing?: boolean;
+  userid: string;
 }
 
 const ManageProduct: React.FC = () => {

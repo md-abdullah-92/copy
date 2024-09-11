@@ -5,6 +5,9 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebaseConfig'; // Ensure this path is correct
 
 const AddProduct: React.FC = () => {
+  console.log('AddProduct');
+  const id=localStorage.getItem('id');
+  console.log(id);
   const [newProduct, setNewProduct] = useState({
     productname: '',
     description: '',
@@ -12,6 +15,7 @@ const AddProduct: React.FC = () => {
     category: '',
     price: '',
     quantity: '',
+  
   });
 
   const [productImagePreview, setProductImagePreview] = useState<string | null>(null);
@@ -44,8 +48,9 @@ const AddProduct: React.FC = () => {
       ownerzila: localStorage.getItem('zila'),
       ownerdivision: localStorage.getItem('division'),
       ownerphone: localStorage.getItem('phone'),
+      ownerid: id,
     };
-
+    console.log(ownerDetails);
     const newProductWithId = { ...newProduct, ...ownerDetails, id: Math.random() };
 
     try {
@@ -56,6 +61,7 @@ const AddProduct: React.FC = () => {
       });
 
       if (response.status === 200) {
+        console.log('Product added successfully:', response.data);
         setNewProduct({
           productname: '',
           description: '',
@@ -63,6 +69,7 @@ const AddProduct: React.FC = () => {
           category: '',
           price: '',
           quantity: '',
+          
         });
         
         setProductImagePreview(null); // Clear the product image preview after adding the product

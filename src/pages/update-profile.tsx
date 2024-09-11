@@ -62,7 +62,32 @@ export default function UpdateProfile() {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const type = localStorage.getItem('role');
+    const id=localStorage.getItem('id');
+    
+    
     const values = form.values;
+    const updatechatRequestBody = {
+      id,
+      name: values.name,
+      avatar: values.avatar,
+      type: type,
+    };
+    
+    try {
+      const res = await axios.post('/api/chats/users', updatechatRequestBody, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.status === 200) {
+        console.log('chat CProfile updated successfully');
+      }
+    }
+    catch (err: any) {
+      console.error('Error updating profile:', err);
+      alert('Failed to update profile: Please try again.');
+    }
   
     const updateRequestBody = {
       name: values.name,
@@ -75,6 +100,7 @@ export default function UpdateProfile() {
       organization: values.organization,
       avatar: values.avatar,
     };
+   
   
     try {
       const email = localStorage.getItem('email');
@@ -104,6 +130,8 @@ export default function UpdateProfile() {
       console.error('Error updating profile:', err);
       alert('Failed to update profile: Please try again.');
     }
+
+    
   };
   
 

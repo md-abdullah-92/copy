@@ -6,6 +6,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
 import Head from 'next/head'; // Import the Head component
+import { useChat } from '@/components/hooks/useChat';
 
 // Define the Product interface for type safety
 interface Product {
@@ -18,11 +19,12 @@ interface Product {
   price: number;
   category: string;
   quantity:string;
+  ownerid:string;
 }
 
 export default function BrowseProducts() {
   const router = useRouter();
-
+  const { chat, error, createOrGetChat } = useChat();
   // State to manage search term and selected category for filtering products
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -39,6 +41,7 @@ export default function BrowseProducts() {
   //const role = localStorage.getItem('role');
 
   // useEffect hook to fetch all products when the component mounts
+  
   useEffect(() => {
 
     const fetchOwnerProducts = async () => {
@@ -215,7 +218,24 @@ const filteredProducts = products.filter((product) => {
                     >
                       View Details
                     </button>
-                    <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300">
+                    <button className="bg-white text-green-600 px-3 py-1 rounded-lg text-sm hover:text-green-700 transition-colors duration-300"
+                        onClick={() => {
+                          try {
+                           
+                        
+                            const user1Id = product.ownerid;
+                            const user2Id = localStorage.getItem('id');
+                            if (user1Id && user2Id) {
+                              createOrGetChat(user1Id, user2Id);
+                            } else {
+                              alert('Please enter both User IDs.');
+                            }
+                          } catch (error) {
+                            console.error('Error creating or getting chat:', error);
+                          }
+                        }}
+                
+                    >
                       Contact Farmer
                     </button>
                   </div>

@@ -17,6 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               owneremail,
               ownerorganization,
               ownerupzila,
+              ownerid,
               ownerzila,
               ownerdivision,
               ownerphone,
@@ -37,6 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
        ownerzila,
        ownerdivision,
        ownerphone,
+       ownerid,
      };
  
       const updateUrl = `http://localhost:8080/product/addproduct`;

@@ -42,6 +42,7 @@ export default function DashboardProfile() {
     ownerzila: '',
     ownerdivision: '',
     ownerphone: '',
+    userid: '',
   });
 
   // State for Image Upload
@@ -66,6 +67,8 @@ export default function DashboardProfile() {
             params: { role },
           });
           const profiles = res.data;
+          console.log(profiles);
+          console.log(profiles.id);
           setProfiles(profiles);
           localStorage.setItem('email', profiles.email);
           localStorage.setItem('name', profiles.name);
@@ -74,7 +77,9 @@ export default function DashboardProfile() {
           localStorage.setItem('zila', profiles.zila);
           localStorage.setItem('division', profiles.division);
           localStorage.setItem('phone', profiles.phone);
-         
+          localStorage.setItem('id', profiles.id);
+          const id=localStorage.getItem('id');
+          console.log("kp",id);
           
           setLoggedInUser({
             name: profiles.name,
