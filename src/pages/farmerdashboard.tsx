@@ -229,6 +229,7 @@ export default function DashboardProfile() {
                     <a
                       href="#messages"
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                      
                     >
                       <FaEnvelope className="mr-3" />
                       Messages

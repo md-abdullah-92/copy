@@ -5,12 +5,13 @@ import axios from 'axios';
 // API handler function
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req; // Extract the HTTP method
-  const { chatId } = req.query; // Extract the chatId from the request URL
-
-  const { text, senderId, receiverId} = req.body;
-
+  
   switch (method) {
     case 'POST': {
+      const { chatId } = req.query; // Extract the chatId from the request URL
+
+      const { text, senderId, receiverId} = req.body;
+
         const newMessage = {
             senderId,
             receiverId,
@@ -53,6 +54,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(500).json({ message: 'Internal server error' });
       }
     }
+    case 'GET': {
+      const url = "http://localhost:8081/api/chats/user/chatids";
+      const { chatId } = req.query; 
+
+      try {
+        
+        const userId=chatId as string;
+        console.log("User ID:", userId);
+
+        const axiosRes = await axios.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+         
+          },
+          params: {
+            userId, // Pass the role to the backend
+          }
+        });
+        const user = axiosRes.data;
+        res.status(200).json(user);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to fetch user data" });
+      }
+      break;
+    }
+
 
     default:
       // If the HTTP method is not allowed, set the allowed methods and return a 405 status
