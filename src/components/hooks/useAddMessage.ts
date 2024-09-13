@@ -1,5 +1,6 @@
 // hooks/useAddMessage.ts
 import { useState } from 'react';
+import axios from 'axios';
 
 interface Message {
   chatId: string;
@@ -15,21 +16,18 @@ export const useAddMessage = () => {
   const addMessage = async (chatId: string, message: Message) => {
     setLoading(true);
     setError(null);
-    
+    console.log('chatId', chatId);
+    console.log('message', message);
+
     try {
-      const response = await fetch(`/api/chats/${chatId}/messages`, {
-        method: 'POST',
+    
+      const response = await axios.post(`/api/chats/${chatId}`, message, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(message),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-
-      const data = await response.json();
+      const data = response.data;
       return data; // Return the new message
     } catch (err: any) {
       setError(err.message);

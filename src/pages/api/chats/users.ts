@@ -42,6 +42,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       break;
     }
+    case 'GET': {
+      const url = "http://localhost:8081/api/users";
+
+      try {
+        const axiosRes = await axios.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },  
+        });
+        const user = axiosRes.data;
+        res.status(200).json(user);
+        console.log(user);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to fetch user data" });
+      }
+      break;
+    }
     default:
       res.setHeader('Allow', ['PUT']);
       res.status(405).end(`Method ${method} Not Allowed`);

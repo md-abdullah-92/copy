@@ -226,14 +226,14 @@ export default function DashboardProfile() {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      href="#messages"
+                    <Link
+                      href="/chatpage"
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                       
                     >
                       <FaEnvelope className="mr-3" />
                       Messages
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </nav>

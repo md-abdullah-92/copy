@@ -11,6 +11,7 @@ import {
   FaSignOutAlt,
   FaShoppingBag,
   FaChartLine,
+  FaEnvelope
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 import PurchasedProducts from '@/components/PurchasedProducts';
@@ -53,6 +54,7 @@ export default function BuyerDashboard() {
           console.log(profiles);
           setProfiles(profiles);
           localStorage.setItem('id', profiles.id);
+     //     localStorage.setItem('id', profiles.id);
           console.log(profiles.id);
           setLoggedInUser({
             name: res.data.name,
@@ -184,6 +186,16 @@ export default function BuyerDashboard() {
                     <Link href="/chatbot-farmer" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
                       <FaEdit className="mr-3" />
                       Bot Advisor
+                    </Link>
+                  </li>
+                  <li>
+                  <Link
+                      href="/chatpage"
+                      className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                      
+                    >
+                      <FaEnvelope className="mr-3" />
+                      Messages
                     </Link>
                   </li>
                 </ul>
