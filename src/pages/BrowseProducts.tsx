@@ -6,7 +6,7 @@ import Header from '@/components/Layout/Header';
 import Footer from '@/components/Layout/Footer';
 import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
 import Head from 'next/head'; // Import the Head component
-import { useChat } from '@/components/hooks/useChat';
+import { useChat } from '@/hooks/useChat';
 
 // Define the Product interface for type safety
 interface Product {

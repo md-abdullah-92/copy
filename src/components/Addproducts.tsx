@@ -1,13 +1,10 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import axios from 'axios';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebaseConfig'; // Ensure this path is correct
 
 const AddProduct: React.FC = () => {
-  console.log('AddProduct');
-  const id=localStorage.getItem('id');
-  console.log(id);
   const [newProduct, setNewProduct] = useState({
     productname: '',
     description: '',
@@ -15,11 +12,38 @@ const AddProduct: React.FC = () => {
     category: '',
     price: '',
     quantity: '',
-  
   });
 
   const [productImagePreview, setProductImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+
+  // State for owner details fetched from localStorage
+  const [ownerDetails, setOwnerDetails] = useState({
+    ownername: '',
+    owneremail: '',
+    ownerorganization: '',
+    ownerupzila: '',
+    ownerzila: '',
+    ownerdivision: '',
+    ownerphone: '',
+    ownerid: '',
+  });
+
+  useEffect(() => {
+    // Ensure this runs only on the client-side
+    if (typeof window !== 'undefined') {
+      setOwnerDetails({
+        ownername: localStorage.getItem('name') || '',
+        owneremail: localStorage.getItem('email') || '',
+        ownerorganization: localStorage.getItem('organization') || '',
+        ownerupzila: localStorage.getItem('upazila') || '',
+        ownerzila: localStorage.getItem('zila') || '',
+        ownerdivision: localStorage.getItem('division') || '',
+        ownerphone: localStorage.getItem('phone') || '',
+        ownerid: localStorage.getItem('id') || '',
+      });
+    }
+  }, []);
 
   const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -40,17 +64,6 @@ const AddProduct: React.FC = () => {
   };
 
   const handleAddProduct = async () => {
-    const ownerDetails = {
-      ownername: localStorage.getItem('name'),
-      owneremail: localStorage.getItem('email'),
-      ownerorganization: localStorage.getItem('organization'),
-      ownerupzila: localStorage.getItem('upazila'),
-      ownerzila: localStorage.getItem('zila'),
-      ownerdivision: localStorage.getItem('division'),
-      ownerphone: localStorage.getItem('phone'),
-      ownerid: id,
-    };
-    console.log(ownerDetails);
     const newProductWithId = { ...newProduct, ...ownerDetails, id: Math.random() };
 
     try {
@@ -69,9 +82,7 @@ const AddProduct: React.FC = () => {
           category: '',
           price: '',
           quantity: '',
-          
         });
-        
         setProductImagePreview(null); // Clear the product image preview after adding the product
       } else {
         throw new Error(response.data.message || 'Failed to add product');

@@ -1,16 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-import { useChats } from '@/components/hooks/useChats';
-import { useAddMessage } from '@/components/hooks/useAddMessage';
-import { useUsers } from '@/components/hooks/useUsers';
-import {
-  FaPaperPlane,
-  FaSmile,
-  FaEllipsisV,
-  FaPlusCircle,
-  FaSearch,
-} from 'react-icons/fa';
+import { useChats } from '@/hooks/useChats';
+import { useAddMessage } from '@/hooks/useAddMessage';
+import { useUsers } from '@/hooks/useUsers';
+import { FaPaperPlane,FaSmile,FaEllipsisV,FaPlusCircle,FaSearch,} from 'react-icons/fa';
 import { format } from 'date-fns';
 import Layout from '@/components/Layout/Layout';
 
@@ -29,6 +23,7 @@ export default function ChatPage() {
   const getUserById = (userId: string) => users.find((user) => user.id === userId);
 
   const clientRef = useRef<Client | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);  // Ref for last message
 
   const [chatList, setChatList] = useState<any[]>([]);
 
@@ -155,6 +150,13 @@ export default function ChatPage() {
     setChatList(chats);
   }, [chats]);
 
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedChat?.messages]);
+
   return (
     <Layout>
       <div className="min-h-screen bg-gray-100 py-8 pt-24">
@@ -239,8 +241,14 @@ export default function ChatPage() {
                     {selectedChat.messages.map((message, index) => {
                       const isCurrentUserSender = message.senderId === currentUserID;
                       const sender = getUserById(message.senderId);
+                      const isLastMessage = index === selectedChat.messages.length - 1;
+
                       return (
-                        <div key={index} className={`flex ${isCurrentUserSender ? 'justify-end' : 'justify-start'}`}>
+                        <div
+                          key={index}
+                          className={`flex ${isCurrentUserSender ? 'justify-end' : 'justify-start'}`}
+                          ref={isLastMessage ? lastMessageRef : null}  // Attach ref to the last message
+                        >
                           {!isCurrentUserSender && sender && (
                             <img
                               src={sender.avatar}
@@ -256,7 +264,6 @@ export default function ChatPage() {
                             }`}
                           >
                             <p>{message.text}</p>
-                            {/* Time below the text */}
                             <span className="text-xs text-gray-500 mt-1 block text-right">
                               {formatTime(message.time)}
                             </span>
@@ -268,19 +275,30 @@ export default function ChatPage() {
 
                   {/* Message Input */}
                   <form onSubmit={handleSendMessage} className="flex items-center space-x-4 mt-6">
-                    <FaSmile className="text-gray-500 text-2xl cursor-pointer" />
-                    <input
-                      type="text"
-                      placeholder="Type your message..."
-                      className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
-                      value={newMessage}
-                      onChange={handleInputChange}
-                      onKeyPress={handleKeyPress}
-                    />
-                    <button type="submit" className="text-2xl text-green-600">
-                      <FaPaperPlane />
-                    </button>
-                  </form>
+                  <FaSmile className="text-gray-500 text-2xl cursor-pointer" />
+                  <input
+                    type="text"
+                    placeholder="Type your message..."
+                    className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+                    value={newMessage}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
+                  />
+                  <input
+                    type="file"
+                    id="fileInput"
+                    className="hidden"
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  />
+                  <label htmlFor="fileInput">
+                    <FaPlusCircle className="text-gray-500 text-2xl cursor-pointer" />
+                  </label>
+                  <button type="submit" className="text-2xl text-green-600">
+                    <FaPaperPlane />
+                  </button>
+                </form>
+
+                
                 </>
               ) : (
                 <p className="text-center text-gray-500">Select a chat to start messaging</p>

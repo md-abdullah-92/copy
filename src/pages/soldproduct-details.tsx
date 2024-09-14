@@ -1,60 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import Head from 'next/head';
 import Layout from '@/components/Layout/Layout';
-
-interface Product {
-  id: string;
-  productid: string;
-  name: string;
-  image: string;
-  price: string;
-  sellername: string;
-  soldquantity: string;
-  soldtime: string;
-  deliverystatus: string;
-  deliverytime: string;
-  deliveryMethod: string;
-  deliverybydate: string;
-  soldprice: string;
-  sellerphone: string;
-  selleremail: string;
-  deliverybyaddress: string;
-  sellerorganization: string;
-  deliverytoaddress: string;
-}
+import { useProductDetails } from '@/hooks/useProductDetails'; // Import the hook
 
 const ProductDetails: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      if (!id) return;
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await axios.get(`/api/soldproducts`, {
-          params: { id },
-        });
-        setProduct(response.data);
-      } catch (err) {
-        console.error('Error fetching product details:', err);
-        setError('Failed to fetch product details.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductDetails();
-  }, [id]);
+  // Use the custom hook for fetching product details
+  const { product, loading, error } = useProductDetails(id);
 
   if (loading) return <p className="text-center text-gray-700 mt-10">Loading...</p>;
   if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
@@ -84,30 +39,51 @@ const ProductDetails: React.FC = () => {
               {/* Product Details Card */}
               <div className="border rounded-lg p-6 bg-white shadow-lg">
                 <h3 className="text-xl font-semibold text-gray-800 mb-6">Product Details</h3>
-                <p className="text-md text-gray-700"><span className="font-semibold">Price:</span> {product.price} Tk</p>
-                <p className="text-md text-gray-700"><span className="font-semibold">Sold Time:</span> {product.soldtime}</p>
-                <p className="text-md text-gray-700"><span className="font-semibold">Sold Quantity:</span> {product.soldquantity}</p>
-                <p className="text-md text-gray-700"><span className="font-semibold">Sold Price:</span> {product.soldprice} Tk</p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Price:</span> {product.price} Tk
+                </p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Sold Time:</span> {product.soldtime}
+                </p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Sold Quantity:</span> {product.soldquantity}
+                </p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Sold Price:</span> {product.soldprice} Tk
+                </p>
               </div>
 
               {/* Delivery Information Card */}
               <div className="border rounded-lg p-6 bg-white shadow-lg">
                 <h3 className="text-xl font-semibold text-gray-800 mb-6">Delivery Information</h3>
-                <p className="text-md text-gray-700"><span className="font-semibold">Status:</span> {product.deliverystatus}</p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Status:</span> {product.deliverystatus}
+                </p>
                 {product.deliverytime && (
-                  <p className="text-md text-gray-700"><span className="font-semibold">Delivery Time:</span> {product.deliverytime}</p>
+                  <p className="text-md text-gray-700">
+                    <span className="font-semibold">Delivery Time:</span> {product.deliverytime}
+                  </p>
                 )}
-                <p className="text-md text-gray-700"><span className="font-semibold">Delivery Location:</span> {product.deliverytoaddress}</p>
-                <p className="text-md text-gray-700"><span className="font-semibold">Expected By:</span> {product.deliverybydate}</p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Delivery Location:</span> {product.deliverytoaddress}
+                </p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Expected By:</span> {product.deliverybydate}
+                </p>
               </div>
 
               {/* Seller Information Card */}
               <div className="border rounded-lg p-6 bg-white shadow-lg">
                 <h3 className="text-xl font-semibold text-gray-800 mb-6">Seller Information</h3>
-                <p className="text-md text-gray-700"><span className="font-semibold">Name:</span> {product.sellername}</p>
-                <p className="text-md text-gray-700"><span className="font-semibold">Email:</span> {product.selleremail}</p>
-                <p className="text-md text-gray-700"><span className="font-semibold">Location:</span> {product.deliverybyaddress}</p>
-                
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Name:</span> {product.sellername}
+                </p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Email:</span> {product.selleremail}
+                </p>
+                <p className="text-md text-gray-700">
+                  <span className="font-semibold">Location:</span> {product.deliverybyaddress}
+                </p>
               </div>
 
               {/* Back Button with enhanced styling */}

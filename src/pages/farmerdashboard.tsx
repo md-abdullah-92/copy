@@ -1,143 +1,22 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import axios from 'axios';
-import {
-  FaUserCircle,
-  FaTractor,
-  FaBox,
-  FaChartLine,
-  FaEnvelope,
-  FaSignOutAlt,
-  FaEdit,
-  FaPlusCircle,
-  FaSave,
-  FaPlus,
-  FaCartPlus,
-} from 'react-icons/fa';
+import { useProfile } from '@/hooks/useProfile'; // Adjust this path based on your project structure
+import { useOwnerProducts } from '@/hooks/useOwnerProducts';
+import { useSignOut } from '@/hooks/useSignOut';// Assuming you have a hook for handling the cart
 import Layout from '@/components/Layout/Layout';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../config/firebaseConfig'; // Ensure this path is correct
-import { em } from '@mantine/core';
+import ManageProduct from '@/components/ManageProducts';
 import AddProduct from '@/components/Addproducts';
-import ManageProduct from '../components/ManageProducts';
+import { useRouter } from 'next/router';
+import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,FaTractor } from 'react-icons/fa';
+import Link from 'next/link';
 
 export default function DashboardProfile() {
-  // Profile and User State
-  const [profiles, setProfiles] = useState(null);
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '', avatarurl: '' });
-  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
- 
-  const [newProduct, setNewProduct] = useState({
-    productname: '',
-    description: '',
-    image: '',
-    category: '',
-    price: '',
-    quantity: '',
-    ownername: '',
-    owneremail: '',
-    ownerorganization: '',
-    ownerupzila: '',
-    ownerzila: '',
-    ownerdivision: '',
-    ownerphone: '',
-    userid: '',
-  });
-
-  // State for Image Upload
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
-
+  const { profiles, loggedInUser } = useProfile();
+  const { products, loading, error } = useOwnerProducts();
+  const { showSignOutConfirm, setShowSignOutConfirm, handleSignOut } = useSignOut();
+ // const { cartItems, handleAddToCart } = useCart(); // Hook to manage cart items
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-
-    if (!token || !role) {
-      router.push('/login');
-    } else {
-      const getData = async () => {
-        try {
-          const res = await axios.get('/api/getone', {
-            headers: {
-              Authorization: `${token}`,
-            },
-            params: { role },
-          });
-          const profiles = res.data;
-          console.log(profiles);
-          console.log(profiles.id);
-          setProfiles(profiles);
-          localStorage.setItem('email', profiles.email);
-          localStorage.setItem('name', profiles.name);
-          localStorage.setItem('organization', profiles.organization);
-          localStorage.setItem('upazila', profiles.upazila);
-          localStorage.setItem('zila', profiles.zila);
-          localStorage.setItem('division', profiles.division);
-          localStorage.setItem('phone', profiles.phone);
-          localStorage.setItem('id', profiles.id);
-          const id=localStorage.getItem('id');
-          console.log("kp",id);
-          
-          setLoggedInUser({
-            name: profiles.name,
-            role: profiles.role,
-            email: profiles.email,
-            avatarurl: profiles.avatar,
-          });
-        } catch (err) {
-          console.error('Error fetching profile data:', err);
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-          router.push('/login');
-        }
-      };
-      getData();
-    }
-  }, [router]);
-
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-   const email = localStorage.getItem('email');
-    const fetchOwnerProducts = async () => {
-      try {
-        setLoading(true);
-        // Replace with actual backend API endpoint and ensure it matches correctly
-        const response = await axios.get(`/api/product`, {
-          params: { owneremail: email },
-        });
-        setProducts(response.data);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (email) { // Ensure ownerEmail is provided before fetching
-      fetchOwnerProducts();
-    }
-  }, []); // Dependency on ownerEmail ensures data is fetched when it changes
-
-  if (loading) return <p>Loading products...</p>;
-  if (error) return <p>{error}</p>;
-
- 
-
-  
-
-  const handleSignOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    router.push('/');
-  };
-
-  
+  //if (loading) return <p>Loading products...</p>;
+  //if (error) return <p>{error}</p>;
 
   return (
     <Layout>
@@ -147,13 +26,11 @@ export default function DashboardProfile() {
             {/* Sidebar */}
             <div className="bg-white rounded-xl shadow-lg p-6 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <div className="flex flex-col items-center">
-                {/* Check if avatarurl is valid and render the image */}
                 {loggedInUser.avatarurl ? (
                   <img
                     src={loggedInUser.avatarurl}
                     alt={`${loggedInUser.name}'s Avatar`}
                     className="w-28 h-28 rounded-full object-cover"
-                  
                   />
                 ) : (
                   <FaUserCircle className="text-7xl text-green-600" />
@@ -163,11 +40,14 @@ export default function DashboardProfile() {
                   {loggedInUser.name || 'John Doe'}
                 </h2>
                 <p className="text-sm text-gray-600">{loggedInUser.role || 'Farmer'}</p>
-                <button className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
-                onClick={() => router.push('/update-profile')}
+
+                <button
+                  className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
+                  onClick={() => router.push('/update-profile')}
                 >
                   Edit Profile
                 </button>
+
                 <button
                   className="mt-4 w-full py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300 flex items-center justify-center"
                   onClick={() => setShowSignOutConfirm(true)}
@@ -197,10 +77,10 @@ export default function DashboardProfile() {
                     </a>
                   </li>
                   <li>
-                  <Link href="/orders" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
-                  <FaTractor className="mr-3" />
-                   Orders
-                  </Link>
+                    <Link href="/orders" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                      <FaTractor className="mr-3" />
+                      Orders
+                    </Link>
                   </li>
                   <li>
                     <a
@@ -208,33 +88,32 @@ export default function DashboardProfile() {
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                     >
                       <FaCartPlus className="mr-3" />
-
-
                       Add Product
                     </a>
                   </li>
-                  {/* Add a new part for Bot Advisor */}
-                  
-                 
+                  {/* Bot Advisor */}
                   <li>
                     <Link
                       href="/chatbot-farmer"
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                     >
-                      <FaEdit className="mr-3" />
+                      <FaEnvelope className="mr-3" />
                       Bot Advisor
                     </Link>
                   </li>
+                  {/* Messages */}
                   <li>
                     <Link
                       href="/chatpage"
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
-                      
                     >
                       <FaEnvelope className="mr-3" />
                       Messages
                     </Link>
                   </li>
+                  {/* Shopping Cart */}
+                 
+                   
                 </ul>
               </nav>
             </div>
@@ -246,50 +125,41 @@ export default function DashboardProfile() {
                 id="dashboard"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Dashboard Overview
-                </h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard Overview</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
-                    <h3 className="text-lg font-semibold text-green-900">
-                      Total Products
-                    </h3>
-                    <p className="text-3xl font-bold text-green-700 mt-3">150</p>
+                    <h3 className="text-lg font-semibold text-green-900">Total Products</h3>
+                    <p className="text-3xl font-bold text-green-700 mt-3">{products.length}</p>
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
-                    <h3 className="text-lg font-semibold text-green-900">
-                      Total Orders
-                    </h3>
+                    <h3 className="text-lg font-semibold text-green-900">Total Orders</h3>
                     <p className="text-3xl font-bold text-green-700 mt-3">320</p>
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
-                    <h3 className="text-lg font-semibold text-green-900">
-                      Messages
-                    </h3>
+                    <h3 className="text-lg font-semibold text-green-900">Messages</h3>
                     <p className="text-3xl font-bold text-green-700 mt-3">12</p>
                   </div>
                 </div>
               </section>
 
-           {/* Manage Products Section */}
-           <section
+              {/* Manage Products Section */}
+              <section
                 id="products"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
                 <div className="flex justify-between items-center mb-6">
-                
-                <ManageProduct />
+                  <ManageProduct />
                 </div>
-
               </section>
+
+              {/* Add Product Section */}
               <section
                 id="addproduct"
                 className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
               >
                 <div className="flex justify-between items-center mb-6">
-                <AddProduct />
+                  <AddProduct />
                 </div>
-               
               </section>
             </div>
           </div>
@@ -300,9 +170,7 @@ export default function DashboardProfile() {
           <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <h3 className="text-xl font-semibold mb-4">Confirm Sign Out</h3>
-              <p className="mb-6">
-                Are you sure you want to sign out of your account?
-              </p>
+              <p className="mb-6">Are you sure you want to sign out of your account?</p>
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowSignOutConfirm(false)}
