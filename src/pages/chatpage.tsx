@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 import { useChats } from '@/components/hooks/useChats';
 import { useAddMessage } from '@/components/hooks/useAddMessage';
 import { useUsers } from '@/components/hooks/useUsers';
@@ -12,88 +14,135 @@ import {
 import { format } from 'date-fns';
 import Layout from '@/components/Layout/Layout';
 
-// The provided user dataset
-
-// Helper function to get user details by ID
-//const getUserById = (userId: string) => users.find((user) => user.id === userId);
-
 export default function ChatPage() {
-  const { addMessage, loading, error } = useAddMessage();
-  const { users, error: usersError } = useUsers();
+  const { addMessage } = useAddMessage();
+  const { users } = useUsers();
   const [chatId, setChatId] = useState<string>('');
   const [senderId, setSenderId] = useState<string>('');
   const [receiverId, setReceiverId] = useState<string>('');
   const [text, setText] = useState<string>('');
-  const [currentUserID,setCurrentUserID]=useState('');
-  const getUserById = (userId: string) => users.find((user) => user.id === userId);
-  useEffect(() => {
-    const storedUserID = localStorage.getItem('id'); // Retrieve from local storage
+  const [currentUserID, setCurrentUserID] = useState('');
+  const [selectedChat, setSelectedChat] = useState<any>(null);
+  const [newMessage, setNewMessage] = useState<string>('');
+  const { chats, isLoading } = useChats(currentUserID);
 
+  const getUserById = (userId: string) => users.find((user) => user.id === userId);
+
+  const clientRef = useRef<Client | null>(null);
+
+  const [chat, setChats] = useState<any[]>([]);
+
+  // Set current user ID from localStorage
+  useEffect(() => {
+    const storedUserID = localStorage.getItem('id');
     if (storedUserID) {
       setCurrentUserID(storedUserID);
       setSenderId(storedUserID);
     }
-    
   }, []);
-  
-  const { chats, isLoading } = useChats(currentUserID);
-  const [selectedChat, setSelectedChat] = useState(chats.length > 0 ? chats[0] : null);
-  const [newMessage, setNewMessage] = useState('');
 
+  // Initialize WebSocket connection with SockJS and STOMP
   useEffect(() => {
-    if (chats.length > 0) {
-      setSelectedChat(chats[0]);
-    }
-  }, [chats]);
+    const socketUrl = 'http://localhost:8081/ws';
+    clientRef.current = new Client({
+      webSocketFactory: () => new SockJS(socketUrl), // Use SockJS here
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+      debug: (str) => console.log(str),
+      onConnect: () => {
+        console.log('Connected to WebSocket');
+        if (clientRef.current) {
+          clientRef.current.subscribe('/topic/messages', (message) => {
+            const receivedMessage = JSON.parse(message.body);
+            handleIncomingMessage(receivedMessage);
+          });
+        }
+      },
+      onStompError: (frame) => {
+        console.error('STOMP Error: ' + frame.headers['message']);
+      },
+    });
 
+    clientRef.current.activate();
+
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
+    };
+  }, []);
+
+  // Handle incoming messages from WebSocket
+  const handleIncomingMessage = (receivedMessage) => {
+    // Update chat state with new message
+    setChats((prevChats) => {
+      const updatedChats = [...prevChats];
+      const chatIndex = updatedChats.findIndex((chat) => chat.id === receivedMessage.chatId);
+      if (chatIndex > -1) {
+        updatedChats[chatIndex].messages.push(receivedMessage);
+      }
+      return updatedChats;
+    });
+  };
+
+  // Send a message to WebSocket
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (newMessage.trim() !== '' && selectedChat) {
-      // Set the necessary variables directly instead of updating state asynchronously
       const currentChatId = selectedChat.id;
       const receiver = selectedChat.user1Id === currentUserID ? selectedChat.user2Id : selectedChat.user1Id;
       const textMessage = newMessage.trim();
-  
-      // Create the new message object
+
       const newMsg = {
-        id: `${selectedChat.messages.length + 1}`, // Assuming IDs are sequential, adjust based on your logic
+        id: `${selectedChat.messages.length + 1}`,
         chatId: currentChatId,
         senderId: currentUserID,
         receiverId: receiver,
         text: textMessage,
-        time: new Date().toISOString(), // Set the current timestamp
+        time: new Date().toISOString(),
       };
-  
-      // Optimistically update the UI
+
       const updatedChat = {
         ...selectedChat,
         messages: [...selectedChat.messages, newMsg],
       };
-  
-      // Update the selected chat state to reflect the new message
       setSelectedChat(updatedChat);
-      setNewMessage(''); // Clear the input field
-  
-      // Create the message object to send to the server
-      const messageToSend = {
+      setNewMessage('');
+
+      // Send the message to the WebSocket server
+      clientRef.current?.publish({
+        destination: '/app/chat',
+        body: JSON.stringify(newMsg),
+      });
+
+      // Optionally, save the message in the database via your API
+      await addMessage(currentChatId, {
         chatId: currentChatId,
         senderId: currentUserID,
         receiverId: receiver,
         text: textMessage,
-      };
-  
-      // Send the message via API
-      const result = await addMessage(currentChatId, messageToSend);
-      console.log(result); // Log the response for debugging
+      });
     }
   };
-  
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setNewMessage(event.target.value);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') handleSendMessage(event);
+  };
+
+  const formatTime = (time: string) => {
+    try {
+      const parsedTime = new Date(time);
+      if (isNaN(parsedTime.getTime())) {
+        return 'Invalid Date';
+      }
+      return format(parsedTime, 'hh:mm a');
+    } catch (error) {
+      return 'Invalid Date';
+    }
   };
 
   return (
@@ -118,44 +167,45 @@ export default function ChatPage() {
               </div>
               {/* Chat List */}
               <div className="space-y-4">
-              {Array.isArray(chats) && chats.length > 0 ? (
-                chats.map((chat) => {
-                  const chatPartnerId = chat.user1Id === currentUserID ? chat.user2Id : chat.user1Id;
-                  const chatPartner = getUserById(chatPartnerId);
-                  if (!chatPartner) return null;
+                {Array.isArray(chats) && chats.length > 0 ? (
+                  chats.map((chat) => {
+                    const chatPartnerId = chat.user1Id === currentUserID ? chat.user2Id : chat.user1Id;
+                    const chatPartner = getUserById(chatPartnerId);
+                    if (!chatPartner) return null;
 
-                  return (
-                    <div
-                      key={chat.id}
-                      onClick={() => setSelectedChat(chat)}
-                      className={`flex items-center p-4 rounded-lg cursor-pointer ${
-                        selectedChat?.id === chat.id ? 'bg-green-100' : 'bg-gray-50'
-                      } hover:bg-green-50 transition-colors duration-300`}
-                    >
-                      <img
-                        src={chatPartner.avatar}
-                        alt={chatPartner.name}
-                        className="w-12 h-12 rounded-full mr-4"
-                      />
-                      <div className="flex-grow">
-                        <h3 className="text-lg font-semibold text-gray-800">{chatPartner.name}</h3>
-                        <p className="text-sm text-gray-600 truncate">
-                          {chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].text : 'No messages yet'}
-                        </p>
+                    return (
+                      <div
+                        key={chat.id}
+                        onClick={() => setSelectedChat(chat)}
+                        className={`flex items-center p-4 rounded-lg cursor-pointer ${
+                          selectedChat?.id === chat.id ? 'bg-green-100' : 'bg-gray-50'
+                        } hover:bg-green-50 transition-colors duration-300`}
+                      >
+                        <img
+                          src={chatPartner.avatar}
+                          alt={chatPartner.name}
+                          className="w-12 h-12 rounded-full mr-4"
+                        />
+                        <div className="flex-grow">
+                          <h3 className="text-lg font-semibold text-gray-800">{chatPartner.name}</h3>
+                          <p className="text-sm text-gray-600 truncate">
+                            {chat.messages.length > 0
+                              ? chat.messages[chat.messages.length - 1].text
+                              : 'No messages yet'}
+                          </p>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {chat.messages.length > 0
+                            ? formatTime(chat.messages[chat.messages.length - 1].time)
+                            : 'N/A'}
+                        </span>
                       </div>
-                      <span className="text-xs text-gray-500">
-                        {chat.messages.length > 0
-                          ? format(new Date(chat.messages[chat.messages.length - 1].time), 'hh:mm a')
-                          : 'N/A'}
-                      </span>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="text-center text-gray-500">No chats available</p>
-              )}
-            </div>
-
+                    );
+                  })
+                ) : (
+                  <p className="text-center text-gray-500">No chats available</p>
+                )}
+              </div>
             </div>
 
             {/* Chat History */}
@@ -175,33 +225,30 @@ export default function ChatPage() {
                   </div>
 
                   {/* Chat History Messages */}
-                  <div className="flex-grow mb-6 space-y-4 h-80 overflow-y-scroll scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-200">
-                    {selectedChat.messages.map((message) => {
-                      const isSender = message.senderId === currentUserID;
-                      const user = getUserById(message.senderId);
+                  <div className="space-y-4 overflow-auto h-96">
+                    {selectedChat.messages.map((message, index) => {
+                      const isCurrentUserSender = message.senderId === currentUserID;
+                      const sender = getUserById(message.senderId);
                       return (
-                        <div
-                          key={message.id}
-                          className={`flex items-center ${
-                            isSender ? 'justify-end' : 'justify-start'
-                          } space-x-2`}
-                        >
-                          {!isSender && (
+                        <div key={index} className={`flex ${isCurrentUserSender ? 'justify-end' : 'justify-start'}`}>
+                          {!isCurrentUserSender && sender && (
                             <img
-                              src={user?.avatar}
-                              alt={user?.name}
-                              
-                              className="w-8 h-8 rounded-full mr-2"
+                              src={sender.avatar}
+                              alt={sender.name}
+                              className="w-10 h-10 rounded-full mr-2"
                             />
                           )}
                           <div
-                            className={`relative p-4 max-w-xs rounded-2xl shadow ${
-                              isSender ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800'
+                            className={`relative max-w-xs px-4 py-2 rounded-lg shadow ${
+                              isCurrentUserSender
+                                ? 'bg-green-400 text-black'
+                                : 'bg-gray-100 text-gray-900'
                             }`}
                           >
                             <p>{message.text}</p>
-                            <span className="text-xs absolute bottom-1 right-2 text-gray-500">
-                              
+                            {/* Time below the text */}
+                            <span className="text-xs text-gray-500 mt-1 block text-right">
+                              {formatTime(message.time)}
                             </span>
                           </div>
                         </div>
@@ -209,24 +256,21 @@ export default function ChatPage() {
                     })}
                   </div>
 
-                  {/* Input for New Message */}
-                  <div className="flex items-center">
-                    <FaSmile className="text-gray-500 text-2xl mr-2" />
+                  {/* Message Input */}
+                  <form onSubmit={handleSendMessage} className="flex items-center space-x-4 mt-6">
+                    <FaSmile className="text-gray-500 text-2xl cursor-pointer" />
                     <input
                       type="text"
                       placeholder="Type your message..."
+                      className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
                       value={newMessage}
                       onChange={handleInputChange}
                       onKeyPress={handleKeyPress}
-                      className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
                     />
-                    <button
-                      onClick={handleSendMessage}
-                      className="ml-2 bg-green-500 text-white rounded-full p-2 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-600"
-                    >
-                      <FaPaperPlane className="text-xl" />
+                    <button type="submit" className="text-2xl text-green-600">
+                      <FaPaperPlane />
                     </button>
-                  </div>
+                  </form>
                 </>
               ) : (
                 <p className="text-center text-gray-500">Select a chat to start messaging</p>
