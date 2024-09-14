@@ -17,27 +17,21 @@ import Layout from '@/components/Layout/Layout';
 export default function ChatPage() {
   const { addMessage } = useAddMessage();
   const { users } = useUsers();
-  const [chatId, setChatId] = useState<string>('');
-  const [senderId, setSenderId] = useState<string>('');
-  const [receiverId, setReceiverId] = useState<string>('');
-  const [text, setText] = useState<string>('');
-  const [currentUserID, setCurrentUserID] = useState('');
+  const [currentUserID, setCurrentUserID] = useState<string>('');
   const [selectedChat, setSelectedChat] = useState<any>(null);
   const [newMessage, setNewMessage] = useState<string>('');
-  const { chats, isLoading } = useChats(currentUserID);
-
-  const getUserById = (userId: string) => users.find((user) => user.id === userId);
+  const { chats } = useChats(currentUserID);
 
   const clientRef = useRef<Client | null>(null);
+  const [chatList, setChatList] = useState<any[]>([]);
 
-  const [chat, setChats] = useState<any[]>([]);
+  const getUserById = (userId: string) => users.find((user) => user.id === userId);
 
   // Set current user ID from localStorage
   useEffect(() => {
     const storedUserID = localStorage.getItem('id');
     if (storedUserID) {
       setCurrentUserID(storedUserID);
-      setSenderId(storedUserID);
     }
   }, []);
 
@@ -45,7 +39,7 @@ export default function ChatPage() {
   useEffect(() => {
     const socketUrl = 'http://localhost:8081/ws';
     clientRef.current = new Client({
-      webSocketFactory: () => new SockJS(socketUrl), // Use SockJS here
+      webSocketFactory: () => new SockJS(socketUrl),
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -75,14 +69,27 @@ export default function ChatPage() {
 
   // Handle incoming messages from WebSocket
   const handleIncomingMessage = (receivedMessage) => {
-    // Update chat state with new message
-    setChats((prevChats) => {
-      const updatedChats = [...prevChats];
-      const chatIndex = updatedChats.findIndex((chat) => chat.id === receivedMessage.chatId);
+    setChatList((prevChats) => {
+      // Find the chat and add the new message
+      const chatIndex = prevChats.findIndex(chat => chat.id === receivedMessage.chatId);
       if (chatIndex > -1) {
-        updatedChats[chatIndex].messages.push(receivedMessage);
+        const updatedChats = [...prevChats];
+        const chat = updatedChats[chatIndex];
+        if (!chat.messages.find(msg => msg.id === receivedMessage.id)) {
+          updatedChats[chatIndex] = {
+            ...chat,
+            messages: [...chat.messages, receivedMessage],
+          };
+          // Update selected chat if it's the current chat
+          if (selectedChat && selectedChat.id === receivedMessage.chatId) {
+            setSelectedChat(updatedChats[chatIndex]);
+          }
+        }
+        return updatedChats;
+      } else {
+        // Chat not found, return unchanged
+        return prevChats;
       }
-      return updatedChats;
     });
   };
 
@@ -95,7 +102,7 @@ export default function ChatPage() {
       const textMessage = newMessage.trim();
 
       const newMsg = {
-        id: `${selectedChat.messages.length + 1}`,
+        id: `${Date.now()}`, // Ensure unique ID
         chatId: currentChatId,
         senderId: currentUserID,
         receiverId: receiver,
@@ -103,12 +110,25 @@ export default function ChatPage() {
         time: new Date().toISOString(),
       };
 
-      const updatedChat = {
-        ...selectedChat,
-        messages: [...selectedChat.messages, newMsg],
-      };
-      setSelectedChat(updatedChat);
-      setNewMessage('');
+      // Update the chat locally
+      setSelectedChat((prevChat) => ({
+        ...prevChat,
+        messages: [...prevChat.messages, newMsg],
+      }));
+
+      // Update chat list
+      setChatList((prevChats) => {
+        const chatIndex = prevChats.findIndex(chat => chat.id === currentChatId);
+        if (chatIndex > -1) {
+          const updatedChats = [...prevChats];
+          updatedChats[chatIndex] = {
+            ...updatedChats[chatIndex],
+            messages: [...updatedChats[chatIndex].messages, newMsg],
+          };
+          return updatedChats;
+        }
+        return prevChats;
+      });
 
       // Send the message to the WebSocket server
       clientRef.current?.publish({
@@ -123,6 +143,8 @@ export default function ChatPage() {
         receiverId: receiver,
         text: textMessage,
       });
+
+      setNewMessage('');
     }
   };
 
@@ -144,6 +166,11 @@ export default function ChatPage() {
       return 'Invalid Date';
     }
   };
+
+  // Sync chat list with chats from useChats
+  useEffect(() => {
+    setChatList(chats);
+  }, [chats]);
 
   return (
     <Layout>
@@ -167,8 +194,8 @@ export default function ChatPage() {
               </div>
               {/* Chat List */}
               <div className="space-y-4">
-                {Array.isArray(chats) && chats.length > 0 ? (
-                  chats.map((chat) => {
+                {Array.isArray(chatList) && chatList.length > 0 ? (
+                  chatList.map((chat) => {
                     const chatPartnerId = chat.user1Id === currentUserID ? chat.user2Id : chat.user1Id;
                     const chatPartner = getUserById(chatPartnerId);
                     if (!chatPartner) return null;
@@ -246,7 +273,6 @@ export default function ChatPage() {
                             }`}
                           >
                             <p>{message.text}</p>
-                            {/* Time below the text */}
                             <span className="text-xs text-gray-500 mt-1 block text-right">
                               {formatTime(message.time)}
                             </span>
