@@ -4,8 +4,13 @@ import { Client } from '@stomp/stompjs';
 import { useChats } from '@/hooks/useChats';
 import { useAddMessage } from '@/hooks/useAddMessage';
 import { useUsers } from '@/hooks/useUsers';
-import { FaPaperPlane,FaSmile,FaEllipsisV,FaPlusCircle,FaSearch,} from 'react-icons/fa';
-import { format } from 'date-fns';
+import {
+  FaPaperPlane,
+  FaSmile,
+  FaEllipsisV,
+  FaPlusCircle,
+  FaSearch,
+} from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
 export default function ChatPage() {
@@ -23,7 +28,7 @@ export default function ChatPage() {
   const getUserById = (userId: string) => users.find((user) => user.id === userId);
 
   const clientRef = useRef<Client | null>(null);
-  const lastMessageRef = useRef<HTMLDivElement | null>(null);  // Ref for last message
+  const lastMessageRef = useRef<HTMLDivElement | null>(null); // Ref for last message
 
   const [chatList, setChatList] = useState<any[]>([]);
 
@@ -134,18 +139,6 @@ export default function ChatPage() {
     if (event.key === 'Enter') handleSendMessage(event);
   };
 
-  const formatTime = (time: string) => {
-    try {
-      const parsedTime = new Date(time);
-      if (isNaN(parsedTime.getTime())) {
-        return 'Invalid Date';
-      }
-      return format(parsedTime, 'hh:mm a');
-    } catch (error) {
-      return 'Invalid Date';
-    }
-  };
-
   useEffect(() => {
     setChatList(chats);
   }, [chats]);
@@ -245,63 +238,53 @@ export default function ChatPage() {
 
                       return (
                         <div
-                          key={index}
-                          className={`flex ${isCurrentUserSender ? 'justify-end' : 'justify-start'}`}
-                          ref={isLastMessage ? lastMessageRef : null}  // Attach ref to the last message
+                          key={message.id}
+                          className={`flex ${
+                            isCurrentUserSender ? 'justify-end' : 'justify-start'
+                          }`}
                         >
-                          {!isCurrentUserSender && sender && (
-                            <img
-                              src={sender.avatar}
-                              alt={sender.name}
-                              className="w-10 h-10 rounded-full mr-2"
-                            />
-                          )}
                           <div
-                            className={`relative max-w-xs px-4 py-2 rounded-lg shadow ${
-                              isCurrentUserSender
-                                ? 'bg-green-400 text-black'
-                                : 'bg-gray-100 text-gray-900'
+                            className={`rounded-lg p-4 max-w-xs ${
+                              isCurrentUserSender ? 'bg-green-500 text-white' : 'bg-gray-200'
                             }`}
                           >
                             <p>{message.text}</p>
-                            <span className="text-xs text-gray-500 mt-1 block text-right">
+                            <span className="block text-xs mt-2">
                               {formatTime(message.time)}
                             </span>
                           </div>
+                          {isLastMessage && <div ref={lastMessageRef} />}
                         </div>
                       );
                     })}
                   </div>
 
-                  {/* Message Input */}
-                  <form onSubmit={handleSendMessage} className="flex items-center space-x-4 mt-6">
-                  <FaSmile className="text-gray-500 text-2xl cursor-pointer" />
-                  <input
-                    type="text"
-                    placeholder="Type your message..."
-                    className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
-                    value={newMessage}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
-                  />
-                  <input
-                    type="file"
-                    id="fileInput"
-                    className="hidden"
-                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                  />
-                  <label htmlFor="fileInput">
-                    <FaPlusCircle className="text-gray-500 text-2xl cursor-pointer" />
-                  </label>
-                  <button type="submit" className="text-2xl text-green-600">
-                    <FaPaperPlane />
-                  </button>
-                </form>
-
-                
+                  {/* Send Message Input */}
+                  <form
+                    onSubmit={handleSendMessage}
+                    className="mt-6 flex items-center space-x-4"
+                  >
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyPress}
+                      className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+                      placeholder="Type a message..."
+                    />
+                    <FaSmile className="text-gray-500 text-xl cursor-pointer" />
+                    <button
+                      type="submit"
+                      className="bg-green-600 text-white p-3 rounded-full"
+                    >
+                      <FaPaperPlane className="text-xl" />
+                    </button>
+                  </form>
                 </>
               ) : (
-                <p className="text-center text-gray-500">Select a chat to start messaging</p>
+                <div className="text-center text-gray-500">
+                  Select a chat to start messaging
+                </div>
               )}
             </div>
           </div>
@@ -309,4 +292,24 @@ export default function ChatPage() {
       </div>
     </Layout>
   );
+}
+
+// Helper function to format the time
+function formatTime(isoString: string) {
+  const date = new Date(isoString);
+  const now = new Date();
+  
+  const isToday = date.toDateString() === now.toDateString();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  
+  const formattedHours = hours % 12 || 12;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  if (isToday) {
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  } else {
+    return date.toLocaleDateString(); // Show full date if not today
+  }
 }

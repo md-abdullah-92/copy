@@ -1,9 +1,21 @@
-// src/hooks/useProducts.ts
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+export interface Product {
+  id: number;
+  productname: string;
+  description: string;
+  image: string;
+  price: number;
+  category: string;
+  quantity: string;
+  rating: number;
+  ownername: string;
+  ownerid: string;
+}
+
 const useProducts = () => {
-  const [productsData, setProductsData] = useState<any[]>([]);
+  const [productsData, setProductsData] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core';
+
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import 'regenerator-runtime/runtime';

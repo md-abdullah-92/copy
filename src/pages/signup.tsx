@@ -7,13 +7,13 @@ import React from 'react';
 import getScrollAnimation from '@/utils/getScrollAnimation';
 import { useFormHandling } from '@/hooks/useFormHandling';
 import { useRoleSelection } from '@/hooks/useRoleSelection';
-import { useFormSubmission } from '@/hooks/useFormSubmission';
+import {useSubmitForm } from '@/hooks/useSubmitForm';
 
 export default function AuthenticationTitle() {
   const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
   const form = useFormHandling(); // Custom form handling hook
   const { handleRoleChange } = useRoleSelection(form); // Role selection hook
-  const { handleSubmit } = useFormSubmission(form); // Form submission hook
+  const { onSubmit } = useSubmitForm(form); // Form submission hook
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function AuthenticationTitle() {
               <h1 className="text-4xl font-bold text-green-900 text-center mb-6">
                 Create A New Account
               </h1>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={onSubmit}>
                 <div className="rounded-md p-6">
                   <label
                     className="text-color mb-2 text-sm font-semibold"
@@ -122,6 +122,7 @@ export default function AuthenticationTitle() {
                   >
                     <option value="buyer">Buyer</option>
                     <option value="farmer">Farmer</option>
+                    <option value="agent">Agent</option>
                   </select>
 
                   <div className="mt-8">

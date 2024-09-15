@@ -23,6 +23,23 @@ export default function AuthenticationTitle() {
   });
 
   const onSubmit = async (values: { email: string; password: string; role: string }) => {
+    if(values.role==='agent')
+    {
+      try {
+        const res = await axios.post('/api/agentlogin', values);
+        const { token } = res.data;
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', values.role);
+        localStorage.setItem('email', values.email);
+        //alert should more nice
+        alert('Login Successful');
+        window.location.href = '/agentdashboard';
+      }catch (err) {
+        alert('Error');
+        console.log(err);
+      }
+    }
+    else
     try {
       const res = await axios.post('/api/login', values);
       const { token } = res.data;
@@ -138,6 +155,7 @@ export default function AuthenticationTitle() {
                     >
                       <option value="buyer">Buyer</option>
                       <option value="farmer">Farmer</option>
+                      <option value="agent">Agent</option>
                     </select>
                   </div>
                   <div className="mt-8">

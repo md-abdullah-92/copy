@@ -68,7 +68,4 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
       break;
   }
-
-
-
 }
