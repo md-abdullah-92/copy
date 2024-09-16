@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { FaBox, FaUser, FaTractor, FaShoppingCart,FaSearch } from 'react-icons/fa'; // Import FaShoppingCart for cart
-import ButtonOutline from '../misc/ButtonOutline'; // Import ButtonOutline if needed
+import ButtonOutline from '../Buttons/ButtonOutline'; // Import ButtonOutline if needed
 
 const Header = () => {
   const router = useRouter();

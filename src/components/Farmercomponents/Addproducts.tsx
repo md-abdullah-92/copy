@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import axios from 'axios';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../config/firebaseConfig'; // Ensure this path is correct
+import { storage } from '../../config/firebaseConfig'; // Ensure this path is correct
 
 const AddProduct: React.FC = () => {
   const [newProduct, setNewProduct] = useState({

@@ -24,10 +24,11 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const router = useRouter();
+  const {email} = router.query;
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const selleremail = localStorage.getItem('email');
+      const selleremail = localStorage.getItem('email')||email;
 
       try {
         setLoading(true);

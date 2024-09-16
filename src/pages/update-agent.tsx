@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout/Layout';
-import ButtonPrimary from '@/components/misc/ButtonPrimary';
+import ButtonPrimary from '@/components/Buttons/ButtonPrimary';
 import { useForm } from '@mantine/form';
 import Head from 'next/head';
 import Image from 'next/image';

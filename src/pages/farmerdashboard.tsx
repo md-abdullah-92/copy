@@ -2,8 +2,8 @@ import { useProfile } from '@/hooks/useProfile'; // Adjust this path based on yo
 import { useOwnerProducts } from '@/hooks/useOwnerProducts';
 import { useSignOut } from '@/hooks/useSignOut';// Assuming you have a hook for handling the cart
 import Layout from '@/components/Layout/Layout';
-import ManageProduct from '@/components/ManageProducts';
-import AddProduct from '@/components/Addproducts';
+import ManageProduct from '@/components/Farmercomponents/ManageProducts';
+import AddProduct from '@/components/Farmercomponents/Addproducts';
 import { useRouter } from 'next/router';
 import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,FaTractor } from 'react-icons/fa';
 import Link from 'next/link';

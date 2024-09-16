@@ -6,6 +6,7 @@ import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,
 import FarmerList from '@/components/farmerlist'; // Assuming you have a component for displaying farmers
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useFarmers } from '@/hooks/useFarmers'; // Assuming you have a hook for fetching farmers
 
 export default function DashboardProfile() {
   const { agentprofiles, loggedInUser } = useProfile();
@@ -15,6 +16,7 @@ export default function DashboardProfile() {
   if (!loggedInUser) return <p>Loading profile...</p>;
 
   const storedNidNumber = loggedInUser.nidNumber;
+  const storedId = loggedInUser.id;
 
   // Notify user to provide NID if missing
   const showNidWarning = !storedNidNumber;
@@ -104,7 +106,8 @@ export default function DashboardProfile() {
             
                   {/* Farmers List Section */}
            
-                      <FarmerList />
+                      <FarmerList
+                      id={storedId as string}/>
            
               </div>
             )}

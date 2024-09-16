@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
 import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../config/firebaseConfig';
+import { storage } from '../../config/firebaseConfig';
 
 interface Product {
   id: string;

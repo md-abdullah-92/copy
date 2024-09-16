@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout/Layout';
-import ButtonPrimary from '@/components/misc/ButtonPrimary';
+import ButtonPrimary from '@/components/Buttons/ButtonPrimary';
 import ScrollAnimationWrapper from '@/components/Layout/ScrollAnimationWrapper';
 import { motion } from 'framer-motion';
 import { Center } from '@mantine/core';

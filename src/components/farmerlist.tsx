@@ -1,40 +1,57 @@
 import { useState, useEffect } from 'react';
 import { FaSearch, FaUserCircle } from 'react-icons/fa';
+import { useFarmers } from '../hooks/useFarmers';
+import router from 'next/router';
+import { useSendOtp } from '../hooks/useSendOtp';
+import { useRouter } from 'next/router';
 
 interface Farmer {
   id: string;
   name: string;
   email: string;
-  location: string;
-  products: string[];
+  upazila: string;
+  zila: string;
+  division: string;
+  avatar: string;
+}
+interface FarmerListProps {
+  id: string;
 }
 
-const FarmerList: React.FC = () => {
-  const [farmers, setFarmers] = useState<Farmer[]>([]);
+const FarmerList: React.FC< FarmerListProps> = ({id}) => {
+  const router = useRouter();
+  const { farmers, loading, error } = useFarmers();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredFarmers, setFilteredFarmers] = useState<Farmer[]>([]);
+  const [isVerified, setIsVerified] = useState<boolean>(false); // Track if OTP is verified
+  const { sendOtp } = useSendOtp();  
 
   useEffect(() => {
-    // Simulating fetching farmers from an API or database
-    const fetchFarmers = async () => {
-      const farmerData: Farmer[] = [
-        { id: '1', name: 'John Doe', email: 'john@example.com', location: 'Texas', products: ['Tomatoes', 'Corn'] },
-        { id: '2', name: 'Alice Green', email: 'alice@example.com', location: 'California', products: ['Lettuce', 'Carrots'] },
-        { id: '3', name: 'Mark White', email: 'mark@example.com', location: 'Florida', products: ['Potatoes', 'Peppers'] },
-      ];
-      setFarmers(farmerData);
-    };
-
-    fetchFarmers();
-  }, []);
-
-  useEffect(() => {
-    const results = farmers.filter(farmer =>
+    const results = farmers.filter((farmer) =>
       farmer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      farmer.location.toLowerCase().includes(searchTerm.toLowerCase())
+      farmer.upazila.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      farmer.zila.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      farmer.id.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredFarmers(results);
   }, [searchTerm, farmers]);
+
+  const handleManageProductClick = (email:string) => {
+    
+
+    if (!isVerified) {
+      alert('An OTP has been sent to the farmer. Please verify it to proceed.');
+      sendOtp(email, id as string);
+      router.push({
+        pathname: '/agent-otp-verification',
+        query: { id, email }
+      }); 
+      }
+     else {
+      // Proceed with managing products after OTP is verified
+      alert('Managing products for the farmer.');
+    }
+  };
 
   return (
     <div className="bg-green-50 py-8 min-h-screen">
@@ -47,7 +64,7 @@ const FarmerList: React.FC = () => {
             <div className="relative w-80">
               <input
                 type="text"
-                placeholder="Search by name or location"
+                placeholder="Search by name, id or location"
                 className="w-full border border-green-400 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-green-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -56,31 +73,47 @@ const FarmerList: React.FC = () => {
             </div>
           </div>
 
-          {/* Farmers Card View */}
-          {/* Grid Layout should row wise */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6">
+          {/* Grid Layout Row-wise */}
+          <div className="grid grid-cols-1 gap-6">
             {filteredFarmers.length > 0 ? (
               filteredFarmers.map((farmer) => (
                 <div key={farmer.id} className="bg-green-100 border border-green-300 rounded-lg shadow-lg p-6 transition-transform duration-300 hover:scale-105">
                   <div className="flex items-center">
-                    {farmer.avatarUrl ? (
+                    {farmer.avatar ? (
                       <img
-                        src={farmer.avatarUrl}
+                        src={farmer.avatar}
                         alt={`${farmer.name}'s Avatar`}
                         className="w-16 h-16 rounded-full object-cover mr-4"
                       />
                     ) : (
                       <FaUserCircle className="text-5xl text-green-500 mr-4" />
                     )}
+
                     <div>
                       <h2 className="text-xl font-semibold text-green-900">{farmer.name}</h2>
                       <p className="text-sm text-green-700">{farmer.email}</p>
-                      <p className="text-sm text-green-700">{farmer.location}</p>
+                      <p className="text-sm text-green-700">
+                        {farmer.upazila}, {farmer.zila}.
+                      </p>
+                      <p className="text-sm text-green-700">{farmer.id}</p>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <h3 className="text-md font-semibold text-green-800">Products</h3>
-                    <p className="text-sm text-green-600">{farmer.products.join(', ')}</p>
+
+                    {/* Button Container */}
+                    <div className="ml-auto">
+                      <button
+                        className="bg-transparent text-blue-500 px-3 py-1.5 border border-blue-500 rounded-md text-xs hover:bg-blue-500 hover:text-white transition-colors duration-300"
+                        onClick={() => console.log('Check Orders')}
+                      >
+                        Check Orders
+                      </button>
+                      <samp> </samp>
+                      <button
+                        className="bg-transparent text-red-500 px-3 py-1.5 border border-red-500 rounded-md text-xs hover:bg-red-500 hover:text-white transition-colors duration-300"
+                        onClick={ () => handleManageProductClick(farmer.email) }
+                      >
+                        Manage Product
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

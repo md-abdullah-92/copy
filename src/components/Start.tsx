@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import ButtonPrimary from './misc/ButtonPrimary';
+import ButtonPrimary from './Buttons/ButtonPrimary';
 import { motion } from 'framer-motion';
 import getScrollAnimation from '../utils/getScrollAnimation';
 import ScrollAnimationWrapper from './Layout/ScrollAnimationWrapper';

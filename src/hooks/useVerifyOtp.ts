@@ -1,0 +1,38 @@
+import { useState } from 'react';
+import axios from 'axios';
+import router from 'next/router';
+
+export const useVerifyOtp = () => {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const verifyOtp = async (id: string, otp: string,email:string) => {
+    setLoading(true);
+    setError('');
+    try {
+        const res = await axios.post('/api/agent/verifyotp',{}, { 
+            params: { 
+                otp, 
+                id
+             },
+            })
+        if(res.status === 201) {
+            router.push({
+                pathname: '/orders',
+                query: { email }
+              }); 
+         
+        } else {
+            setError('Failed to verify OTP. Please try again later.');
+        }
+    
+    } catch (err) {
+        setError('An error occurred while sending OTP');
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  return { verifyOtp, loading, message, error };
+};

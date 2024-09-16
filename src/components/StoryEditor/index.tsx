@@ -6,7 +6,7 @@ import StarterKit from '@tiptap/starter-kit';
 
 import LoadingDots from '../LoadingDots';
 import { title } from 'process';
-import ButtonPrimary from '../misc/ButtonPrimary';
+import ButtonPrimary from '../Buttons/ButtonPrimary';
 import { Center } from '@mantine/core';
 
 const defaultContent = `<p>A boy and a happy lion</p>`;

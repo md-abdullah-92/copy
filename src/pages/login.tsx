@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout/Layout';
-import ButtonPrimary from '@/components/misc/ButtonPrimary';
+import ButtonPrimary from '@/components/Buttons/ButtonPrimary';
 import { Center } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import axios from 'axios';

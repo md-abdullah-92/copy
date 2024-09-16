@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export function useProfile() {
   const [agentprofiles, setAgentProfiles] = useState(null);
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', email: '', avatarurl: '', nidNumber: '' });
+  const [loggedInUser, setLoggedInUser] = useState({id:'', name: '', email: '', avatarurl: '', nidNumber: '' });
   const router = useRouter();
 
   useEffect(() => {
@@ -25,6 +25,7 @@ export function useProfile() {
           setAgentProfiles(profiles);
           localStorage.setItem('email', profiles.email);
           setLoggedInUser({
+            id:profiles.id,
             name: profiles.name,
             email: profiles.email,
             avatarurl: profiles.avatar,
