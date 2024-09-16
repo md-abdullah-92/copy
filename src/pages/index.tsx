@@ -20,6 +20,8 @@ export default function Home() {
           } else if (role === 'farmer') {
             window.location.href = '/farmerdashboard';
           }
+          else
+          window.location.href = '/agentdashboard';
         }
       } catch (err) {
         console.log(err);

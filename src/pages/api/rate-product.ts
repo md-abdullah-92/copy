@@ -10,39 +10,39 @@ export default async function handler(
     switch(method)
     {
       
-            case 'PUT': {
-                
-                try {
-                  const url = "http://localhost:8080/product/rateproduct"; // Adjust if needed
-                  const id = req.query.productid as string;
-                  const rating = req.query.rating as string;
-                  const soldproduct= req.query.soldproduct as string;
-                    console.log("Product id",id);
-                    console.log("Rating",rating);
-                    console.log("Sold product",soldproduct);
-                 
+        case 'PUT': {
             
-                  // Making a PUT request to the Java backend
-                  const axiosRes = await axios.put(url, {}, {
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    params: {
-                        id,
-                        rating,
-                        soldproduct,
-                    },
-                  });
-                  
-                  res.status(200).json(axiosRes.data);
-                } catch (err) {
-                  console.error('Error updating product quantity:', err);
-                  res.status(500).json({
-                    message: 'An error occurred while updating the product quantity.',
-                  });
-                }
-                break;
-              }
+            try {
+              const url = "http://localhost:8080/product/rateproduct"; // Adjust if needed
+              const id = req.query.productid as string;
+              const rating = req.query.rating as string;
+              const soldproduct= req.query.soldproduct as string;
+                console.log("Product id",id);
+                console.log("Rating",rating);
+                console.log("Sold product",soldproduct);
+              
+        
+              // Making a PUT request to the Java backend
+              const axiosRes = await axios.put(url, {}, {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                params: {
+                    id,
+                    rating,
+                    soldproduct,
+                },
+              });
+              
+              res.status(200).json(axiosRes.data);
+            } catch (err) {
+              console.error('Error updating product quantity:', err);
+              res.status(500).json({
+                message: 'An error occurred while updating the product quantity.',
+              });
+            }
+            break;
+          }
 
         
         default:
