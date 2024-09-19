@@ -30,7 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         // Send a request to the Spring Boot backend to add a message to the chat
         const response = await axios.post(
-          `http://localhost:8081/api/chats/${chatId}/messages`, // Spring Boot backend URL
+          process.env.MESSAGING_SERVICE_BASEURL+
+          `/api/chats/${chatId}/messages`, // Spring Boot backend URL
           newMessage, // Pass the message object as the request body
           {
             headers: {
@@ -54,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
     case 'GET': {
-      const url = "http://localhost:8081/api/chats/user/chatids";
+      const url =  process.env.MESSAGING_SERVICE_BASEURL+"/api/chats/user/chatids";
       const { chatId } = req.query; 
 
       try {

@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
 
       const { email } = req.query;
-      const updateUrl = `http://localhost:8081/api/users`;
+      const updateUrl =  process.env.MESSAGING_SERVICE_BASEURL+`/api/users`;
 
       try {
         const axiosRes = await axios.post(updateUrl, updateRequestBody, {
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break;
     }
     case 'GET': {
-      const url = "http://localhost:8081/api/users";
+      const url =  process.env.MESSAGING_SERVICE_BASEURL+"/api/users";
 
       try {
         const axiosRes = await axios.get(url, {

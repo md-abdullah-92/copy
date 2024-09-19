@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       try {
         // Send a request to the Spring Boot backend to create or get an existing chat
-        const response = await axios.post('http://localhost:8081/api/chats', {}, {
+        const response = await axios.post( process.env.MESSAGING_SERVICE_BASEURL+'/api/chats', {}, {
             params: {
                 user1Id,
                 user2Id,
