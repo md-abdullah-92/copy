@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ownerphone,
       };
 
-      const updateUrl = `http://localhost:8080/product/editproduct`;
+      const updateUrl = process.env.PRODUCT_SERVICE_BASEURL+`/product/editproduct`;
 
       try {
         const axiosRes = await axios.put(updateUrl, updateRequestBody, {

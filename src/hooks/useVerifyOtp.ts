@@ -19,7 +19,7 @@ export const useVerifyOtp = () => {
             })
         if(res.status === 201) {
             router.push({
-                pathname: '/orders',
+                pathname: '/agent-orders',
                 query: { email }
               }); 
          

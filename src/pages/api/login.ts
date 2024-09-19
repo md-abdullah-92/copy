@@ -16,7 +16,7 @@ export default async function handler(
             "password":password,
             "role":role
         }
-        const url = "http://localhost:8080/api/user/login";
+        const url = process.env.USER_SERVICE_BASEURL+"/api/user/login";
         try{
             const axiosRes = await axios.post(url,body,{
                 headers: {

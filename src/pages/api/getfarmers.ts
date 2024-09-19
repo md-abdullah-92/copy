@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   switch (method) {
     case 'GET': {
-      const url = 'http://localhost:8080/api/user/farmers';
+      const url = process.env.USER_SERVICE_BASEURL+'/api/user/farmers';
 
       try {
         const axiosRes = await axios.get(url, {

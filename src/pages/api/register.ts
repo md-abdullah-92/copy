@@ -25,7 +25,7 @@ export default async function handler(
             organization:"",
             avatar:""
         }
-        const url = "http://localhost:8080/api/user";
+        const url = process.env.USER_SERVICE_BASEURL+"/api/user";
         try{
             const axiosRes = await axios.post(url,user,{
                 headers: {

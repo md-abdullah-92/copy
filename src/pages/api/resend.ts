@@ -10,7 +10,7 @@ export default async function handler(
     switch(method)
     {
         case 'POST':
-        const url ="http://localhost:8080/api/user/resend";
+        const url =process.env.USER_SERVICE_BASEURL+"/api/user/resend";
         try{
             const axiosRes = await axios.post(url,);
             res.status(201).json({

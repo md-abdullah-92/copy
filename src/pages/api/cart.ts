@@ -9,7 +9,7 @@ export default async function handler(
   console.log({ method });
   switch (method) {
     case 'GET':
-      const url = "http://localhost:8080/cart/cartproducts";
+      const url = process.env.PRODUCT_SERVICE_BASEURL+"/cart/cartproducts";
       try {
         const axiosRes = await axios.get(url, {
           headers: {
@@ -39,7 +39,7 @@ export default async function handler(
             email,
            
         } = req.body;
-        const postUrl = 'http://localhost:8080/cart/addtocart';
+        const postUrl =process.env.PRODUCT_SERVICE_BASEURL+ '/cart/addtocart';
         const formData = new FormData();
         console.log({ id, productname, image, price, category, quantity, email });
         formData.append('id', id);

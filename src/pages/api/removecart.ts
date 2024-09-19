@@ -9,7 +9,7 @@ export default async function handler(
   console.log({ method });
   switch (method) {
     case 'POST':
-      const url = "http://localhost:8080/cart/removeproduct";
+      const url = process.env.PRODUCT_SERVICE_BASEURL+"/cart/removeproduct";
       const { id, email } = req.body; // Extract parameters from the body
       console.log('Product ID:', id);
       console.log('Email:', email);

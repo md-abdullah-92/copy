@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (method) {
 
     case 'GET': {
-      const url = "http://localhost:8080/product/getproduct";
+      const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/getproduct";
 
       try {
         const id = req.query.id as string;

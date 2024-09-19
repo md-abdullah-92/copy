@@ -13,7 +13,7 @@ export default async function handler(
       const id = req.query.id as string;
       
 
-      const url = "http://localhost:8080/api/agents/verifyotp";
+      const url = process.env.USER_SERVICE_BASEURL+"/api/agents/verifyotp";
       
       try {
         const axiosRes = await axios.post(url, {}, {

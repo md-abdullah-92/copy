@@ -15,7 +15,7 @@ export default async function handler(
             id:id,
             code:code
         }
-        const url ="http://localhost:8080/api/user/verify";
+        const url =process.env.USER_SERVICE_BASEURL+"/api/user/verify";
         try{
             const axiosRes = await axios.post(url,body,{
                 headers: {
@@ -35,7 +35,7 @@ export default async function handler(
             case 'PUT': {
                 
                 try {
-                  const url = "http://localhost:8080/soldproduct/verifycode"; // Adjust if needed
+                  const url = process.env.PRODUCT_SERVICE_BASEURL+"/soldproduct/verifycode"; // Adjust if needed
                   const id = req.query.id as string;
                   const code = req.query.code as string;
                   console.log("order id",id);

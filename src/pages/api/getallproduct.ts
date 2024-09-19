@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
 
     case 'GET': {
-      const url = "http://localhost:8080/product/allproducts";
+      const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/allproducts";
 
       try {
         const axiosRes = await axios.get(url, {

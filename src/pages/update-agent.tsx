@@ -233,7 +233,7 @@ export default function UpdateProfile() {
                   )}
                 </div>
               </div>
-              <ButtonPrimary className="mt-6" type="submit">
+              <ButtonPrimary type="submit">
                 Update Profile
               </ButtonPrimary>
             </form>

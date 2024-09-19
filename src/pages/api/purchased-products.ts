@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (method) {
 
 case 'GET': {
-    const url = "http://localhost:8080/soldproduct/soldproducts";
+    const url = process.env.PRODUCT_SERVICE_BASEURL+"/soldproduct/soldproducts";
 
     try {
       const buyeremail = req.query.buyeremail as string;

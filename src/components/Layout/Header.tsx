@@ -87,49 +87,7 @@ const Header = () => {
             </>
           )}
           
-          {pathname == '/update-order-status' && query.orderId && (
-            <>
-              <button
-                onClick={() => router.push('/farmerdashboard#products')}
-                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
-                aria-label="products"
-              >
-                <FaBox size={22} />
-                <span
-                  className="ml-2 text-sm font-semibold"
-                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
-                >
-                  Manage Products
-                </span>
-              </button>
-              <button
-                onClick={() => router.push('/orders')}
-                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
-               // aria-label="Manage Products"
-              >
-                <FaTractor size={22} />
-                <span
-                  className="ml-2 text-sm font-semibold"
-                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
-                >
-                  Orders
-                </span>
-              </button>
-              <button
-                onClick={() => router.push('/farmerdashboard')}
-                className="flex items-center text-green-800 hover:text-green-600 transition-colors duration-300"
-                aria-label="Dashboard"
-              >
-                <FaUser size={22} />
-                <span
-                  className="ml-2 text-sm font-semibold"
-                  style={{ fontFamily: 'Caveat Brush, cursive', color: 'black' }}
-                >
-                  Dashboard
-                </span>
-              </button>
-            </>
-          )}
+          
           
           {pathname === '/BrowseProducts' && (
             <div className="flex items-center space-x-4">

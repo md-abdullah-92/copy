@@ -13,7 +13,7 @@ export default async function handler(
         case 'PUT': {
             
             try {
-              const url = "http://localhost:8080/product/rateproduct"; // Adjust if needed
+              const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/rateproduct"; // Adjust if needed
               const id = req.query.productid as string;
               const rating = req.query.rating as string;
               const soldproduct= req.query.soldproduct as string;

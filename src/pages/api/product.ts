@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
        ownerid,
      };
  
-      const updateUrl = `http://localhost:8080/product/addproduct`;
+      const updateUrl = process.env.PRODUCT_SERVICE_BASEURL+`/product/addproduct`;
 
       try {
         const axiosRes = await axios.post(updateUrl, updateRequestBody, {
@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break;
     }
     case 'GET': {
-      const url = "http://localhost:8080/product/getsameownerproduct";
+      const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/getsameownerproduct";
 
       try {
         const owneremail = req.query.owneremail as string;

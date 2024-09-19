@@ -12,7 +12,7 @@ export default async function handler(
     case 'GET':
       // Extract role from query parameters and ensure unique variable names
       const queryRole = req.query.role as string | undefined;
-      const getUrl = `http://localhost:8080/api/profile${queryRole ? `?role=${queryRole}` : ''}`;
+      const getUrl = process.env.USER_SERVICE_BASEURL+`/api/profile${queryRole ? `?role=${queryRole}` : ''}`;
 
       try {
         const resData = await axios.get(getUrl, {

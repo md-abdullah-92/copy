@@ -9,7 +9,7 @@ export default async function handler(
 
   switch (method) {
     case 'GET': {
-      const url = "http://localhost:8080/api/agents/getagent";
+      const url =process.env.USER_SERVICE_BASEURL+ "/api/agents/getagent";
 
       try {
         const token = req.headers.authorization; // Get the Authorization header from the request
@@ -45,7 +45,7 @@ export default async function handler(
     case 'POST': {
       const { name, password, avatar, gender, phone, address, upazila, zila, organization } = req.body;
     
-      const postUrl = 'http://localhost:8080/api/user/update';
+      const postUrl = process.env.USER_SERVICE_BASEURL+'/api/user/update';
     
       const formData = new FormData();
       formData.append('name', name);

@@ -104,7 +104,7 @@ const UpdateOrderStatus: React.FC = () => {
       });
 
       alert('Order status updated successfully');
-      router.push('/orders');
+      router.back(); // Navigate back to the previous page
     } catch (err) {
       console.error('Error updating order status:', err);
       setError('Failed to update the order status. Please try again.');

@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
 
       const { email } = req.query;
-      const updateUrl = `http://localhost:8080/api/user/update`;
+      const updateUrl = process.env.USER_SERVICE_BASEURL+`/api/user/update`;
 
       try {
         const axiosRes = await axios.put(updateUrl, updateRequestBody, {

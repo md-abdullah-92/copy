@@ -17,7 +17,7 @@ export default async function handler(
             email:email,
             password:password,
         }
-        const url = "http://localhost:8080/api/agents/register";
+        const url = process.env.USER_SERVICE_BASEURL+"/api/agents/register";
         try{
             const axiosRes = await axios.post(url,user,{
                 headers: {

@@ -13,7 +13,8 @@ export default async function handler(
       const id = req.query.id as string;
       console.log(`Email: ${email}, ID: ${id}`);
 
-      const url = "http://localhost:8080/api/agents/sendotp";
+
+      const url = process.env.USER_SERVICE_BASEURL+"/api/agents/sendotp";
       
       try {
         const axiosRes = await axios.put(url, {}, {
