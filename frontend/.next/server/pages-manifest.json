@@ -1,10 +1,6 @@
 {
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/login": "pages/login.js",
-  "/chatbot-farmer": "pages/chatbot-farmer.js",
-  "/buyerdashboard": "pages/buyerdashboard.js",
-  "/farmerdashboard": "pages/farmerdashboard.js",
-  "/api/chat": "pages/api/chat.js"
+  "/_error": "pages/_error.js",
+  "/": "pages/index.js"
 }

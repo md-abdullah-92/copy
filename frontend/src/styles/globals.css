@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap');
+@media print {
+  .print-only {
+    display: block;
+  }
+
+  .no-print,
+  .card-view {
+    display: none;
+  }
+
+  /* Additional styles for print */
+  .print-only .print-button {
+    display: none; /* Hide the "Print Payment Slip" button */
+  }
+
+  .print-only .payment-slip-container {
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+  }
+}
+
+.mircophone-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 50vh;
+}
+.microphone-icon-container {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-image: linear-gradient(128deg, #ffffff, #647c88);
+  padding: 20px;
+  margin-right: 20px;
+  position: relative;
+  cursor: pointer;
+}
+.microphone-icon-container.listening::before {
+  content: '';
+  width: 100px;
+  height: 100px;
+  background-color: #ffffff81;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.4);
+  border-radius: 50%;
+  animation: listening infinite 1.5s;
+}
+@keyframes listening {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+}
+.microphone-icon {
+  width: 100%;
+  height: 100%;
+}
+.microphone-status {
+  font-size: 22px;
+  margin-right: 20px;
+  min-width: 215px;
+}
+.btn {
+  border: none;
+  padding: 10px 30px;
+  margin-right: 10px;
+  outline: none;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 25px;
+  box-shadow: 0px 0px 10px 5px #ffffff1a;
+}
+.microphone-result-container {
+  text-align: center;
+  height: 50vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 30px;
+}
+.microphone-result-text {
+  margin-bottom: 30px;
+  width: 70vw;
+  overflow-y: auto;
+}
+.microphone-reset {
+  border: 1px solid #fff;
+  background: none;
+  color: white;
+  width: fit-content;
+}
+/* Define your custom colors */
+.custom-btn-bg-color {
+  background-color: #a7c957;
+}
+
+.custom-btn-bg-color:hover {
+  background-color: #6c584c;
+}
+
+/* Define the hover effect */
+.custom-btn-shadow {
+  box-shadow: 0 4px 6px rgba(126, 25, 25, 0.1); /* Your custom hover shadow */
+}
+.btn-outline {
+  border: 1px solid #a7c957; /* Your custom border color */
+  color: #a7c957; /* Your custom text color */
+  background-color: white; /* Your custom background color */
+  outline: none;
+  border-radius: 999px; /* For rounded shape */
+  transition: all 0.3s; /* Adjust transition duration as needed */
+}
+
+.btn-outline:hover {
+  background-color: #a7c957;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.bg-color {
+  background-color: #a7c957;
+}
+.text-color {
+  color: #6c584c;
+}
+.text-title {
+  color: #6c584c;
+  font-family: 'Caveat Brush, cursive';
+  font-size: 25px;
+}
+.text-sidebar {
+  color: #6c584c;
+  font-family: 'Caveat Brush, cursive';
+  font-size: 16px;
+}
+
+.text-sidebar-header {
+  color: #6c584c;
+  font-family: 'Caveat Brush, cursive';
+  font-size: 19px;
+}
+.text-word {
+  color: #6c584c;
+  font-family: 'Caveat Brush, cursive';
+  font-size: 30px;
+  font-weight: 800;
+}
+.text-normal {
+  color: #6c584c;
+  font-family: 'Caveat Brush, cursive';
+  font-size: 20px;
+}
+
+.bg-color-lite {
+  background: linear-gradient(to top, #ffffff, #e3efc6);
+}
+.bg-color-lite-rev {
+  background: linear-gradient(to bottom, #ffffff, #e3efc6);
+}
+.input-border-color {
+  border: 1px solid #6c584c;
+}
+
+.input-border-color:focus {
+  border: 1px solid #758d3d;
+}
+
+.icon-button {
+  background-color: #647934;
+}
+.icon-button-clicked {
+  background-color: #6c584c;
+}
+.icon-button-disabled {
+  background-color: #96b54e;
+}
+
+.message-background {
+  background-color: #e0fbfc;
+}
+
+.message-background-user {
+  background-color: #f9c74f;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Background color of the track */
+}
+
+/* Define the styles for the scrollbar thumb (the draggable part) */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the thumb */
+  border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+/* Define the styles for the scrollbar thumb when hovered */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color of the thumb on hover */
+}
+
+/* style.css */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 5rem;
+}
+
+.card:hover {
+  background-image: linear-gradient(to bottom right, #9f7aea, #61a1e8, #4299e1);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.icon-bg {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(169, 172, 191, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  font-size: 20px;
+  color: #6b7280;
+}
+
+.percentage {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4b5563;
+  margin-top: 1.5rem;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  display: flex;
+  justify-content: space-between;
+}
+
+.subtitle svg {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-right: 0.25rem;
+}
+
+.value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4b5563;
+  margin-top: 2rem;
+}
+
+/* styles.css */
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fixed-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.text-blue-600 {
+  color: #3b82f6;
+}
+
+.bg-blue-600 {
+  background-color: #3b82f6;
+}
+
+.transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.translate-x-0 {
+  transform: translateX(0);
+}
+
+.translate-x-full {
+  transform: translateX(-100%);
+}
+
+.navbar-text {
+  color: #6c584c;
+  font-family: 'Caveat Brush, cursive';
+  font-size: 22px;
+}
+
+.logo-icon {
+  animation: bounce 0.5s ease infinite; /* Add bounce animation on hover */
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px); /* Adjust the bounce height as needed */
+  }
+  60% {
+    transform: translateY(-5px); /* Adjust the bounce height as needed */
+  }
+}
