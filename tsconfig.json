@@ -13,7 +13,7 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./frontend/*"]
     },
     "forceConsistentCasingInFileNames": true, // Ensures consistent casing in imports
     "baseUrl": "./" // Ensures the paths setting works correctly
