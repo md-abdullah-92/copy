@@ -1,7 +1,7 @@
 // pages/index.tsx
 import Head from 'next/head';
 import Layout from '../components/Layout/Layout';
-import Button from '../components/Button';
+import Button from '../components/Buttons/Button';
 import { useFarmingAdvice } from '../hooks/useFarmingAdvice';
 
 const GetFarmingAdvice = () => {
