@@ -5,11 +5,13 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import {useVerifyOtp} from '@/hooks/useVerifyOtp';
 import {useRouter} from 'next/router';
+import path from 'path';
 
 export default function AgentOtpVerification() {
   const router = useRouter();
   const id=router.query.id;
   const email=router.query.email;
+  const pathchoice=router.query.pathchoice;
   const [timer, setTimer] = useState(90); // 60 seconds for OTP expiration
   const [otpSent, setOtpSent] = useState(false);
   const { verifyOtp, loading, message, error } = useVerifyOtp();
@@ -34,7 +36,7 @@ export default function AgentOtpVerification() {
   const handleSubmit = (values: { otp: string }) => {
     console.log('OTP Submitted:', values.otp);
     // Handle OTP verification logic here
-    verifyOtp(id as string,values.otp,email as string);
+    verifyOtp(id as string,values.otp,email as string,pathchoice as string);
   };
 
   useEffect(() => {

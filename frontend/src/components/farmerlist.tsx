@@ -36,7 +36,7 @@ const FarmerList: React.FC< FarmerListProps> = ({id}) => {
     setFilteredFarmers(results);
   }, [searchTerm, farmers]);
 
-  const handleManageProductClick = (email:string) => {
+  const handleManageProductClick = (email:string,pathchoice:string) => {
     
 
     if (!isVerified) {
@@ -44,7 +44,7 @@ const FarmerList: React.FC< FarmerListProps> = ({id}) => {
       sendOtp(email, id as string);
       router.push({
         pathname: '/agent-otp-verification',
-        query: { id, email }
+        query: { id, email, pathchoice },
       }); 
       }
      else {
@@ -104,14 +104,14 @@ const FarmerList: React.FC< FarmerListProps> = ({id}) => {
                         className="bg-transparent text-blue-500 px-3 py-1.5 border border-blue-500 rounded-md text-xs hover:bg-blue-500 hover:text-white transition-colors duration-300"
                         onClick={() => console.log('Check Orders')}
                       >
-                        Check Orders
+                        Manage Product
                       </button>
                       <samp> </samp>
                       <button
                         className="bg-transparent text-red-500 px-3 py-1.5 border border-red-500 rounded-md text-xs hover:bg-red-500 hover:text-white transition-colors duration-300"
-                        onClick={ () => handleManageProductClick(farmer.email) }
+                        onClick={ () => handleManageProductClick(farmer.email,'Check Orders') }
                       >
-                        Manage Product
+                        Check Orders
                       </button>
                     </div>
                   </div>

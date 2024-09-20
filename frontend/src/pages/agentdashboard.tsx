@@ -85,7 +85,7 @@ export default function DashboardProfile() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/orders" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                    <Link href="/BrowseProducts" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
                       <FaTractor className="mr-3" />
                       Browse Products
                     </Link>

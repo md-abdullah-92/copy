@@ -19,6 +19,16 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/agent-orders": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/agent-orders.js"
+    ],
+    "/agent-otp-verification": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/agent-otp-verification.js"
+    ],
     "/agentdashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -29,15 +39,15 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/buyerdashboard.js"
     ],
-    "/chatpage": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/chatpage.js"
-    ],
     "/farmerdashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/farmerdashboard.js"
+    ],
+    "/update-order-status": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/update-order-status.js"
     ]
   },
   "ampFirstPages": []

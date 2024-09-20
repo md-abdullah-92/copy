@@ -7,7 +7,7 @@ export const useVerifyOtp = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const verifyOtp = async (id: string, otp: string,email:string) => {
+  const verifyOtp = async (id: string, otp: string,email:string,pathchoice:string) => {
     setLoading(true);
     setError('');
     try {
@@ -18,6 +18,7 @@ export const useVerifyOtp = () => {
              },
             })
         if(res.status === 201) {
+            if(pathchoice=="Check Orders")
             router.push({
                 pathname: '/agent-orders',
                 query: { email }

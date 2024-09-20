@@ -86,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     case 'GET': {
-      const url = "http://localhost:8080/product/getproduct";
+      const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/getproduct";
 
       try {
         const id = req.query.id as string;
@@ -110,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     case 'PUT': {
       try {
-        const url = "http://localhost:8080/product/updateproductquantity"; // Adjust if needed
+        const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/updateproductquantity"; // Adjust if needed
         const id = req.query.id;
         const quantity = req.query.quantity;
         
@@ -136,7 +136,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     case 'DELETE': {
       try {
-        const url = "http://localhost:8080/product/deleteproduct"; // Adjust if needed
+        const url = process.env.PRODUCT_SERVICE_BASEURL+"/product/deleteproduct"; // Adjust if needed
         const id = req.query.id as string;
         
         // Making a DELETE request to the Java backend
