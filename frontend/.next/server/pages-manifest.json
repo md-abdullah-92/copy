@@ -1,6 +1,17 @@
 {
   "/_app": "pages/_app.js",
-  "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
-  "/": "pages/index.js"
+  "/_document": "pages/_document.js",
+  "/chatpage": "pages/chatpage.js",
+  "/buyerdashboard": "pages/buyerdashboard.js",
+  "/farmerdashboard": "pages/farmerdashboard.js",
+  "/agentdashboard": "pages/agentdashboard.js",
+  "/api/product": "pages/api/product.js",
+  "/api/getone": "pages/api/getone.js",
+  "/api/getagent": "pages/api/getagent.js",
+  "/api/getallproduct": "pages/api/getallproduct.js",
+  "/api/purchased-products": "pages/api/purchased-products.js",
+  "/api/chats/users": "pages/api/chats/users.js",
+  "/api/chats/[chatId]": "pages/api/chats/[chatId].js",
+  "/api/getfarmers": "pages/api/getfarmers.js"
 }
