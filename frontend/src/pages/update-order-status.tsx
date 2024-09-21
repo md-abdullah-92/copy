@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Layout from '@/components/Layout/Layout';
+import Head from 'next/head';
 
 const UpdateOrderStatus: React.FC = () => {
   const router = useRouter();
@@ -112,6 +113,11 @@ const UpdateOrderStatus: React.FC = () => {
   };
 
   return (
+    <>
+    <Head>
+      <title>Update-order-status | AgriBazaar</title>
+      <link rel="icon" href="/assets/logo.png" />
+    </Head>
     <Layout>
       <div className="min-h-screen bg-light-sky-300 flex items-center justify-center py-10">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -181,6 +187,7 @@ const UpdateOrderStatus: React.FC = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 

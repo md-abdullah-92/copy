@@ -157,7 +157,7 @@ const BuyProduct: React.FC = () => {
                       onChange={handleDeliveryMethodChange}
                       className="mr-2"
                     />
-                    <label htmlFor="pickup">Pickup from Farmer's House</label>
+                    <label htmlFor="pickup">Pickup from Farmer House</label>
                   </div>
                 </div>
                 {deliveryMethod === 'deliver' && (

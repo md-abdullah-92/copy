@@ -50,10 +50,9 @@ public class AgentService {
         return agentRepository.existsById(id);
     }
 
-     // get all agent
-     public List<Agent> getAllAgent() {
+    // get all agent
+    public List<Agent> getAllAgent() {
         return agentRepository.findAll();
     }
-
 
 }

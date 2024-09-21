@@ -4,12 +4,18 @@ import { FaSearch, FaUser, FaShoppingBag, FaMapMarkerAlt, FaCalendarAlt } from '
 import Layout from '@/components/Layout/Layout';
 import { useOrders } from '@/hooks/useOrders';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 export default function OrdersPage() {
   const { orders, loading, error, handleSearchChange, handleFilterChange, searchTerm, filterStatus } = useOrders();
   const router = useRouter();
 
   return (
+    <>
+    <Head>
+      <title>Orders | AgriBazaar</title>
+      <link rel="icon" href="/assets/logo.png" />
+    </Head>
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-sky-100 to-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,5 +131,6 @@ export default function OrdersPage() {
         </div>
       </div>
     </Layout>
+    </>
   );
 }

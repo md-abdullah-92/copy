@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { useChats } from '@/hooks/useChats';
 import { useAddMessage } from '@/hooks/useAddMessage';
 import { useUsers } from '@/hooks/useUsers';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 import {
   FaPaperPlane,
   FaSmile,
@@ -13,7 +16,26 @@ import {
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 
+interface Message {
+  id: string;
+  chatId: string; // Reference to the chat this message belongs to
+  senderId: string; // Reference to the user who sent the message
+  receiverId: string; // Reference to the user who will receive the message
+  text: string;
+  time: string;
+}
+
+interface Chat {
+  id: string;
+  user1Id: string; // Reference to the first user (e.g., a farmer)
+  user2Id: string; // Reference to the second user (e.g., a buyer)
+  messages: Message[]; // List of messages associated with this chat
+}
+
+
+
 export default function ChatPage() {
+  const router = useRouter();
   const { addMessage } = useAddMessage();
   const { users } = useUsers();
   const [chatId, setChatId] = useState<string>('');
@@ -34,16 +56,24 @@ export default function ChatPage() {
 
   // Set current user ID from localStorage
   useEffect(() => {
-    const storedUserID = localStorage.getItem('id');
-    if (storedUserID) {
-      setCurrentUserID(storedUserID);
-      setSenderId(storedUserID);
+    console.log(router.isReady);
+    if (router.isReady){
+    const { id } = router.query;
+      console.log(id);
+      setCurrentUserID(id as string);
+      setSenderId(id as string);
+    }else {
+      const storedUserID = localStorage.getItem('id');
+      if (storedUserID) {
+        setCurrentUserID(storedUserID);
+        setSenderId(storedUserID);
+      }
     }
-  }, []);
+  }, [router.isReady, router.query]);
 
   // Initialize WebSocket connection with SockJS and STOMP
   useEffect(() => {
-    const socketUrl = 'http://localhost:8081/ws';
+    const socketUrl = 'https://messaging-production.up.railway.app/ws';
     clientRef.current = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
       reconnectDelay: 5000,
@@ -74,14 +104,14 @@ export default function ChatPage() {
   }, []);
 
   // Handle incoming messages from WebSocket
-  const handleIncomingMessage = (receivedMessage) => {
+  const handleIncomingMessage = (receivedMessage:Message ) => {
     setChatList((prevChats) => {
       const updatedChats = [...prevChats];
       const chatIndex = updatedChats.findIndex((chat) => chat.id === receivedMessage.chatId);
       if (chatIndex > -1) {
         updatedChats[chatIndex].messages.push(receivedMessage);
         if (selectedChat?.id === receivedMessage.chatId) {
-          setSelectedChat((prevChat) => ({
+          setSelectedChat((prevChat:Chat) => ({
             ...prevChat,
             messages: [...prevChat.messages, receivedMessage],
           }));
@@ -118,7 +148,7 @@ export default function ChatPage() {
 
       // Send the message to the WebSocket server
       clientRef.current?.publish({
-        destination: '/app/chat',
+        destination: 'https://messaging-production.up.railway.app/ws/app/chat',
         body: JSON.stringify(newMsg),
       });
 
@@ -151,6 +181,11 @@ export default function ChatPage() {
   }, [selectedChat?.messages]);
 
   return (
+    <>
+    <Head>
+      <title>Chat-App | AgriBazaar</title>
+      <link rel="icon" href="/assets/logo.png" />
+    </Head>
     <Layout>
       <div className="min-h-screen bg-gray-100 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -231,33 +266,39 @@ export default function ChatPage() {
 
                   {/* Chat History Messages */}
                   <div className="space-y-4 overflow-auto h-96">
-                    {selectedChat.messages.map((message, index) => {
+                    {selectedChat.messages.map((message :Message, index:number) => {
                       const isCurrentUserSender = message.senderId === currentUserID;
                       const sender = getUserById(message.senderId);
                       const isLastMessage = index === selectedChat.messages.length - 1;
 
                       return (
                         <div
-                          key={message.id}
-                          className={`flex ${
-                            isCurrentUserSender ? 'justify-end' : 'justify-start'
+                         key={index} className={`flex ${isCurrentUserSender ? 'justify-end' : 'justify-start'}`}>
+                        {!isCurrentUserSender && sender && (
+                          <img
+                            src={sender.avatar}
+                            alt={sender.name}
+                            className="w-10 h-10 rounded-full mr-2"
+                          />
+                        )}
+                        <div
+                          className={`relative max-w-xs px-4 py-2 rounded-lg shadow ${
+                            isCurrentUserSender
+                              ? 'bg-green-400 text-black'
+                              : 'bg-gray-100 text-gray-900'
                           }`}
                         >
-                          <div
-                            className={`rounded-lg p-4 max-w-xs ${
-                              isCurrentUserSender ? 'bg-green-500 text-white' : 'bg-gray-200'
-                            }`}
-                          >
-                            <p>{message.text}</p>
-                            <span className="block text-xs mt-2">
-                              {formatTime(message.time)}
-                            </span>
-                          </div>
-                          {isLastMessage && <div ref={lastMessageRef} />}
+                          <p>{message.text}</p>
+                          {/* Time below the text */}
+                          <span className="text-xs text-gray-500 mt-1 block text-right">
+                            {formatTime(message.time)}
+                          </span>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
 
                   {/* Send Message Input */}
                   <form
@@ -291,6 +332,7 @@ export default function ChatPage() {
         </div>
       </div>
     </Layout>
+    </>
   );
 }
 

@@ -1,7 +1,22 @@
 import axios from 'axios';
-import { useForm } from '@mantine/form';
+import { useForm, UseFormReturnType } from '@mantine/form';
 
-export const useUpdateProfile = (form: ReturnType<typeof useForm>) => {
+interface FormValues {
+  name: string;
+  password: string;
+  gender: string;
+  phone: string;
+  address: string;
+  avatar: string;
+  nidNumber: string;
+  nidImage: string;
+  signatureImage: string;
+  upazila: string;
+  zila: string;
+  organization: string;
+}
+
+export const useUpdateProfile = (form: UseFormReturnType<FormValues>) => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 

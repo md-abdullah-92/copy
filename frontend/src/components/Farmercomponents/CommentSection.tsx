@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaStar, FaUser } from 'react-icons/fa';
-
+import { useAddComment } from '@/hooks/useAddComment';
 interface Comment {
   id: number;
   user: string;

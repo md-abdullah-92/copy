@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import Layout from '@/components/Layout/Layout';
 import { FaSearch, FaUser, FaShoppingBag, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
+import Head from 'next/head';
 
 interface Order {
   id: number;
@@ -63,6 +64,11 @@ export default function OrdersPage() {
   });
 
   return (
+    <>
+    <Head>
+      <title>ProductList | AgriBazaar</title>
+      <link rel="icon" href="/assets/logo.png" />
+    </Head>
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-sky-100 to-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -118,54 +124,54 @@ export default function OrdersPage() {
                     <div className="absolute inset-0 -m-1 rounded-lg bg-gradient-to-r from-green-400 to-green-200 opacity-20 pointer-events-none"></div>
                     <div className="relative z-10">
                     <div className="flex justify-between items-center mb-4">
-  <img
-    src={order.image}
-    alt={order.name}
-    className="w-20 h-20 object-cover rounded-lg border border-gray-200"
-  />
-  <div className="flex-1 ml-4">
-    <h3 className="text-xl font-semibold text-green-900">{order.name}</h3>
-    <p className="text-sm text-gray-500">
-      <FaShoppingBag className="inline-block mr-1 text-green-400" />
-      <span className="font-bold">Quantity:</span> {order.soldquantity}
-    </p>
-    <p className="text-sm text-gray-500">
-      <FaUser className="inline-block mr-1 text-green-400" />
-      <span className="font-bold">Buyer:</span> {order.buyername}
-    </p>
-    <p className="text-sm text-gray-500">
-      <FaMapMarkerAlt className="inline-block mr-1 text-green-400" />
-      <span className="font-bold">Address:</span> {order.deviverybyaddress}
-    </p>
-    <p className="text-sm text-gray-500">
-      <FaCalendarAlt className="inline-block mr-1 text-green-400" />
-      <span className="font-bold">Sold On:</span> {order.soldtime}
-    </p>
-    <p className="text-sm text-gray-500">
-      <span className="font-bold">Status:</span>{' '}
-      <span
-        className={`font-bold italic ${
-          order.deliverystatus === 'Delivered'
-            ? 'text-green-600'
-            : order.deliverystatus === 'Pending'
-            ? 'text-yellow-500'
-            : 'text-red-600'
-        }`}
-      >
-        {order.deliverystatus}
-      </span>
-    </p>
-  </div>
-  <div className="flex justify-center items-center ml-auto">
-    <button
-      className="bg-transparent text-blue-500 px-5 py-2.5 border border-green-500 rounded-md text-xs hover:bg-green-500 hover:text-white transition-colors duration-300"
-      onClick={() => router.push(`/update-order-status?orderId=${order.id}&status=${order.deliverystatus}`)}
-    >
-      Update Status
-    </button>
-  </div>
-</div>
-</div>
+                  <img
+                    src={order.image}
+                    alt={order.name}
+                    className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                  />
+                  <div className="flex-1 ml-4">
+                    <h3 className="text-xl font-semibold text-green-900">{order.name}</h3>
+                    <p className="text-sm text-gray-500">
+                      <FaShoppingBag className="inline-block mr-1 text-green-400" />
+                      <span className="font-bold">Quantity:</span> {order.soldquantity}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      <FaUser className="inline-block mr-1 text-green-400" />
+                      <span className="font-bold">Buyer:</span> {order.buyername}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      <FaMapMarkerAlt className="inline-block mr-1 text-green-400" />
+                      <span className="font-bold">Address:</span> {order.deviverybyaddress}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      <FaCalendarAlt className="inline-block mr-1 text-green-400" />
+                      <span className="font-bold">Sold On:</span> {order.soldtime}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      <span className="font-bold">Status:</span>{' '}
+                      <span
+                        className={`font-bold italic ${
+                          order.deliverystatus === 'Delivered'
+                            ? 'text-green-600'
+                            : order.deliverystatus === 'Pending'
+                            ? 'text-yellow-500'
+                            : 'text-red-600'
+                        }`}
+                      >
+                        {order.deliverystatus}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="flex justify-center items-center ml-auto">
+                    <button
+                      className="bg-transparent text-blue-500 px-5 py-2.5 border border-green-500 rounded-md text-xs hover:bg-green-500 hover:text-white transition-colors duration-300"
+                      onClick={() => router.push(`/update-order-status?orderId=${order.id}&status=${order.deliverystatus}`)}
+                    >
+                      Update Status
+                    </button>
+                  </div>
+                </div>
+                </div>
                 </div>
                 ))}
               </div>
@@ -176,5 +182,6 @@ export default function OrdersPage() {
         </div>
       </div>
     </Layout>
+    </>
   );
 }

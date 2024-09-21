@@ -39,26 +39,26 @@ const GetFarmingAdvice = () => {
               border: '1px solid #e0e0e0',
             }}
           >
-            <h1
+                <h1
               style={{
                 textAlign: 'center',
-                fontSize: '26px',
+                fontSize: '28px',
                 fontWeight: 'bold',
                 marginBottom: '30px',
-                color: '#6a8f4a',
+                color: '#4b8b3b',
               }}
             >
-              Farming Business Ideas and Tips
+              Tailored Farming Business Solutions
             </h1>
             <p
               style={{
                 textAlign: 'center',
                 marginBottom: '30px',
                 fontSize: '16px',
-                color: '#555',
+                color: '#666',
               }}
             >
-              Get advice for your farming business from our AI chatbot.
+              Get expert advice tailored to your farming needs using Agribazaar&apos;s AI chatbot.
             </p>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <input

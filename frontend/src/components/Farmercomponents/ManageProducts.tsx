@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
-import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaSave, FaTrash, FaSpinner } from 'react-icons/fa';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../config/firebaseConfig';
 
@@ -122,25 +122,24 @@ const ManageProduct: React.FC = () => {
       alert('Product not found');
     }
   };
-  
+  const [deleting, setDeleting] = useState<string | null>(null); // Track deleting product ID
   const handleDeleteClick = async (productId: string) => {
-    console.log("Delete product id: ", productId); 
-    
+    const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+    if (!confirmDelete) return;
+
+    setDeleting(productId); // Track the product being deleted
     try {
-      const response = await axios.delete(`/api/product`, {
-        params: { id: productId },
-      });
-  
+      const response = await axios.delete(`/api/product`, { params: { id: productId } });
       if (response.status === 200) {
-        setProducts((prevProducts) =>
-          prevProducts.filter((product) => product.id !== productId)
-        );
+        setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
       } else {
         throw new Error('Failed to delete product');
       }
     } catch (error) {
-      console.error('Error deleting product:', error); 
-      alert('Failed to delete product'); 
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product');
+    } finally {
+      setDeleting(null);
     }
   };
   
@@ -150,12 +149,10 @@ const ManageProduct: React.FC = () => {
     <div className="bg-white rounded-xl shadow-lg p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Manage Products</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-light-blue-50 p-6 rounded-lg shadow-md hover:bg-light-blue-100 transition-colors duration-300"
-          >
+          <div  key={product.id} className="max-w-xs rounded-md overflow-hidden shadow-md bg-gradient-to-r from-green-50 to-green-100 hover:from-green-200 hover:to-green-300 transition-shadow duration-300 ease-in-out p-4 border border-green-500">
+         
             {product.isEditing ? (
               <>
                 <input
@@ -222,22 +219,24 @@ const ManageProduct: React.FC = () => {
               </>
             ) : (
               <>
-                <h3 className="text-2xl font-bold text-blue-900 mb-2">
-                  {product.productname}
-                </h3>
-                <img
-                  src={product.image}
-                  alt={product.productname}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                />
-                <p className="text-lg text-gray-700 mb-4">
-                  <b>Price:</b> {product.price} &nbsp; <b>Quantity:</b>{' '}
-                  {product.quantity}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Owner Name: {product.ownername}
-                </p>
-                <div className="flex space-x-2">
+         
+  <h3 className="text-xl font-bold text-green-900 mb-2 hover:text-green-700 transition-colors duration-200 tracking-wide shadow-md shadow-green-200">
+    {product.productname}
+  </h3>
+  <img
+    src={product.image}
+    alt={product.productname}
+    className="w-full h-40 object-cover rounded-md mb-3 transition-transform transform hover:scale-105 duration-300 border border-green-600"
+  />
+  <p className="text-sm text-green-800 mb-3">
+    <b className="text-green-900 italic font-semibold">Price:</b> <span className="text-green-700 font-medium">{product.price}</span> &nbsp; 
+    <b className="text-green-900 italic font-semibold">Quantity:</b> <span className="text-green-700 font-medium">{product.quantity}</span>
+  </p>
+  <p className="text-xs text-green-900 mb-2">
+    <b className="text-green-900 italic font-semibold">Owner Name:</b> <span className="text-green-800">{product.ownername}</span>
+  </p>
+  <div className="flex space-x-2">
+
                  
                   <button
                       className="bg-transparent text-blue-500 px-3 py-1.5 border border-blue-500 rounded-md text-xs hover:bg-blue-500 hover:text-white transition-colors duration-300"
@@ -245,12 +244,9 @@ const ManageProduct: React.FC = () => {
                     >
                     Edit
                     </button>
-                    <button
-                      className="bg-transparent text-red-500 px-3 py-1.5 border border-red-500 rounded-md text-xs hover:bg-red-500 hover:text-white transition-colors duration-300"
-                      onClick={() => handleDeleteClick(product.id)}
-                    >
-                      Remove
-                    </button>
+                    <button className="bg-transparent text-red-500 px-3 py-1.5 border border-red-500 rounded-md text-xs hover:bg-red-500 hover:text-white transition-colors duration-300" onClick={() => handleDeleteClick(product.id)}>
+                    {deleting === product.id ? <FaSpinner className="animate-spin inline" /> : 'Remove'}
+                  </button>
                  
                 </div>
               </>

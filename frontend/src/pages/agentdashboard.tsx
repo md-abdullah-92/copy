@@ -2,11 +2,12 @@ import { useProfile } from '@/hooks/useAgentProfile'; // Adjust this path based 
 import { useSignOut } from '@/hooks/useSignOut'; // Assuming you have a hook for handling sign out
 import Layout from '@/components/Layout/Layout';
 import { useRouter } from 'next/router';
-import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope, FaTractor } from 'react-icons/fa';
+import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope, FaTractor ,FaUser,FaPlus} from 'react-icons/fa';
 import FarmerList from '@/components/farmerlist'; // Assuming you have a component for displaying farmers
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useFarmers } from '@/hooks/useFarmers'; // Assuming you have a hook for fetching farmers
+import Head from 'next/head';
 
 export default function DashboardProfile() {
   const { agentprofiles, loggedInUser } = useProfile();
@@ -17,11 +18,17 @@ export default function DashboardProfile() {
 
   const storedNidNumber = loggedInUser.nidNumber;
   const storedId = loggedInUser.id;
+  
 
   // Notify user to provide NID if missing
   const showNidWarning = !storedNidNumber;
 
   return (
+      <>
+      <Head>
+        <title>Agent | AgriBazaar</title>
+        <link rel="icon" href="/assets/logo.png" />
+      </Head>
     <Layout>
       <div className="min-h-screen bg-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +62,7 @@ export default function DashboardProfile() {
 
                 <button
                   className="mt-6 w-full py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300"
-                  onClick={() => router.push('/update-agent')}
+                  onClick={() => router.push('/update-agent?id=' + storedId)}
                 >
                   Update Profile
                 </button>
@@ -85,12 +92,29 @@ export default function DashboardProfile() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/BrowseProducts" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                    <Link href="/agent-browse" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
                       <FaTractor className="mr-3" />
                       Browse Products
                     </Link>
                   </li>
-               
+                  <li >
+                      <Link href="/signup" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                          <FaUser className="mr-2" />  {/* Farmer/
+                           {/* Add Icon */}
+                           <FaPlus className="mr-2"/>
+                          Add Farmer
+                      </Link>
+                    </li>
+                    <li>
+                    <Link
+                        href={`/chatpage?id=${storedId}`}
+                        className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                      >
+                        <FaEnvelope className="mr-3" />
+                        Messages
+                      </Link>
+                    </li>
+
                 </ul>
               </nav>
             </div>
@@ -132,5 +156,6 @@ export default function DashboardProfile() {
         </div>
       </div>
     </Layout>
+    </>
   );
 }

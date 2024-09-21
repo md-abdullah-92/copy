@@ -25,6 +25,7 @@ export default function OTP() {
   const onSubmit = async (values: { i1: string; i2: string; i3: string; i4: string }) => {
     const otp = values.i1 + values.i2 + values.i3 + values.i4;
     const { id } = router.query;
+    console.log(otp, id);
     try {
       await axios.post('/api/verify', { code: otp, id });
       window.location.href = '/login';
