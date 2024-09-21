@@ -25,8 +25,12 @@ public class JwtUtils {
 
     // Method to validate JWT token and retrieve user ID
     public String validateToken(String token) {
+<<<<<<< HEAD
         byte[] key = "sust_knownssust_knownssust_knownssust_knownssust_knownssust_knownssust_knownssust_knownssust_kn"
                 .getBytes();
+=======
+        byte[] key = "sust_unknownssust_unknownssust_unknownssust_unknownssust_unknownssust_unknownssust".getBytes();
+>>>>>>> c2554bde123eeec0d635591e4a03e6a0d565db45
 
         try {
             JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(key).build();

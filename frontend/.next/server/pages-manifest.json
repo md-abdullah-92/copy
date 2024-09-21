@@ -2,13 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/agentlogin": "pages/api/agentlogin.js",
-  "/login": "pages/login.js",
   "/agentdashboard": "pages/agentdashboard.js",
-  "/api/getfarmers": "pages/api/getfarmers.js",
-  "/api/getagent": "pages/api/getagent.js",
   "/farmerdashboard": "pages/farmerdashboard.js",
-  "/": "pages/index.js",
   "/api/product": "pages/api/product.js",
   "/api/getone": "pages/api/getone.js"
 }

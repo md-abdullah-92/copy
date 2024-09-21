@@ -10,7 +10,11 @@
     <parent>
         <groupId>org.sust_unknowns.javafest</groupId>
         <artifactId>Microservice</artifactId>
+<<<<<<< HEAD
        	<version>0.0.1-SNAPSHOT</version>s
+=======
+        <version>1.0-SNAPSHOT</version>
+>>>>>>> c2554bde123eeec0d635591e4a03e6a0d565db45
     </parent>
 
     <!-- Module-specific coordinates -->
@@ -71,6 +75,7 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+<<<<<<< HEAD
           <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-http</artifactId>
@@ -80,6 +85,9 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+=======
+      
+>>>>>>> c2554bde123eeec0d635591e4a03e6a0d565db45
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

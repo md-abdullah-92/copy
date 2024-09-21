@@ -7,7 +7,11 @@
       <parent>
         <groupId>org.sust_unknowns.javafest</groupId>
         <artifactId>Microservice</artifactId>
+<<<<<<< HEAD
        	<version>0.0.1-SNAPSHOT</version>
+=======
+        <version>1.0-SNAPSHOT</version>
+>>>>>>> c2554bde123eeec0d635591e4a03e6a0d565db45
     </parent>
 
     <!-- Module-specific coordinates -->
