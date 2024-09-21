@@ -19,10 +19,10 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/agentdashboard": [
+    "/agent-manage-products": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agentdashboard.js"
+      "static/chunks/pages/agent-manage-products.js"
     ],
     "/farmerdashboard": [
       "static/chunks/webpack.js",
