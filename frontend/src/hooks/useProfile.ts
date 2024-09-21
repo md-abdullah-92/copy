@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export function useProfile() {
   const [profiles, setProfiles] = useState(null);
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '', avatarurl: '' });
+  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '', avatarurl: '',id:'' });
   const router = useRouter();
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export function useProfile() {
             role: profiles.role,
             email: profiles.email,
             avatarurl: profiles.avatar,
+            id:profiles.id,
           });
      
 

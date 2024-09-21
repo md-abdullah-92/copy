@@ -14,7 +14,7 @@ export default function DashboardProfile() {
         <div className="w-full max-w-4xl">
         <div className="flex justify-between items-center mb-8">
           
-          <h2 className="text-3xl font-bold text-sky-900">       Farmer Name :- {farmer}</h2>
+          <h2 className="text-3xl font-bold text-sky-900">{farmer}</h2>
             </div>
           {/* Manage Products Section */}
           <section

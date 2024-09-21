@@ -4,14 +4,19 @@ import { useSignOut } from '@/hooks/useSignOut';// Assuming you have a hook for 
 import Layout from '@/components/Layout/Layout';
 import ManageProduct from '@/components/Farmercomponents/ManageProducts';
 import AddProduct from '@/components/Farmercomponents/Addproducts';
+import {useOrders} from '@/hooks/useOrders';
 import { useRouter } from 'next/router';
-import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,FaTractor } from 'react-icons/fa';
+import {useChats} from '@/hooks/useChats';
+
+import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,FaTractor,FaUsers } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function DashboardProfile() {
   const { profiles, loggedInUser } = useProfile();
   const { products, loading, error } = useOwnerProducts();
   const { showSignOutConfirm, setShowSignOutConfirm, handleSignOut } = useSignOut();
+  const { orders } = useOrders();
+  const { chats } = useChats(loggedInUser.id as string);
  // const { cartItems, handleAddToCart } = useCart(); // Hook to manage cart items
   const router = useRouter();
 
@@ -111,9 +116,15 @@ export default function DashboardProfile() {
                       Messages
                     </Link>
                   </li>
-                  {/* Shopping Cart */}
-                 
-                   
+                <li>
+                  <Link
+                    href="/agent-list" 
+                    className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                  >
+                    <FaUsers className="mr-3" />
+                    Agent List
+                  </Link>
+                </li>
                 </ul>
               </nav>
             </div>
@@ -133,11 +144,11 @@ export default function DashboardProfile() {
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                     <h3 className="text-lg font-semibold text-green-900">Total Orders</h3>
-                    <p className="text-3xl font-bold text-green-700 mt-3">320</p>
+                    <p className="text-3xl font-bold text-green-700 mt-3">{orders.length}</p>
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
-                    <h3 className="text-lg font-semibold text-green-900">Messages</h3>
-                    <p className="text-3xl font-bold text-green-700 mt-3">12</p>
+                    <h3 className="text-lg font-semibold text-green-900">Chat Pair</h3>
+                    <p className="text-3xl font-bold text-green-700 mt-3">{chats.length}</p>
                   </div>
                 </div>
               </section>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import useCartProducts from '@/hooks/useCartProducts';
+import { usePurchasedProducts } from '@/hooks/usePurchasedProducts';
 import Head from 'next/head';
 import {
   FaUserCircle,
@@ -8,7 +10,8 @@ import {
   FaSignOutAlt,
   FaShoppingBag,
   FaChartLine,
-  FaEnvelope
+  FaEnvelope,
+  FaUsers,
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 import PurchasedProducts from '@/components/PurchasedProducts';
@@ -16,9 +19,13 @@ import useUserAuthentication from '@/hooks/useUserAuthentication';
 import useProducts from '@/hooks/useProducts';
 import Link from 'next/link';
 
+
 export default function BuyerDashboard() {
   const { loggedInUser, profile } = useUserAuthentication(); // Hook for authentication
   const { productsData, loading } = useProducts(); // Hook for fetching products
+  const { products: cartProducts } = useCartProducts();
+  const { purchasedProducts} = usePurchasedProducts(loggedInUser.email);
+  
 
   const router = useRouter();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
@@ -118,6 +125,15 @@ export default function BuyerDashboard() {
                         Messages
                       </Link>
                     </li>
+                    <li>
+                  <Link
+                    href="/agent-list" 
+                    className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                  >
+                    <FaUsers className="mr-3" />
+                    Agent List
+                  </Link>
+                </li>
                   </ul>
                 </nav>
               </div>
@@ -133,26 +149,26 @@ export default function BuyerDashboard() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
-                        Total Products
+                        Total Products 
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        150
+                      {productsData.length}
                       </p>
                     </div>
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
-                        Total Orders
+                        Total Purchase
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        320
+                        {purchasedProducts.length}
                       </p>
                     </div>
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
-                        Messages
+                        Cart
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        12
+                        {cartProducts.length}
                       </p>
                     </div>
                   </div>

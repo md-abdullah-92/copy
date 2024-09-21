@@ -2,8 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/farmerdashboard": "pages/farmerdashboard.js",
-  "/agent-otp-verification": "pages/agent-otp-verification.js",
-  "/api/product": "pages/api/product.js",
-  "/agent-manage-products": "pages/agent-manage-products.js"
+  "/agentdashboard": "pages/agentdashboard.js",
+  "/api/getagent": "pages/api/getagent.js",
+  "/api/getfarmers": "pages/api/getfarmers.js",
+  "/buyerdashboard": "pages/buyerdashboard.js",
+  "/cartpage": "pages/cartpage.js"
 }
