@@ -90,7 +90,13 @@ export default function DashboardProfile() {
                       Browse Products
                     </Link>
                   </li>
-               
+                  {/* Messages */}
+                  <li>
+                    <Link href="/chatpage" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                      <FaEnvelope className="mr-3" />
+                      Messages
+                    </Link>
+                  </li>
                 </ul>
               </nav>
             </div>

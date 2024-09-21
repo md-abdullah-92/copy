@@ -43,7 +43,7 @@ export function useProfile() {
             role: profiles.role,
             email: profiles.email,
             avatarurl: profiles.avatar,
-            id:profiles.id,
+            id:profiles.id  
           });
      
 
