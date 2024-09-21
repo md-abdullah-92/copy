@@ -10,6 +10,7 @@ export const useVerifyOtp = () => {
   const verifyOtp = async (id: string, otp: string,email:string,pathchoice:string) => {
     setLoading(true);
     setError('');
+    
     try {
         const res = await axios.post('/api/agent/verifyotp',{}, { 
             params: { 
@@ -26,6 +27,7 @@ export const useVerifyOtp = () => {
             else 
             router.push({
               pathname: '/agent-manage-products',
+              query: { farmer:localStorage.getItem('name') }
             });
          
         } else {

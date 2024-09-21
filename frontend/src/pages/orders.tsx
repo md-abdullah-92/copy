@@ -1,66 +1,13 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import { useRouter } from 'next/router';
-import axios from 'axios';
-import Layout from '@/components/Layout/Layout';
+// pages/orders.tsx
+import React from 'react';
 import { FaSearch, FaUser, FaShoppingBag, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
-
-interface Order {
-  id: number;
-  name: string;
-  image: string;
-  buyername: string;
-  soldquantity: string;
-  soldprice: string;
-  soldtime: string;
-  deviverybyaddress: string;
-  deliverystatus: string;
-  buyeremail: string;
-}
+import Layout from '@/components/Layout/Layout';
+import { useOrders } from '@/hooks/useOrders';
+import { useRouter } from 'next/router';
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filterStatus, setFilterStatus] = useState<string>('All');
+  const { orders, loading, error, handleSearchChange, handleFilterChange, searchTerm, filterStatus } = useOrders();
   const router = useRouter();
-  const {email} = router.query;
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const selleremail = localStorage.getItem('email')||email;
-
-      try {
-        setLoading(true);
-        const response = await axios.get('/api/orders', {
-          params: { selleremail },
-        });
-
-        setOrders(response.data);
-      } catch (err) {
-        console.error('Error fetching orders:', err);
-        setError('Failed to fetch orders. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, []);
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFilterStatus(e.target.value);
-  };
-
-  const filteredOrders = orders.filter((order) => {
-    const matchesSearch = searchTerm === '' || order.name?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'All' || order.deliverystatus === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
 
   return (
     <Layout>
@@ -107,9 +54,9 @@ export default function OrdersPage() {
               <p className="text-center text-sky-700">Loading orders, please wait...</p>
             ) : error ? (
               <p className="text-center text-red-600">{error}</p>
-            ) : filteredOrders.length > 0 ? (
+            ) : orders.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredOrders.map((order) => (
+                {orders.map((order) => (
                   <div
                     key={order.id}
                     className="bg-green-100 border-2 border-green-200 rounded-lg shadow-md hover:shadow-2xl transition-shadow duration-300 p-6 transform hover:-translate-y-2 relative"

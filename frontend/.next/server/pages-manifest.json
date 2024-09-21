@@ -3,7 +3,10 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/farmerdashboard": "pages/farmerdashboard.js",
-  "/agent-otp-verification": "pages/agent-otp-verification.js",
+  "/buyerdashboard": "pages/buyerdashboard.js",
+  "/orders": "pages/orders.js",
+  "/api/orders": "pages/api/orders.js",
   "/api/product": "pages/api/product.js",
-  "/agent-manage-products": "pages/agent-manage-products.js"
+  "/api/getone": "pages/api/getone.js",
+  "/agentdashboard": "pages/agentdashboard.js"
 }

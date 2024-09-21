@@ -207,5 +207,9 @@ public class AgentController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
     }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllAgent() {
+        return ResponseEntity.ok(agentService.getAllAgent());
+    }
 
 }

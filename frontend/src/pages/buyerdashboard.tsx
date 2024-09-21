@@ -8,7 +8,8 @@ import {
   FaSignOutAlt,
   FaShoppingBag,
   FaChartLine,
-  FaEnvelope
+  FaEnvelope,
+  FaUsers,
 } from 'react-icons/fa';
 import Layout from '@/components/Layout/Layout';
 import PurchasedProducts from '@/components/PurchasedProducts';
@@ -118,6 +119,15 @@ export default function BuyerDashboard() {
                         Messages
                       </Link>
                     </li>
+                    <li>
+                  <Link
+                    href="/agent-list" 
+                    className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                  >
+                    <FaUsers className="mr-3" />
+                    Agent List
+                  </Link>
+                </li>
                   </ul>
                 </nav>
               </div>
