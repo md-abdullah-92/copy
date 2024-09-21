@@ -23,6 +23,10 @@ export const useVerifyOtp = () => {
                 pathname: '/agent-orders',
                 query: { email }
               }); 
+            else 
+            router.push({
+              pathname: '/agent-manage-products',
+            });
          
         } else {
             setError('Failed to verify OTP. Please try again later.');

@@ -10,6 +10,7 @@ interface Farmer {
   division:string;
   phone: string;
   avatar: string;
+  organization: string;
 }
 
 export const useFarmers = () => {

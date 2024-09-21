@@ -13,6 +13,8 @@ interface Farmer {
   zila: string;
   division: string;
   avatar: string;
+  phone: string;
+  organization: string;
 }
 interface FarmerListProps {
   id: string;
@@ -36,8 +38,17 @@ const FarmerList: React.FC< FarmerListProps> = ({id}) => {
     setFilteredFarmers(results);
   }, [searchTerm, farmers]);
 
-  const handleManageProductClick = (email:string,pathchoice:string) => {
-    
+
+  const handleManageProductClick = (email:string,pathchoice:string,farmer:Farmer) => {
+
+    localStorage.setItem('name', farmer.name);
+    localStorage.setItem('email', farmer.email);
+    localStorage.setItem('organization', farmer.organization);
+    localStorage.setItem('upazila', farmer.upazila);
+    localStorage.setItem('zila', farmer.zila);
+    localStorage.setItem('division', farmer.division);
+    localStorage.setItem('phone', farmer.phone);
+    localStorage.setItem('id', farmer.id);
 
     if (!isVerified) {
       alert('An OTP has been sent to the farmer. Please verify it to proceed.');
@@ -102,14 +113,15 @@ const FarmerList: React.FC< FarmerListProps> = ({id}) => {
                     <div className="ml-auto">
                       <button
                         className="bg-transparent text-blue-500 px-3 py-1.5 border border-blue-500 rounded-md text-xs hover:bg-blue-500 hover:text-white transition-colors duration-300"
-                        onClick={() => console.log('Check Orders')}
+                        onClick={ () => handleManageProductClick(farmer.email,'Manage Product',farmer) }
                       >
                         Manage Product
+
                       </button>
                       <samp> </samp>
                       <button
                         className="bg-transparent text-red-500 px-3 py-1.5 border border-red-500 rounded-md text-xs hover:bg-red-500 hover:text-white transition-colors duration-300"
-                        onClick={ () => handleManageProductClick(farmer.email,'Check Orders') }
+                        onClick={ () => handleManageProductClick(farmer.email,'Check Orders',farmer) }
                       >
                         Check Orders
                       </button>
