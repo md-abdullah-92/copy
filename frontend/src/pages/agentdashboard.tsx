@@ -97,6 +97,7 @@ export default function DashboardProfile() {
                       Browse Products
                     </Link>
                   </li>
+<<<<<<< HEAD
                   <li >
                       <Link href="/signup" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
                           <FaUser className="mr-2" />  {/* Farmer/
@@ -115,6 +116,15 @@ export default function DashboardProfile() {
                       </Link>
                     </li>
 
+=======
+                  {/* Messages */}
+                  <li>
+                    <Link href="/chatpage" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                      <FaEnvelope className="mr-3" />
+                      Messages
+                    </Link>
+                  </li>
+>>>>>>> 536a4a56d998549efd6463678db14999a0e56a09
                 </ul>
               </nav>
             </div>

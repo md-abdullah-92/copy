@@ -16,13 +16,20 @@ import PurchasedProducts from '@/components/PurchasedProducts';
 import useUserAuthentication from '@/hooks/useUserAuthentication';
 import useProducts from '@/hooks/useProducts';
 import Link from 'next/link';
+<<<<<<< HEAD
 import useCartProducts from '@/hooks/useCartProducts';
 import { usePurchasedProducts } from '@/hooks/usePurchasedProducts';
+=======
+>>>>>>> 536a4a56d998549efd6463678db14999a0e56a09
 
 export default function BuyerDashboard() {
   const { loggedInUser, profile } = useUserAuthentication(); // Hook for authentication
   const { productsData, loading } = useProducts(); // Hook for fetching products
+<<<<<<< HEAD
   const { products } = useCartProducts(); // Hook for managing cart
+=======
+
+>>>>>>> 536a4a56d998549efd6463678db14999a0e56a09
   const router = useRouter();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const { purchasedProducts } = usePurchasedProducts(loggedInUser.email);
@@ -170,11 +177,16 @@ export default function BuyerDashboard() {
                         Total Products
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
+<<<<<<< HEAD
                         {productsData.length}
+=======
+                        150
+>>>>>>> 536a4a56d998549efd6463678db14999a0e56a09
                       </p>
                     </div>
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
+<<<<<<< HEAD
                         Cart Items
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
@@ -184,11 +196,25 @@ export default function BuyerDashboard() {
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
                         Total Purchases
+=======
+                        Total Orders
+>>>>>>> 536a4a56d998549efd6463678db14999a0e56a09
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        {purchasedProducts.length}
+                        320
                       </p>
                     </div>
+<<<<<<< HEAD
+=======
+                    <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
+                      <h3 className="text-lg font-semibold text-green-900">
+                        Messages
+                      </h3>
+                      <p className="text-3xl font-bold text-green-700 mt-3">
+                        12
+                      </p>
+                    </div>
+>>>>>>> 536a4a56d998549efd6463678db14999a0e56a09
                   </div>
                 </section>
                 <section
