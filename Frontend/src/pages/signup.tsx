@@ -8,12 +8,14 @@ import getScrollAnimation from '@/utils/getScrollAnimation';
 import { useFormHandling } from '@/hooks/useFormHandling';
 import { useRoleSelection } from '@/hooks/useRoleSelection';
 import {useSubmitForm } from '@/hooks/useSubmitForm';
+import { useRouter } from 'next/router';
 
 export default function AuthenticationTitle() {
   const scrollAnimation = React.useMemo(() => getScrollAnimation(), []);
   const form = useFormHandling(); // Custom form handling hook
   const { handleRoleChange } = useRoleSelection(form); // Role selection hook
   const { onSubmit } = useSubmitForm(form); // Form submission hook
+  const router = useRouter();
 
   return (
     <>
@@ -44,7 +46,17 @@ export default function AuthenticationTitle() {
             >
               <h1 className="text-4xl font-bold text-green-900 text-center mb-6">
                 Create A New Account
+
               </h1>
+              <p className="text-xl text-green-700 text-center mb-8">
+                Have an account?{' '}
+                <button
+                  className="text-orange-600 font-semibold underline"
+                  onClick={() => router.push('/login')}
+                >
+                  Login
+                </button>
+              </p>
               <form onSubmit={onSubmit}>
                 <div className="rounded-md p-6">
                   <label

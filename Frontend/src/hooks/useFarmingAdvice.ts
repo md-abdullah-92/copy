@@ -9,7 +9,7 @@ export const useFarmingAdvice = () => {
     event.preventDefault();
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/api/aichat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

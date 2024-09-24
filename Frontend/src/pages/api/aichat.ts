@@ -1,3 +1,4 @@
+// pages/api/openai.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 interface OpenAIResponse {
@@ -20,16 +21,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const { messages } = req.body;
+  const { prompt } = req.body;
 
-  if (!messages) {
-    return res.status(400).json({ error: 'Messages are required' });
+  if (!prompt) {
+    return res.status(400).json({ error: 'Prompt is required' });
   }
 
   const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
   const apiKey = process.env.AZURE_OPENAI_KEY;
 
-  if (!endpoint || !apiKey) {
+  if (!apiKey) {
     return res.status(500).json({ error: 'Azure OpenAI endpoint or API key is not configured' });
   }
 
@@ -41,21 +42,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         'api-key': apiKey,
       },
       body: JSON.stringify({
-        messages,
-        temperature: 0.7,
-        max_tokens: 500,
+        messages: [
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Error: ${response.status} - ${errorText}`);
       throw new Error(`Error: ${response.status} - ${errorText}`);
     }
 
     const data: OpenAIResponse = await response.json();
-    console.log(data);
-
     res.status(200).json(data);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
