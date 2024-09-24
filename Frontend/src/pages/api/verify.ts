@@ -15,6 +15,7 @@ export default async function handler(
             id:id,
             code:code
         }
+        console.log("body",body);
         const url =process.env.USER_SERVICE_BASEURL+"/api/user/verify";
         try{
             const axiosRes = await axios.post(url,body,{

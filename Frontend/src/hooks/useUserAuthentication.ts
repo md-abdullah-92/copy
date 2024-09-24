@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 
 const useUserAuthentication = () => {
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', role: '', email: '', avatarurl: '' });
+  const [loggedInUser, setLoggedInUser] = useState({ id:'',name: '', role: '', email: '', avatarurl: '' });
   const [profile, setProfiles] = useState<any>(null);
   const router = useRouter();
 
@@ -31,6 +31,7 @@ const useUserAuthentication = () => {
 
           setProfiles(res.data);
           setLoggedInUser({
+            id: res.data.id,
             name: res.data.name,
             role: res.data.role,
             email: res.data.email,

@@ -97,7 +97,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ productid, name, quantity, 
           console.log('Product status updated:', response.data);
           console.log("ID 3rd:", productid);
         } catch (err) {
-          console.error('Error updating product status:', err.response?.data || err.message);
+          console.error('Error updating product status:', err || err);
         }
       };
       

@@ -2,6 +2,7 @@ import Layout from '@/components/Layout/Layout';
 import ManageProduct from '@/components/Farmercomponents/ManageProducts';
 import AddProduct from '@/components/Farmercomponents/Addproducts';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 export default function DashboardProfile() {
   const router = useRouter();
@@ -9,6 +10,11 @@ export default function DashboardProfile() {
   
 
   return (
+    <>
+    <Head>
+    <title>Agent-Manage-Product | AgriBazaar</title>
+    <link rel="icon" href="/assets/logo.png" />
+  </Head>
     <Layout>
       <div className="min-h-screen bg-sky-200 py-8 pt-24 flex justify-center">
         <div className="w-full max-w-4xl">
@@ -39,5 +45,6 @@ export default function DashboardProfile() {
         </div>
       </div>
     </Layout>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import {useChats} from '@/hooks/useChats';
 import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,FaTractor,FaUsers } from 'react-icons/fa';
 import Link from 'next/link';
+import Head from 'next/head';
 
 export default function DashboardProfile() {
   const { profiles, loggedInUser } = useProfile();
@@ -19,10 +20,15 @@ export default function DashboardProfile() {
  // const { cartItems, handleAddToCart } = useCart(); // Hook to manage cart items
   const router = useRouter();
 
-  //if (loading) return <p>Loading products...</p>;
-  //if (error) return <p>{error}</p>;
+  if (loading) return <p>Loading products...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
+    <>
+    <Head>
+      <title>Farmer-Dashboard | AgriBazaar</title>
+      <link rel="icon" href="/assets/logo.png" />
+    </Head>
     <Layout>
       <div className="min-h-screen bg-sky-200 py-8 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -108,7 +114,8 @@ export default function DashboardProfile() {
                   {/* Messages */}
                   <li>
                     <Link
-                      href="/chatpage"
+                    href={`/chatpage?id=${loggedInUser.id}`}
+
                       className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                     >
                       <FaEnvelope className="mr-3" />
@@ -165,8 +172,7 @@ export default function DashboardProfile() {
               {/* Add Product Section */}
               <section
                 id="addproduct"
-                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105"
-              >
+                className="bg-white rounded-xl shadow-lg p-8 transition-transform duration-500 ease-in-out transform hover:scale-105">
                 <div className="flex justify-between items-center mb-6">
                   <AddProduct />
                 </div>
@@ -200,5 +206,6 @@ export default function DashboardProfile() {
         )}
       </div>
     </Layout>
+    </>
   );
 }

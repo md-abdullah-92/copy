@@ -59,7 +59,7 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
    
     <main className="flex-grow max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Purchased Products</h2>
-      { purchasedProducts.length > 0 ? (
+      
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {purchasedProducts.map((product) => (
             <div
@@ -130,9 +130,6 @@ const PurchasedProducts: React.FC<Props> = ({ buyeremail }) => {
             </div>
           ))}
         </div>
-      ) : (
-        <p className="text-gray-600">No purchased products found.</p>
-      )}
     </main>
   );
 };

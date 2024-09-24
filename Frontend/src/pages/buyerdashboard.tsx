@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
@@ -16,17 +16,35 @@ import PurchasedProducts from '@/components/PurchasedProducts';
 import useUserAuthentication from '@/hooks/useUserAuthentication';
 import useProducts from '@/hooks/useProducts';
 import Link from 'next/link';
+import useCartProducts from '@/hooks/useCartProducts';
+import { usePurchasedProducts } from '@/hooks/usePurchasedProducts';
 
 export default function BuyerDashboard() {
   const { loggedInUser, profile } = useUserAuthentication(); // Hook for authentication
   const { productsData, loading } = useProducts(); // Hook for fetching products
-
+  const { products } = useCartProducts(); // Hook for managing cart
   const router = useRouter();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const { purchasedProducts } = usePurchasedProducts(loggedInUser.email);
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  // Set browser-specific state in useEffect
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsBrowser(true);
+    
+      localStorage.setItem('role', loggedInUser.role);
+      localStorage.setItem('name', loggedInUser.name);
+      localStorage.setItem('id', loggedInUser.id);
+      localStorage.setItem('avatar', loggedInUser.avatarurl);
+    }
+  }, [loggedInUser]);
 
   const handleSignOut = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
+    if (isBrowser) {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -90,7 +108,10 @@ export default function BuyerDashboard() {
                       </a>
                     </li>
                     <li>
-                      <Link href="/BrowseProducts" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                      <Link
+                        href="/BrowseProducts"
+                        className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                      >
                         <FaShoppingCart className="mr-3" />
                         Browse Products
                       </Link>
@@ -105,14 +126,17 @@ export default function BuyerDashboard() {
                       </a>
                     </li>
                     <li>
-                      <Link href="/chatbot-farmer" className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300">
+                      <Link
+                        href="/chatbot-farmer"
+                        className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                      >
                         <FaEdit className="mr-3" />
                         Bot Advisor
                       </Link>
                     </li>
                     <li>
                       <Link
-                        href="/chatpage"
+                        href={`/chatpage?id=${loggedInUser.id}`}
                         className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
                       >
                         <FaEnvelope className="mr-3" />
@@ -120,14 +144,14 @@ export default function BuyerDashboard() {
                       </Link>
                     </li>
                     <li>
-                  <Link
-                    href="/agent-list" 
-                    className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
-                  >
-                    <FaUsers className="mr-3" />
-                    Agent List
-                  </Link>
-                </li>
+                      <Link
+                        href="/agent-list"
+                        className="flex items-center text-gray-700 hover:text-green-600 transition-colors duration-300"
+                      >
+                        <FaUsers className="mr-3" />
+                        Agent List
+                      </Link>
+                    </li>
                   </ul>
                 </nav>
               </div>
@@ -146,23 +170,23 @@ export default function BuyerDashboard() {
                         Total Products
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        150
+                        {productsData.length}
                       </p>
                     </div>
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
-                        Total Orders
+                        Cart Items
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        320
+                        {products.length}
                       </p>
                     </div>
                     <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
                       <h3 className="text-lg font-semibold text-green-900">
-                        Messages
+                        Total Purchases
                       </h3>
                       <p className="text-3xl font-bold text-green-700 mt-3">
-                        12
+                        {purchasedProducts.length}
                       </p>
                     </div>
                   </div>
@@ -192,7 +216,7 @@ export default function BuyerDashboard() {
                   </button>
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
-                    className="py-2 px-4 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-300"
+                    className="py-2 px-4 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors duration-300"
                   >
                     Cancel
                   </button>

@@ -23,11 +23,16 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 		</dependency>
+	    <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-configuration-processor</artifactId>
+           <optional>true</optional> <!-- Optional because it's only used for annotation processing -->
+        </dependency>
 		<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-configuration-processor</artifactId>
-    <optional>true</optional> <!-- Optional because it's only used for annotation processing -->
-</dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
 
 
 		<dependency>
