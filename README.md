@@ -58,3 +58,11 @@ Navigate to the frontend directory, install dependencies, and run the developmen
 cd frontend
 npm install
 npm run dev
+# Backend Setup
+
+### Navigate to the backend directory, build the Spring Boot application, and start the server:
+
+```bash
+cd backend
+mvn clean install
+mvn spring-boot:run
