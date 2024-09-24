@@ -1,4 +1,5 @@
 # AgriBazaar
+<img src="https://github.com/md-abdullah-92/sust_unknowns_agribazaar/blob/master/Frontend/public/assets/logo.png" alt="star" style="height: 200px; width: 200px; "/> 
 
 
 ## Project Overview
