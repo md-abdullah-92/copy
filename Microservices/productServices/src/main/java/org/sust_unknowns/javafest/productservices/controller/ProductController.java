@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.sust_unknowns.javafest.productservices.model.Product;
 import org.sust_unknowns.javafest.productservices.repository.ProductRepository;
+import org.sust_unknowns.javafest.productservices.service.MailService;
 import java.util.regex.Matcher;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,11 @@ public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
+    private MailService mailService;
 
-    ProductController(ProductRepository productRepository) {
+    ProductController(ProductRepository productRepository, MailService mailService) {
         this.productRepository = productRepository;
+        this.mailService = mailService;
     }
 
     @GetMapping("/")
@@ -143,7 +146,8 @@ public class ProductController {
             product.setTotalsold(updatedTotalSoldStr);
             product.setQuantity(updatedQuantityStr);
             productRepository.save(product);
-
+            mailService.sendMail(product.getOwneremail(), "New Order",
+                    formatTheMessage(product.getProductname(), product.getId()));
             return ResponseEntity.ok("Product quantity updated: " + product.getProductname());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -276,6 +280,24 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to rate product: " + e.getMessage());
         }
+    }
+
+    // send farmer about new order
+    private String formatTheMessage(String productname, String productid) {
+
+        return "<html>" +
+                "<head></head>" +
+                "<body>" +
+                "<div class='container'>" +
+                "<h1><span style='color: #425119; font-family: Caveat, cursive;'> AgriBazaar </span></h1>" +
+                "<p>Hi, Welcome to AgriBazaar</p>" +
+                "<p>Dear Farmer,</p>" +
+                "<p>Your product <b>" + productname + "</b> with ID <b>" + productid + "</b> has been ordered.</p>" +
+                "<p>Visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
     }
 
 }

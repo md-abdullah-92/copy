@@ -61,6 +61,8 @@ export const useOrders = () => {
     return matchesSearch && matchesFilter;
   });
 
+  const deliveredOrders = orders.filter(order => order.deliverystatus === 'Delivered');
+
   return {
     order:orders,
     orders: filteredOrders,
@@ -70,5 +72,6 @@ export const useOrders = () => {
     handleFilterChange,
     filterStatus,
     searchTerm,
+    deliveredOrders,
   };
 };

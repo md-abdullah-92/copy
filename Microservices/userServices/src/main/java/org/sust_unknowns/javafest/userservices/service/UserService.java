@@ -48,6 +48,10 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public boolean checkUserByID(String id) {
+        return userRepository.existsById(id);
+    }
+
     // Method to retrieve a user by email
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);

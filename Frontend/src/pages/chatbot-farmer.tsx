@@ -133,7 +133,7 @@ const Chat: FC<{ messages: Message[]; loading: boolean; onSend: (message: Messag
   {/* Chat with AI Button */}
   <button
     onClick={() => {
-      window.location.href = '/ai';
+      window.location.href = '/ai-bot';
     }}
     className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-green-700 transition-colors duration-300"
   >

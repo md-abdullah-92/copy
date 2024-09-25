@@ -14,8 +14,11 @@ import lombok.Setter;
 @Document(collection = "productcomment")
 public class Productcomment {
     private String id;
+    private String date;
     private String comment;
     private String username;
     private String userid;
     private String productid;
+    private String productname;
+    private String useravatar;
 }

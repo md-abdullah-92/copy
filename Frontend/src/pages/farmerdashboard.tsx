@@ -11,17 +11,31 @@ import { FaUserCircle, FaSignOutAlt, FaBox, FaCartPlus, FaChartLine, FaEnvelope,
 import Link from 'next/link';
 import Head from 'next/head';
 
+interface Orders {
+  id: number;
+  name: string;
+  image: string;
+  buyername: string;
+  soldquantity: string;
+  soldprice: string;
+  soldtime: string;
+  deviverybyaddress: string;
+  deliverystatus: string;
+  buyeremail: string;
+}
+
+
 export default function DashboardProfile() {
   const { profiles, loggedInUser } = useProfile();
   const { products, loading, error } = useOwnerProducts();
   const { showSignOutConfirm, setShowSignOutConfirm, handleSignOut } = useSignOut();
-  const { orders } = useOrders();
+  const { orders, deliveredOrders } = useOrders();
   const { chats } = useChats(loggedInUser.id as string);
  // const { cartItems, handleAddToCart } = useCart(); // Hook to manage cart items
   const router = useRouter();
 
   if (loading) return <p>Loading products...</p>;
-  if (error) return <p>{error}</p>;
+  
 
   return (
     <>
@@ -153,8 +167,8 @@ export default function DashboardProfile() {
                     <p className="text-3xl font-bold text-green-700 mt-3">{orders.length}</p>
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg shadow-md hover:bg-green-100 transition-colors duration-300">
-                    <h3 className="text-lg font-semibold text-green-900">Chat Pair</h3>
-                    <p className="text-3xl font-bold text-green-700 mt-3">{chats.length}</p>
+                  <h3 className="text-lg font-semibold text-green-900">Delivered Products</h3>
+                  <p className="text-3xl font-bold text-green-700 mt-3">{deliveredOrders.length}</p>
                   </div>
                 </div>
               </section>

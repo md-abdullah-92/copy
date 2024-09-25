@@ -208,7 +208,7 @@ public class SoldproductController {
                 "<p>Dear Customer,</p>" +
                 "<p>Your product <b>" + productname + "</b> with ID <b>" + productid + "</b> is on the way.</p>" +
                 "<p>Your verification code is: <b>" + code + "</b></p>" +
-                "<p>Visit our website at <a href='https://www.agribazaar.com'>www.agribazaar.com</a></p>" +
+                "<p>Visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>" +
                 "</div>" +
                 "</body>" +
                 "</html>";

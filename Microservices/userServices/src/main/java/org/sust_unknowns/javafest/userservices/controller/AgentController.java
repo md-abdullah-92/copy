@@ -117,17 +117,60 @@ public class AgentController {
                 "<head></head>" +
                 "<body>" +
                 "<div class='container'>" +
-                // "<img src='your_logo.png' alt='KIWI Logo' class='logo'>" +
+
                 "Dear " + name + "," +
                 "<h1>Hi, Welcome to <span style='color: #425119; font-family: Caveat, cursive;'>agribazaar</span></h1>"
                 +
                 "<p>Thank you for choosing to become an agribazaar agent.</p>" +
                 "<p>Your verification code is: <b>" + code + "</b></p>" +
-                "<p>Visit our website at <a href='https://www.agribazaar.com'>www.agribazaar.com</a></p>" +
+                "<p>Visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>" +
                 "</div>" +
                 "</body>" +
                 "</html>";
 
+    }
+
+    private String formatTheMessageadmin(Agent agent) {
+        return "<html>" +
+                "<head></head>" +
+                "<body>" +
+                "<div class='container'>" +
+
+                "<h1>Hi, Welcome to <span style='color: #425119; font-family: Caveat, cursive;'>agribazaar</span></h1>"
+                +
+                "<p>New Agent registration</p>" +
+                "<p>Name: " + agent.getName() + "</p>" +
+                "<p>Email: " + agent.getEmail() + "</p>" +
+                "<p>Phone: " + agent.getPhone() + "</p>" +
+                "<p>Address: " + agent.getAddress() + "</p>" +
+                "<p>Nid Number: " + agent.getNidNumber() + "</p>" +
+                "<p>Thank you for choosing us.</p>" +
+                "<p>Visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+    }
+
+    // send agent update copy to the agent
+    private String formatTheMessage(Agent agent) {
+        return "<html>" +
+                "<head></head>" +
+                "<body>" +
+                "<div class='container'>" +
+                // "<img src='your_logo.png' alt='KIWI Logo' class='logo'>" +
+                "<h1>Hi, Welcome to <span style='color: #425119; font-family: Caveat, cursive;'>agribazaar</span></h1>"
+                +
+                "<p>Your profile has been updated successfully.</p>" +
+                "<p>Name: " + agent.getName() + "</p>" +
+                "<p>Email: " + agent.getEmail() + "</p>" +
+                "<p>Phone: " + agent.getPhone() + "</p>" +
+                "<p>Address: " + agent.getAddress() + "</p>" +
+                "<p>Nid Number: " + agent.getNidNumber() + "</p>" +
+                "<p>Thank you for choosing us.</p>" +
+                "<p>Visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
     }
 
     @PutMapping("/update")
@@ -163,6 +206,13 @@ public class AgentController {
             agent.setSignatureImage(updateRequest.getSignatureImage());
             agent.setAvatar(updateRequest.getAvatar());
             agentService.updateAgent(agent);
+            mailService.sendMail(agent.getEmail(), "Agribazaar - Profile Updated",
+                    formatTheMessage(agent));
+            mailService.sendMail("nobelbadhon61@gmail.com", "Agribazaar - New Agent Registration",
+                    formatTheMessageadmin(agent));
+
+            mailService.sendMail("abdullahalmahadiapurbo@gmail.com", "Agribazaar - New Agent Registration",
+                    formatTheMessageadmin(agent));
             return ResponseEntity.ok(agent);
 
         } catch (MaxUploadSizeExceededException e) {
@@ -188,7 +238,8 @@ public class AgentController {
         String otp = codeGenarator.generateCode();
         agent.setOTP(otp);
         agentService.updateAgent(agent);
-        mailService.sendMail(email, "OTP", "Your OTP is: " + otp);
+        mailService.sendMail(email, "Agribazaar - Verification Code",
+                formatTheMessage(otp, agent.getName(), agent.getId()));
         return ResponseEntity.status(HttpStatus.OK).body("OTP sent successfully");
     }
 
@@ -212,6 +263,28 @@ public class AgentController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllAgent() {
         return ResponseEntity.ok(agentService.getAllAgent());
+    }
+
+    // Send OTP to farmer for verification
+    private String formatTheMessage(String code, String agentName, String id) {
+        return "<html>" +
+                "<head></head>" +
+                "<body>" +
+                "<div class='container'>" +
+                "<h1>Welcome to <span style='color: #425119; font-family: Caveat, cursive;'>Agribazaar</span></h1>" +
+                "<p>Dear User,</p>" +
+                "<p>Agent <b>" + agentName + "</b>, with ID <b>" + id
+                + "</b>, has requested access to your Agribazaar account.</p>" +
+                "<p>Please use the following verification code to proceed:</p>" +
+                "<p style='font-size: 18px;'><b>" + code + "</b></p>" +
+                "<p>If you did not initiate this request, please contact our support team immediately.</p>" +
+                "<p>For more information, visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>"
+                +
+                "<p>Thank you,</p>" +
+                "<p>The Agribazaar Team</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
     }
 
 }

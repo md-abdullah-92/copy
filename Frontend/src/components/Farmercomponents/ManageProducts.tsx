@@ -78,7 +78,7 @@ const ManageProduct: React.FC = () => {
           )
         );
       } catch (error) {
-        console.error('Error uploading the file', error);
+        
       } finally {
         setUploading(false);
       }

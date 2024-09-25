@@ -4,12 +4,11 @@ import getScrollAnimation from '../utils/getScrollAnimation';
 import ScrollAnimationWrapper from './Layout/ScrollAnimationWrapper';
 
 const features = [
-  'Direct Farmer-to-Consumer Transactions',
-  'AI-Powered Product Pricing',
-  'Demand Forecasting for Better Planning',
-  'Personalized Product Recommendations',
+  'Direct Sales for Farmers and Buyers',
+  'AI-Powered Chatbot for Farming Queries',
+  'Real-Time Messaging and Notifications',
   'Secure and Transparent Transactions',
-  '24/7 AI Customer Support',
+  'Tracking Sales and Purchases',
   'Quality Assessment of Products',
 ];
 

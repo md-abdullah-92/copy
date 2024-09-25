@@ -71,7 +71,8 @@ public class UserController {
 
     @PostMapping("/verify")
     public ResponseEntity<Object> verifyUser(@RequestBody VerifyUser requestUser) {
-        if (!userService.checkUser(requestUser.getId())) {
+        System.out.println(requestUser.getId());
+        if (!userService.checkUserByID(requestUser.getId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not exist");
         }
         User user = userService.getUserById(requestUser.getId());
@@ -90,12 +91,6 @@ public class UserController {
     public ResponseEntity<String> loginUser(@RequestBody RequestUser requestUser) {
 
         User user = userService.getUserByEmail(requestUser.getEmail());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
-        }
-        if (!user.isVerified()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not verified");
-        }
         if (codeGenarator.checkPassword(requestUser.getPassword(), user.getPassword())) {
             String token = jwtUtils.generateToken(user.getId());
             HttpHeaders headers = new HttpHeaders();
@@ -145,7 +140,7 @@ public class UserController {
                 +
                 "<p>Your verification code is: <b>" + code + "</b></p>" +
                 "<p>Thank you for choosing us.</p>" +
-                "<p>Visit our website at <a href='https://www.agribazaar.com'>www.agribazaar.com</a></p>" +
+                "<p>Visit our website at <a href='https://agribazaar.vercel.app'>www.agribazaar.com</a></p>" +
                 "</div>" +
                 "</body>" +
                 "</html>";
